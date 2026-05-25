@@ -1,0 +1,50 @@
+# 忽略 Windows 系统文件
+NTUSER.DAT*
+ntuser.dat*
+*.LOG1
+*.LOG2
+*.regtrans-ms
+*.blf
+.nodemid
+.noderepl_history
+.npmrc
+*.TxR*
+
+# 忽略系统文件夹
+.[a-zA-Z]*/
+AppData/
+Cookies/
+`[开始]菜单/
+Desktop/
+Documents/
+Downloads/
+Favorites/
+Links/
+Music/
+NetHood/
+OneDrive/
+OpenVPN/
+Pictures/
+PrintHood/
+Recent/
+Saved\ Games/
+Searches/
+SendTo/
+Templates/
+Videos/
+WPS\ Cloud\ Files/
+WPSDrive/
+3D\ Objects/
+
+# 忽略项目无关文件夹
+.android/
+.openclaw/
+build/
+ai-learning-hub/
+xwechat_files/
+
+# 忽略配置文件
+check_packages.py
+install.ps1
+install_packages.py
+motor_tool.spec
