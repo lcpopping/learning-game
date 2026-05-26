@@ -7,10 +7,8 @@
     <meta name="description" content="学习大闯关 - 收集奥特曼和三国人物！">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="学习大闯关">
     <title>学习大闯关</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%236C5CE7'/><text x='90' y='125' font-size='90' text-anchor='middle' fill='white'>🎓</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,6 +21,11 @@
             --text: #FFFFFF;
             --error: #FF6B6B;
             --success: #26DE81;
+            --common: #BDBDBD;
+            --uncommon: #26DE81;
+            --rare: #4D9FFF;
+            --epic: #A855F7;
+            --legendary: #F97316;
         }
         body {
             font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
@@ -31,1222 +34,1412 @@
             color: var(--text);
             overflow-x: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 15px;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .particle { position: absolute; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; opacity: 0.3; animation: float 15s infinite; }
-        @keyframes float { 0%,100% { transform: translateY(100vh); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh); opacity: 0; } }
+        .container { max-width: 800px; margin: 0 auto; padding: 15px; min-height: 100vh; }
         .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: flex; flex-direction: column; align-items: center; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .header-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
-        .coins-display { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: bold; color: var(--accent); }
-        .coins-icon { font-size: 1.3rem; }
-        .back-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-family: inherit; }
-        .back-btn:hover { background: rgba(255,255,255,0.2); }
-        /* Home Page */
-        .home-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.8rem; text-align: center; background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: titlePulse 3s ease-in-out infinite; margin-bottom: 10px; }
-        @keyframes titlePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-        .home-icon { font-size: 4rem; animation: bounce 2s ease-in-out infinite; margin: 20px 0; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .home-subtitle { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 30px; }
-        .btn { padding: 15px 40px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; position: relative; overflow: hidden; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--text); box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--text); border: 2px solid rgba(255,255,255,0.2); }
-        .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 35px rgba(108, 92, 231, 0.5); }
+
+        /* Header */
+        .header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
+        .player-info { display: flex; align-items: center; gap: 10px; }
+        .player-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .player-stats { font-size: 0.85rem; }
+        .player-level { background: var(--accent); color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
+        .gold-display { display: flex; align-items: center; gap: 5px; color: var(--accent); font-weight: bold; }
+
+        /* Buttons */
+        .btn { padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 5px 20px rgba(108,92,231,0.4); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2); }
+        .btn:hover { transform: translateY(-2px) scale(1.03); }
         .btn:active { transform: scale(0.98); }
-        .home-actions { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; }
+
+        /* Home Page */
+        .home-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.5rem; text-align: center; margin: 20px 0; background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .home-icon { font-size: 4rem; animation: bounce 2s ease-in-out infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .character-showcase { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
+        .char-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 10px 15px; text-align: center; min-width: 70px; }
+        .char-icon { font-size: 2rem; }
+        .char-name { font-size: 0.7rem; margin-top: 5px; color: rgba(255,255,255,0.7); }
+        .char-count { font-size: 0.8rem; color: var(--accent); margin-top: 5px; }
+
+        /* Level Select */
+        .section-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.5rem; color: var(--accent); margin: 20px 0 15px; text-align: center; }
+        .difficulty-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .diff-btn { padding: 8px 20px; border-radius: 20px; border: 2px solid transparent; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
+        .diff-btn.active { border-color: var(--accent); background: rgba(253,203,110,0.2); }
+        .diff-btn.easy { color: var(--uncommon); }
+        .diff-btn.medium { color: var(--rare); }
+        .diff-btn.hard { color: var(--legendary); }
+        .mode-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .mode-btn { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .mode-btn:hover { transform: translateY(-3px); }
+        .mode-btn.selected { border-color: var(--secondary); background: rgba(0,206,201,0.15); }
+        .mode-icon { font-size: 1.8rem; }
+        .mode-name { font-size: 0.85rem; margin-top: 5px; }
+        .mode-desc { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+
         /* Subject Grid */
-        .subjects-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; margin-bottom: 20px; color: var(--accent); }
-        .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; }
-        .subject-card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; position: relative; }
-        .subject-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3); }
-        .subject-card.locked { opacity: 0.5; cursor: not-allowed; }
-        .subject-card.locked::after { content: '🔒'; position: absolute; top: 10px; right: 10px; font-size: 1.2rem; }
-        .subject-emoji { font-size: 2.5rem; margin-bottom: 10px; }
-        .subject-name { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
-        .subject-progress { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-        .subject-stars { color: var(--accent); font-size: 0.9rem; }
-        /* Challenge List */
-        .challenges-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.5rem; margin-bottom: 10px; text-align: center; }
-        .challenges-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; margin-bottom: 20px; }
-        .challenge-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(255,255,255,0.1); text-align: center; }
-        .challenge-card:hover:not(.locked) { background: rgba(255,255,255,0.12); border-color: var(--secondary); transform: scale(1.02); }
-        .challenge-card.locked { opacity: 0.4; cursor: not-allowed; }
-        .challenge-card.completed { border-color: var(--success); }
-        .challenge-emoji { font-size: 1.8rem; margin-bottom: 8px; }
-        .challenge-name { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
-        .challenge-info { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .challenge-stars { margin-top: 5px; }
+        .subject-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+        .subject-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+        .subject-card:hover:not(.locked) { transform: translateY(-3px); background: rgba(255,255,255,0.1); }
+        .subject-card.locked { opacity: 0.4; cursor: not-allowed; }
+        .subject-card.locked::after { content: '🔒'; position: absolute; top: 5px; right: 5px; font-size: 1rem; }
+        .subject-card.completed { border: 2px solid var(--success); }
+        .subject-card.completed::before { content: '✅'; position: absolute; top: 5px; right: 5px; font-size: 0.9rem; }
+        .subject-emoji { font-size: 2rem; }
+        .subject-name { font-size: 0.9rem; margin-top: 5px; }
+        .subject-count { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+
         /* Quiz Page */
-        .quiz-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
-        .lives { display: flex; gap: 5px; font-size: 1.3rem; }
-        .life { transition: all 0.3s ease; }
-        .life.lost { opacity: 0.2; transform: scale(0.7); }
+        .quiz-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; }
+        .lives { display: flex; gap: 5px; }
+        .life { font-size: 1.3rem; transition: all 0.3s; }
+        .life.lost { opacity: 0.3; transform: scale(0.8); }
         .timer { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
-        .timer.warning { color: var(--error); animation: timerPulse 0.5s infinite; }
-        @keyframes timerPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .progress-info { width: 100%; display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: rgba(255,255,255,0.7); }
-        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 25px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s ease; }
-        .question-card { width: 100%; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; text-align: center; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .question-type { font-size: 0.85rem; color: var(--secondary); margin-bottom: 10px; }
-        .question-text { font-size: 1.2rem; line-height: 1.5; margin-bottom: 5px; }
-        .question-difficulty { font-size: 0.8rem; color: var(--accent); margin-top: 8px; }
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-        .option-btn { padding: 15px; font-size: 1rem; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--text); cursor: pointer; transition: all 0.3s ease; font-family: inherit; text-align: center; }
+        .timer.warning { color: var(--error); animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .score-display { font-size: 0.9rem; color: var(--accent); }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.5s ease; }
+        .question-card { width: 100%; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 20px; text-align: center; }
+        .question-number { font-size: 0.8rem; color: var(--secondary); margin-bottom: 10px; }
+        .question-text { font-size: 1.2rem; line-height: 1.6; }
+        .mode-badge { display: inline-block; padding: 3px 10px; background: var(--primary); border-radius: 10px; font-size: 0.7rem; margin-bottom: 10px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+        .option-btn { padding: 15px; font-size: 1rem; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; cursor: pointer; transition: all 0.3s; font-family: inherit; text-align: left; display: flex; align-items: center; gap: 10px; }
         .option-btn:hover:not(.disabled) { background: rgba(255,255,255,0.15); border-color: var(--primary); }
         .option-btn.disabled { cursor: not-allowed; }
-        .option-btn.correct { background: var(--success); border-color: var(--success); animation: correctPop 0.5s ease; }
-        @keyframes correctPop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .option-btn.wrong { background: var(--error); border-color: var(--error); animation: shake 0.5s ease; }
-        @keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-8px); } 80% { transform: translateX(8px); } }
-        .option-label { display: inline-block; width: 25px; height: 25px; line-height: 25px; background: rgba(255,255,255,0.15); border-radius: 50%; margin-right: 8px; font-weight: bold; font-size: 0.9rem; }
-        /* Feedback */
-        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 25px 50px; border-radius: 20px; font-size: 1.8rem; font-weight: bold; z-index: 100; animation: feedbackPop 0.4s ease; display: none; }
-        .feedback.show { display: block; }
-        @keyframes feedbackPop { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 50% { transform: translate(-50%, -50%) scale(1.2); } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        .feedback.correct { background: var(--success); }
-        .feedback.wrong { background: var(--error); }
+        .option-btn.correct { background: var(--success); border-color: var(--success); animation: pop 0.4s ease; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .option-btn.wrong { background: var(--error); border-color: var(--error); animation: shake 0.4s ease; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-8px); } 80% { transform: translateX(8px); } }
+        .option-label { width: 28px; height: 28px; line-height: 28px; background: rgba(255,255,255,0.15); border-radius: 50%; text-align: center; font-weight: bold; }
+
         /* Result Page */
-        .result-card { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 30px; text-align: center; width: 100%; animation: resultSlide 0.6s ease; }
-        @keyframes resultSlide { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .result-card { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 30px; text-align: center; width: 100%; max-width: 400px; }
         .result-emoji { font-size: 4rem; margin-bottom: 15px; }
-        .result-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 2rem; margin-bottom: 10px; }
+        .result-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; margin-bottom: 15px; }
         .result-title.success { color: var(--success); }
         .result-title.fail { color: var(--error); }
-        .result-stars { font-size: 2.5rem; margin: 15px 0; }
-        .result-coins { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; color: var(--accent); margin: 15px 0; }
-        .result-item { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.2rem; margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+        .result-rewards { display: flex; gap: 15px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+        .reward-item { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 12px; text-align: center; }
+        .reward-icon { font-size: 1.5rem; }
+        .reward-value { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
+        .reward-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+
+        /* Gallery Page */
+        .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 8px 20px; border-radius: 20px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-family: inherit; }
+        .tab-btn.active { background: var(--primary); }
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
+        .char-card-full { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; position: relative; }
+        .char-card-full.locked { opacity: 0.5; }
+        .char-card-full.owned { border: 2px solid var(--accent); }
+        .char-card-full .char-icon { font-size: 2.5rem; }
+        .char-card-full .char-name { font-size: 0.75rem; margin-top: 5px; }
+        .char-card-full .char-rarity { font-size: 0.7rem; margin-top: 3px; }
+        .fragments-count { font-size: 0.7rem; color: var(--secondary); margin-top: 3px; }
+
         /* Shop Page */
-        .shop-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; color: var(--accent); margin-bottom: 20px; }
-        .shop-section { width: 100%; margin-bottom: 25px; }
-        .shop-section-title { font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .shop-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-        .shop-item { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; }
-        .shop-item:hover:not(.owned) { border-color: var(--accent); transform: translateY(-3px); }
-        .shop-item.owned { opacity: 0.5; cursor: not-allowed; background: rgba(0,206,201,0.1); border-color: var(--secondary); }
-        .shop-item.affordable { border-color: rgba(255,255,255,0.2); }
-        .shop-item-icon { font-size: 2.5rem; margin-bottom: 8px; }
-        .shop-item-name { font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; }
-        .shop-item-price { font-size: 0.9rem; color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .shop-item-owned { font-size: 0.75rem; color: var(--secondary); margin-top: 5px; }
-        .shop-item-rarity { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
-        /* Collection Page */
-        .collection-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; color: var(--accent); margin-bottom: 20px; }
-        .collection-stats { width: 100%; display: flex; gap: 15px; margin-bottom: 20px; }
-        .stat-card { flex: 1; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; text-align: center; }
-        .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
-        .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-        .collection-section { width: 100%; margin-bottom: 20px; }
-        .collection-section-title { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-        .collection-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; text-align: center; }
-        .collection-item.locked { opacity: 0.3; }
-        .collection-item-icon { font-size: 2rem; margin-bottom: 5px; }
-        .collection-item-name { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
-        .collection-item-owned { font-size: 0.65rem; color: var(--success); }
+        .shop-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .shop-tab { padding: 8px 15px; border-radius: 15px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-family: inherit; }
+        .shop-tab.active { background: var(--primary); }
+        .shop-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .shop-item-icon { font-size: 2rem; width: 50px; text-align: center; }
+        .shop-item-info { flex: 1; }
+        .shop-item-name { font-size: 1rem; font-weight: bold; }
+        .shop-item-desc { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+        .shop-item-price { display: flex; align-items: center; gap: 5px; color: var(--accent); font-weight: bold; }
+        .shop-item-btn { padding: 8px 20px; border-radius: 15px; border: none; background: var(--primary); color: white; cursor: pointer; font-family: inherit; }
+        .shop-item-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Tasks Page */
+        .task-card { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .task-icon { font-size: 2rem; width: 45px; text-align: center; }
+        .task-info { flex: 1; }
+        .task-name { font-size: 0.95rem; font-weight: bold; }
+        .task-desc { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+        .task-progress { font-size: 0.8rem; color: var(--secondary); margin-top: 3px; }
+        .task-reward { display: flex; align-items: center; gap: 5px; }
+        .task-btn { padding: 8px 15px; border-radius: 12px; border: none; background: var(--accent); color: #333; cursor: pointer; font-family: inherit; font-weight: bold; }
+        .task-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Feedback */
+        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px 40px; border-radius: 15px; font-size: 1.5rem; font-weight: bold; z-index: 100; animation: pop 0.4s ease; }
+        .feedback.correct { background: var(--success); }
+        .feedback.wrong { background: var(--error); }
+        .feedback.show { display: block; }
+        .feedback.hide { display: none; }
+
         /* Celebration */
         .celebration { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; }
-        .confetti { position: absolute; width: 12px; height: 12px; animation: confettiFall 2.5s ease-out forwards; }
-        @keyframes confettiFall { 0% { transform: translateY(-50px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        /* Toast */
-        .toast { position: fixed; bottom: 30%; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 15px 30px; border-radius: 10px; font-size: 1rem; z-index: 300; animation: toastShow 0.3s ease; display: none; }
-        .toast.show { display: block; }
-        @keyframes toastShow { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .confetti { position: absolute; width: 12px; height: 12px; animation: fall 2s ease-out forwards; }
+        @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+        /* Particles */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; opacity: 0.3; animation: float 15s infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+
+        /* Back button */
+        .back-btn { position: fixed; top: 15px; left: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: white; font-size: 1.2rem; cursor: pointer; z-index: 50; }
+
         /* Responsive */
         @media (max-width: 500px) {
-            .home-title { font-size: 2.2rem; }
-            .subjects-grid { grid-template-columns: repeat(2, 1fr); }
-            .challenges-grid { grid-template-columns: 1fr; }
+            .home-title { font-size: 2rem; }
+            .subject-grid { grid-template-columns: repeat(2, 1fr); }
+            .mode-selector { grid-template-columns: repeat(2, 1fr); }
             .options-grid { grid-template-columns: 1fr; }
-            .shop-items { grid-template-columns: repeat(2, 1fr); }
-            .collection-grid { grid-template-columns: repeat(3, 1fr); }
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+            .header { flex-wrap: wrap; gap: 10px; }
         }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     <div class="celebration" id="celebration"></div>
-    <div class="toast" id="toast"></div>
     <div class="feedback" id="feedback"></div>
+    <button class="back-btn" id="backBtn" style="display:none;" onclick="goBack()">←</button>
 
     <div class="container">
-        <!-- 首页 -->
+        <!-- Home Page -->
         <div class="page active" id="homePage">
             <div class="home-icon">🎓</div>
             <h1 class="home-title">学习大闯关</h1>
-            <p class="home-subtitle">收集奥特曼和三国人物，成为学习达人！</p>
-            <div class="home-actions">
-                <button class="btn btn-primary" onclick="showSubjects()">开始挑战</button>
-                <button class="btn btn-secondary" onclick="showShop()">🎁 道具商店</button>
-                <button class="btn btn-secondary" onclick="showCollection()">📦 我的收藏</button>
+            <div class="header">
+                <div class="player-info">
+                    <div class="player-avatar">👤</div>
+                    <div>
+                        <div class="player-level">Lv.<span id="playerLevel">1</span></div>
+                        <div class="player-stats">经验: <span id="playerExp">0</span></div>
+                    </div>
+                </div>
+                <div class="gold-display">🪙 <span id="playerGold">100</span></div>
+            </div>
+
+            <div class="section-title">已收集角色</div>
+            <div class="character-showcase" id="charShowcase"></div>
+
+            <button class="btn btn-primary" onclick="showLevelSelect()" style="margin: 20px 0;">开始挑战</button>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <button class="btn btn-secondary" onclick="showGallery()">📖 图鉴</button>
+                <button class="btn btn-secondary" onclick="showShop()">🛒 商店</button>
+                <button class="btn btn-secondary" onclick="showTasks()">📋 任务</button>
             </div>
         </div>
 
-        <!-- 科目选择 -->
-        <div class="page" id="subjectsPage">
-            <div class="header-bar">
-                <button class="back-btn" onclick="showHome()">← 返回</button>
-                <div class="coins-display"><span class="coins-icon">🪙</span><span id="coinsHeader">0</span></div>
+        <!-- Level Select Page -->
+        <div class="page" id="levelPage">
+            <div class="section-title">选择难度</div>
+            <div class="difficulty-selector">
+                <button class="diff-btn easy active" onclick="selectDifficulty('easy')">⭐ 简单</button>
+                <button class="diff-btn medium" onclick="selectDifficulty('medium')">⭐⭐ 中等</button>
+                <button class="diff-btn hard" onclick="selectDifficulty('hard')">⭐⭐⭐ 困难</button>
             </div>
-            <h2 class="subjects-title">选择科目</h2>
-            <div class="subjects-grid" id="subjectsGrid"></div>
+
+            <div class="section-title">选择模式</div>
+            <div class="mode-selector" id="modeSelector"></div>
+
+            <div class="section-title">选择学科</div>
+            <div class="subject-grid" id="subjectGrid"></div>
         </div>
 
-        <!-- 闯关选择 -->
-        <div class="page" id="challengesPage">
-            <div class="header-bar">
-                <button class="back-btn" onclick="showSubjects()">← 返回</button>
-                <div class="coins-display"><span class="coins-icon">🪙</span><span id="coinsChallenge">0</span></div>
-            </div>
-            <h2 class="challenges-title" id="challengesTitle"></h2>
-            <div class="challenges-grid" id="challengesGrid"></div>
-        </div>
-
-        <!-- 答题页面 -->
+        <!-- Quiz Page -->
         <div class="page" id="quizPage">
-            <div class="header-bar">
-                <button class="back-btn" onclick="confirmQuit()">✕</button>
+            <div class="quiz-header">
                 <div class="lives" id="lives"></div>
-                <div class="timer" id="timer">30</div>
+                <div class="score-display">🪙 +<span id="currentScore">0</span></div>
+                <div class="timer" id="timer">20</div>
             </div>
-            <div class="progress-info">
-                <span id="challengeName">闯关名称</span>
-                <span id="questionCount">1/3</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
             </div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             <div class="question-card">
-                <div class="question-type" id="questionType"></div>
-                <div class="question-text" id="questionText"></div>
-                <div class="question-difficulty" id="questionDifficulty"></div>
+                <div class="mode-badge" id="modeBadge">限时挑战</div>
+                <div class="question-number" id="questionNumber">第 1 题</div>
+                <div class="question-text" id="questionText">题目内容</div>
             </div>
             <div class="options-grid" id="optionsGrid"></div>
         </div>
 
-        <!-- 结果页面 -->
+        <!-- Result Page -->
         <div class="page" id="resultPage">
             <div class="result-card">
                 <div class="result-emoji" id="resultEmoji">🏆</div>
-                <h2 class="result-title" id="resultTitle">挑战完成!</h2>
-                <div class="result-stars" id="resultStars">⭐⭐⭐</div>
-                <div class="result-coins"><span>🪙</span><span id="resultCoins">+150</span></div>
-                <div class="result-item" id="resultItem" style="display:none"><span id="resultItemIcon"></span><span id="resultItemName"></span></div>
+                <div class="result-title" id="resultTitle">恭喜通关！</div>
+                <div class="result-rewards" id="resultRewards"></div>
+                <div class="stat-row"><span>得分</span><span id="finalScore">0</span></div>
+                <div class="stat-row"><span>正确率</span><span id="finalAccuracy">0%</span></div>
+                <div class="stat-row"><span>获得金币</span><span id="finalGold">+0</span></div>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="showSubjects()">选择科目</button>
+                    <button class="btn btn-primary" onclick="showLevelSelect()">再闯一关</button>
                     <button class="btn btn-secondary" onclick="showHome()">返回首页</button>
                 </div>
             </div>
         </div>
 
-        <!-- 商店页面 -->
-        <div class="page" id="shopPage">
-            <div class="header-bar">
-                <button class="back-btn" onclick="showHome()">← 返回</button>
-                <div class="coins-display"><span class="coins-icon">🪙</span><span id="coinsShop">0</span></div>
+        <!-- Gallery Page -->
+        <div class="page" id="galleryPage">
+            <div class="section-title">📖 角色图鉴</div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchGalleryTab('ultra')">奥特曼</button>
+                <button class="tab-btn" onclick="switchGalleryTab('threeKingdoms')">三国人物</button>
             </div>
-            <h2 class="shop-title">🎁 道具商店</h2>
-            <div class="shop-section">
-                <div class="shop-section-title">⚡ 奥特曼系列</div>
-                <div class="shop-items" id="ultramanShop"></div>
-            </div>
-            <div class="shop-section">
-                <div class="shop-section-title">🏮 三国系列</div>
-                <div class="shop-items" id="threeKingdomsShop"></div>
-            </div>
-            <div class="shop-section">
-                <div class="shop-section-title">🎮 特殊道具</div>
-                <div class="shop-items" id="specialShop"></div>
-            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
         </div>
 
-        <!-- 收藏页面 -->
-        <div class="page" id="collectionPage">
-            <div class="header-bar">
-                <button class="back-btn" onclick="showHome()">← 返回</button>
-                <div class="coins-display"><span class="coins-icon">🪙</span><span id="coinsCollection">0</span></div>
+        <!-- Shop Page -->
+        <div class="page" id="shopPage">
+            <div class="section-title">🛒 商店</div>
+            <div class="shop-tabs">
+                <button class="shop-tab active" onclick="switchShopTab('chars')">角色</button>
+                <button class="shop-tab" onclick="switchShopTab('items')">道具</button>
+                <button class="shop-tab" onclick="switchShopTab('equip')">装备</button>
             </div>
-            <h2 class="collection-title">📦 我的收藏</h2>
-            <div class="collection-stats">
-                <div class="stat-card"><div class="stat-value" id="totalItems">0</div><div class="stat-label">已收集</div></div>
-                <div class="stat-card"><div class="stat-value" id="totalStars">0</div><div class="stat-label">获得星星</div></div>
+            <div id="shopContent"></div>
+        </div>
+
+        <!-- Tasks Page -->
+        <div class="page" id="tasksPage">
+            <div class="section-title">📋 任务中心</div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTaskTab('daily')">每日</button>
+                <button class="tab-btn" onclick="switchTaskTab('weekly')">每周</button>
             </div>
-            <div class="collection-section">
-                <div class="collection-section-title">⚡ 奥特曼系列 <span id="ultramanCount">0/6</span></div>
-                <div class="collection-grid" id="ultramanCollection"></div>
-            </div>
-            <div class="collection-section">
-                <div class="collection-section-title">🏮 三国系列 <span id="threeKingdomsCount">0/7</span></div>
-                <div class="collection-grid" id="threeKingdomsCollection"></div>
-            </div>
+            <div id="tasksContent"></div>
         </div>
     </div>
 
 <script>
-// ==================== 道具数据 ====================
-const ultramanItems = [
-    { id: 'ultra_1', name: '奥特曼胶囊', icon: '💊', price: 100, rarity: '⭐' },
-    { id: 'ultra_2', name: '怪兽胶囊', icon: '👾', price: 80, rarity: '⭐' },
-    { id: 'ultra_3', name: '变身器', icon: '⚡', price: 200, rarity: '⭐⭐' },
-    { id: 'ultra_4', name: '迪迦之光', icon: '🌟', price: 300, rarity: '⭐⭐⭐' },
-    { id: 'ultra_5', name: '银河剑', icon: '🗡️', price: 500, rarity: '⭐⭐⭐⭐' },
-    { id: 'ultra_6', name: '诺亚之力', icon: '🔥', price: 1000, rarity: '⭐⭐⭐⭐⭐' }
+// ==================== GAME DATA ====================
+
+const SUBJECTS = [
+    { id: 'chinese', name: '语文', emoji: '📖', unlocked: true },
+    { id: 'math', name: '数学', emoji: '🔢', unlocked: true },
+    { id: 'english', name: '英语', emoji: '🔤', unlocked: true },
+    { id: 'science', name: '科学', emoji: '🔬', unlocked: true },
+    { id: 'sports', name: '体育', emoji: '⚽', unlocked: true },
+    { id: 'general', name: '综合素质', emoji: '🎨', unlocked: true }
 ];
 
-const threeKingdomsItems = [
-    { id: 'tk_1', name: '青铜剑', icon: '⚔️', price: 100, rarity: '⭐' },
-    { id: 'tk_2', name: '青龙刀', icon: '🔪', price: 80, rarity: '⭐' },
-    { id: 'tk_3', name: '丈八蛇矛', icon: '🔱', price: 120, rarity: '⭐⭐' },
-    { id: 'tk_4', name: '双股剑', icon: '⚔️', price: 150, rarity: '⭐⭐' },
-    { id: 'tk_5', name: '诸葛扇', icon: '🪭', price: 300, rarity: '⭐⭐⭐' },
-    { id: 'tk_6', name: '赤兔马', icon: '🏇', price: 500, rarity: '⭐⭐⭐⭐' },
-    { id: 'tk_7', name: '青龙偃月刀', icon: '🗡️', price: 1000, rarity: '⭐⭐⭐⭐⭐' }
+const MODES = [
+    { id: 'timed', name: '限时挑战', emoji: '⏱️', desc: '20秒/题，答对+3秒', time: 20, lives: 3, questions: 5, bonus: 'time' },
+    { id: 'endurance', name: '耐力赛', emoji: '🏃', desc: '1条命，10题连答', time: 30, lives: 1, questions: 10, bonus: 'heal' },
+    { id: 'elite', name: '精英挑战', emoji: '💎', desc: '双倍积分奖励', time: 25, lives: 2, questions: 3, bonus: 'double' },
+    { id: 'precise', name: '精准挑战', emoji: '🎯', desc: '不限时，100%准确通关', time: 999, lives: 1, questions: 5, bonus: 'none' },
+    { id: 'random', name: '随机闯关', emoji: '🎰', desc: '随机科目难度', time: 20, lives: 3, questions: 5, bonus: 'random' },
+    { id: 'guardian', name: '守护挑战', emoji: '🛡️', desc: '5条命，保护模式', time: 30, lives: 5, questions: 5, bonus: 'shield' }
 ];
 
-const specialItems = [
-    { id: 'special_1', name: '续命符', icon: '❤️', price: 50, rarity: '道具' },
-    { id: 'special_2', name: '双倍卡', icon: '✨', price: 30, rarity: '道具' },
-    { id: 'special_3', name: '跳过卡', icon: '⏭️', price: 20, rarity: '道具' }
+const ULTRA_HEROES = [
+    { id: 'ultraman', name: '奥特曼', emoji: '🧑', rarity: '⭐⭐⭐', fragments: 50, skill: '分数+10%', price: 500 },
+    { id: 'seven', name: '赛文奥特曼', emoji: '🥸', rarity: '⭐⭐⭐', fragments: 45, skill: '时间+5秒', price: 450 },
+    { id: 'jack', name: '杰克奥特曼', emoji: '🧔', rarity: '⭐⭐⭐', fragments: 40, skill: '生命+1', price: 400 },
+    { id: 'ace', name: '艾斯奥特曼', emoji: '🦸', rarity: '⭐⭐⭐', fragments: 35, skill: '连击翻倍', price: 350 },
+    { id: 'taro', name: '泰罗奥特曼', emoji: '🦸‍♂️', rarity: '⭐⭐⭐', fragments: 35, skill: '金币+20%', price: 350 },
+    { id: 'leo', name: '雷欧奥特曼', emoji: '💪', rarity: '⭐⭐', fragments: 30, skill: '免伤一次', price: 300 },
+    { id: 'diga', name: '迪迦奥特曼', emoji: '🫡', rarity: '⭐⭐', fragments: 25, skill: '提示功能', price: 250 },
+    { id: 'dyna', name: '戴拿奥特曼', emoji: '⚡', rarity: '⭐⭐', fragments: 25, skill: '传送门', price: 250 },
+    { id: 'ginga', name: '银河奥特曼', emoji: '🌌', rarity: '⭐⭐⭐', fragments: 30, skill: '能量爆发', price: 300 },
+    { id: 'victory', name: '维克特利', emoji: '💎', rarity: '⭐⭐', fragments: 25, skill: '屏障护身', price: 250 },
+    { id: 'orb', name: '欧布奥特曼', emoji: '🟠', rarity: '⭐⭐⭐', fragments: 30, skill: '属性转换', price: 300 },
+    { id: 'geiz', name: '捷德奥特曼', emoji: '🔱', rarity: '⭐', fragments: 20, skill: '命运羁绊', price: 200 },
+    { id: 'robu', name: '罗布奥特曼', emoji: '🔴', rarity: '⭐', fragments: 20, skill: '水火之力', price: 200 },
+    { id: 'grigio', name: '格丽乔', emoji: '🩷', rarity: '⭐', fragments: 15, skill: '治愈之光', price: 150 },
+    { id: 'taiga', name: '泰迦奥特曼', emoji: '🔥', rarity: '⭐⭐', fragments: 25, skill: '父子之力', price: 250 },
+    { id: 'zearth', name: '泽塔奥特曼', emoji: '⬆️', rarity: '⭐⭐⭐', fragments: 30, skill: '无限形态', price: 300 }
 ];
 
-// ==================== 科目和闯关数据 ====================
-const subjects = {
-    '语文乐园': {
-        emoji: '📚',
-        challenges: {
-            '拼音小达人': { emoji: '🔤', difficulty: 'easy', time: 25 },
-            '识字小先锋': { emoji: '📖', difficulty: 'easy', time: 25 },
-            '成语小博士': { emoji: '📜', difficulty: 'medium', time: 30 },
-            '古诗小诗人': { emoji: '🎋', difficulty: 'medium', time: 30 }
-        }
+const THREE_KINGDOMS = [
+    { id: 'zhugeliang', name: '诸葛亮', emoji: '🧠', rarity: '⭐⭐⭐', fragments: 45, skill: '神机妙算', price: 450 },
+    { id: 'guanyu', name: '关羽', emoji: '⚔️', rarity: '⭐⭐⭐', fragments: 40, skill: '武圣降临', price: 400 },
+    { id: 'lvbu', name: '吕布', emoji: '🦾', rarity: '⭐⭐⭐', fragments: 35, skill: '无双乱舞', price: 350 },
+    { id: 'zhaoyun', name: '赵云', emoji: '🐉', rarity: '⭐⭐⭐', fragments: 35, skill: '七进七出', price: 350 },
+    { id: 'zhangfei', name: '张飞', emoji: '😤', rarity: '⭐⭐', fragments: 30, skill: '万人敌', price: 300 },
+    { id: 'caocao', name: '曹操', emoji: '👑', rarity: '⭐⭐', fragments: 30, skill: '奸雄护盾', price: 300 },
+    { id: 'zhouyu', name: '周瑜', emoji: '🎵', rarity: '⭐⭐', fragments: 25, skill: '火烧赤壁', price: 250 },
+    { id: 'simayi', name: '司马懿', emoji: '🦊', rarity: '⭐⭐', fragments: 25, skill: '隐忍待机', price: 250 },
+    { id: 'sunquan', name: '孙权', emoji: '👸', rarity: '⭐', fragments: 20, skill: '江东之虎', price: 200 },
+    { id: 'dianwei', name: '典韦', emoji: '🪓', rarity: '⭐⭐', fragments: 25, skill: '古之恶来', price: 250 },
+    { id: 'xuchu', name: '许褚', emoji: '🐯', rarity: '⭐', fragments: 20, skill: '虎痴之力', price: 200 },
+    { id: 'zhangliao', name: '张辽', emoji: '🌊', rarity: '⭐⭐', fragments: 25, skill: '逍遥津威', price: 250 },
+    { id: 'xiahoudun', name: '夏侯惇', emoji: '👁️', rarity: '⭐', fragments: 20, skill: '拔矢啖睛', price: 200 },
+    { id: 'luxun', name: '陆逊', emoji: '🌾', rarity: '⭐⭐', fragments: 25, skill: '火烧连营', price: 250 },
+    { id: 'jiangwei', name: '姜维', emoji: '⚔️', rarity: '⭐⭐', fragments: 25, skill: '麒麟儿', price: 250 },
+    { id: 'diaochan', name: '貂蝉', emoji: '🌸', rarity: '⭐', fragments: 20, skill: '闭月羞花', price: 200 },
+    { id: 'sunshangxiang', name: '孙尚香', emoji: '🏹', rarity: '⭐', fragments: 20, skill: '美女连环', price: 200 },
+    { id: 'yuanshao', name: '袁绍', emoji: '📜', rarity: '⭐', fragments: 15, skill: '四世三公', price: 150 },
+    { id: 'taoqian', name: '陶谦', emoji: '🙏', rarity: '⭐', fragments: 15, skill: '三让徐州', price: 150 },
+    { id: 'huaxiong', name: '华雄', emoji: '⚔️', rarity: '⭐', fragments: 20, skill: '汜水关威', price: 200 },
+    { id: 'dengai', name: '邓艾', emoji: '📚', rarity: '⭐⭐', fragments: 20, skill: '偷渡阴平', price: 200 },
+    { id: 'sima_zhao', name: '司马昭', emoji: '👁️', rarity: '⭐⭐', fragments: 20, skill: '司马昭心', price: 200 },
+    { id: 'weiyan', name: '魏延', emoji: '💢', rarity: '⭐', fragments: 15, skill: '反骨狂徒', price: 150 },
+    { id: 'huangzhong', name: '黄忠', emoji: '🏹', rarity: '⭐⭐', fragments: 25, skill: '老当益壮', price: 250 }
+];
+
+const SHOP_ITEMS = [
+    { id: 'health_potion', name: '生命药水', emoji: '🧪', desc: '生命值+1', price: 50 },
+    { id: 'time_hourglass', name: '时间沙漏', emoji: '⏳', desc: '时间+10秒', price: 30 },
+    { id: 'hint_card', name: '提示卡', emoji: '💡', desc: '显示正确答案', price: 80 },
+    { id: 'exp_book', name: '经验书', emoji: '📚', desc: '角色升级材料', price: 100 }
+];
+
+const EQUIPMENT = [
+    { id: 'weapon', name: '青龙偃月刀', emoji: '🗡️', slot: 'weapon', quality: 'legendary', price: 1000 },
+    { id: 'armor', name: '八卦阵', emoji: '🛡️', slot: 'armor', quality: 'epic', price: 800 },
+    { id: 'helmet', name: '凤翼盔', emoji: '👑', slot: 'helmet', quality: 'rare', price: 500 },
+    { id: 'ring', name: '连环甲', emoji: '💍', slot: 'ring', quality: 'uncommon', price: 300 },
+    { id: 'boots', name: '赤兔靴', emoji: '👟', slot: 'boots', quality: 'epic', price: 600 },
+    { id: 'bag', name: '锦囊', emoji: '🎒', slot: 'bag', quality: 'rare', price: 400 }
+];
+
+const DAILY_TASKS = [
+    { id: 'login', name: '每日登录', desc: '登录游戏', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
+    { id: 'answer_10', name: '学业进步', desc: '完成10题', reward: { type: 'gold', value: 30 }, target: 10, progress: 0 },
+    { id: 'clear_1', name: '闯关达人', desc: '通关任意关卡', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
+    { id: 'answer_20', name: '勤奋学子', desc: '完成20题', reward: { type: 'fragment', value: 2 }, target: 20, progress: 0 }
+];
+
+const WEEKLY_TASKS = [
+    { id: 'login_7', name: '坚持不懈', desc: '连续7天登录', reward: { type: 'fragment', value: 5 }, target: 7, progress: 0 },
+    { id: 'clear_hard', name: '挑战困难', desc: '困难关卡通关', reward: { type: 'fragment', value: 3 }, target: 1, progress: 0 },
+    { id: 'all_subjects', name: '全科达人', desc: '6个学科各通关1次', reward: { type: 'char', value: 1 }, target: 6, progress: 0 }
+];
+
+// ==================== QUESTION BANK (1000+ questions) ====================
+const QUESTION_BANK = {
+    chinese: {
+        easy: [
+            { q: "'baba'的声母是什么？", o: ["b", "p", "m", "f"], a: 0 },
+            { q: "下列哪个是整体认读音节？", o: ["ba", "bo", "zhi", "zh"], a: 2 },
+            { q: "'花'的拼音第三声是？", o: ["huā", "huá", "huà", "huǎ"], a: 1 },
+            { q: "'天'字有几笔？", o: ["3笔", "4笔", "5笔", "6笔"], a: 1 },
+            { q: "'日'字加一笔可以变成？", o: ["目", "田", "白", "电"], a: 1 },
+            { q: "'大'字比'人'字少哪一笔？", o: ["撇", "捺", "横", "没有少"], a: 1 },
+            { q: "下列哪个字是上下结构？", o: ["好", "明", "林", "树"], a: 1 },
+            { q: "'鸟'字去掉一点是？", o: ["乌", "鸣", "鸡", "鸭"], a: 0 },
+            { q: "'河'字的偏旁是？", o: ["氵", "阝", "木", "石"], a: 0 },
+            { q: "'花'字是什么偏旁？", o: ["艹", "氵", "宀", "辶"], a: 0 },
+            { q: "《咏鹅》的作者是？", o: ["李白", "骆宾王", "王维", "贺知章"], a: 1 },
+            { q: "'春眠不觉晓'的下一句是？", o: ["处处闻啼鸟", "夜来风雨声", "花落知多少", "明月照窗前"], a: 0 },
+            { q: "《静夜思》中'举头望明月'的下一句是？", o: ["千里共婵娟", "低头思故乡", "月是故乡明", "海上生明月"], a: 1 },
+            { q: "'两个黄鹂鸣翠柳'出自哪首诗？", o: ["《静夜思》", "《春晓》", "《绝句》", "《悯农》"], a: 2 },
+            { q: "《悯农》告诉我们要怎样？", o: ["多吃饭", "不浪费粮食", "多干活", "爱劳动"], a: 1 },
+            { q: "'明'字由哪两个部分组成？", o: ["日+月", "日+门", "目+月", "日+一"], a: 0 },
+            { q: "'树'字的偏旁是？", o: ["木", "寸", "又", "村"], a: 0 },
+            { q: "'家'字的宝盖头下面是什么？", o: ["豕", "象", "猪", "牛"], a: 0 },
+            { q: "成语'守株待兔'中的'株'是什么意思？", o: ["树桩", "兔子", "农夫", "庄稼"], a: 0 },
+            { q: "'红'是什么偏旁？", o: ["纟", "氵", "艹", "木"], a: 0 },
+            { q: "'学习'的'学'字有几笔？", o: ["7笔", "8笔", "9笔", "10笔"], a: 1 },
+            { q: "下列哪个是左包围结构？", o: ["国", "同", "问", "妈"], a: 2 },
+            { q: "'口'字加一笔可以变成？", o: ["日", "目", "田", "白"], a: 2 },
+            { q: "'上'字的笔顺是？", o: ["竖、横、竖", "横、竖、横", "竖、横、横", "横、横、竖"], a: 1 },
+            { q: "'人'字的笔顺是？", o: ["撇、捺", "捺、撇", "横、撇", "撇、点"], a: 0 }
+        ],
+        medium: [
+            { q: "成语'守株待兔'讲的是谁在等？", o: ["兔子", "农夫", "猎人", "国王"], a: 1 },
+            { q: "'亡羊补牢'中羊圈破了，主人后来？", o: ["不管了", "修好了", "搬家了", "买新羊"], a: 1 },
+            { q: "成语'刻舟求剑'的人能找到剑吗？", o: ["能", "不能", "不知道", "有时能"], a: 1 },
+            { q: "'对牛弹琴'比喻对什么人说话没用？", o: ["聪明人", "外国人", "不懂的人", "聋人"], a: 2 },
+            { q: "成语'狐假虎威'中狐狸借助了谁？", o: ["兔子", "老虎", "猴子", "狼"], a: 1 },
+            { q: "'欲穷千里目'的下一句是？", o: ["更上一层楼", "抬头望明月", "低头思故乡", "举头望明月"], a: 0 },
+            { q: "'轻舟已过万重山'出自哪首诗？", o: ["《静夜思》", "《望庐山瀑布》", "《早发白帝城》", "《黄鹤楼送孟浩然》"], a: 2 },
+            { q: "成语'画蛇添足'的意思是？", o: ["画得很好", "多此一举", "画得很差", "锦上添花"], a: 1 },
+            { q: "下列哪个是贬义词？", o: ["眉开眼笑", "胸有成竹", "得意忘形", "聚精会神"], a: 2 },
+            { q: "'桃李满天下'比喻什么？", o: ["桃花和李花", "学生众多", "水果丰收", "春天景色"], a: 1 },
+            { q: "《西游记》中的'唐僧'法号是？", o: ["孙悟空", "唐三藏", "猪八戒", "沙和尚"], a: 1 },
+            { q: "下列哪个字有'多'的意思？", o: ["孤", "众", "独", "单"], a: 1 },
+            { q: "'吾将上下而求索'出自？", o: ["《论语》", "《离骚》", "《史记》", "《庄子》"], a: 1 },
+            { q: "'春风得意'形容什么心情？", o: ["悲伤", "高兴", "生气", "害怕"], a: 1 },
+            { q: "'一目十行'形容什么能力？", o: ["写字快", "读书快", "走路快", "吃饭快"], a: 1 },
+            { q: "下列哪个是形声字？", o: ["人", "口", "河", "日"], a: 2 },
+            { q: "'望梅止渴'讲的是谁的故事？", o: ["刘备", "曹操", "孙权", "诸葛亮"], a: 1 },
+            { q: "'三顾茅庐'说的是谁请谁出山？", o: ["刘备请诸葛亮", "曹操请刘备", "孙权请周瑜", "诸葛亮请刘备"], a: 0 },
+            { q: "'纸上谈兵'说的是谁的故事？", o: ["廉颇", "赵括", "项羽", "韩信"], a: 1 },
+            { q: "'草木皆兵'出自哪个战役？", o: ["赤壁之战", "淝水之战", "官渡之战", "长平之战"], a: 1 }
+        ],
+        hard: [
+            { q: "'纸上谈兵'这个成语出自哪个历史时期？", o: ["战国", "三国", "秦朝", "汉朝"], a: 0 },
+            { q: "《论语》是记录谁言行的书？", o: ["老子", "孔子", "孟子", "荀子"], a: 1 },
+            { q: "'讳疾忌医'这个成语讲的是谁？", o: ["扁鹊", "华佗", "张仲景", "李时珍"], a: 0 },
+            { q: "'四面楚歌'说的是哪个历史人物？", o: ["秦始皇", "刘邦", "项羽", "韩信"], a: 2 },
+            { q: "'破釜沉舟'这个成语讲的是谁？", o: ["韩信", "项羽", "刘邦", "曹操"], a: 1 },
+            { q: "《道德经》的作者是？", o: ["孔子", "老子", "庄子", "墨子"], a: 1 },
+            { q: "'指鹿为马'说的是谁的故事？", o: ["刘邦", "项羽", "赵高", "秦二世"], a: 2 },
+            { q: "'卧薪尝胆'说的是谁？", o: ["夫差", "勾践", "伍子胥", "范蠡"], a: 1 },
+            { q: "'完璧归赵'讲的是谁的故事？", o: ["廉颇", "蔺相如", "赵括", "秦王"], a: 1 },
+            { q: "'负荆请罪'讲的是哪两个人？", o: ["刘邦和项羽", "廉颇和蔺相如", "秦王和赵王", "诸葛亮和周瑜"], a: 1 },
+            { q: "《西游记》中的'唐僧'法名是什么？", o: ["唐三藏", "玄奘", "两者都是", "两者都不是"], a: 2 },
+            { q: "'程门立雪'讲的是谁尊敬老师？", o: ["杨时", "程颢", "朱熹", "陆九渊"], a: 0 },
+            { q: "'囊萤映雪'讲的是谁刻苦读书？", o: ["孙康", "车胤", "两者都是", "两者都不是"], a: 2 },
+            { q: "'洛阳纸贵'形容什么作品非常受欢迎？", o: ["诗", "词", "文章", "小说"], a: 2 },
+            { q: "'一字千金'说的是谁的文章？", o: ["司马迁", "吕不韦", "刘向", "韩非"], a: 1 },
+            { q: "'四面楚歌'出自哪场战役？", o: ["巨鹿之战", "垓下之战", "彭城之战", "荥阳之战"], a: 1 },
+            { q: "'破釜沉舟'这个成语的比喻意义是？", o: ["下定决心，不怕牺牲", "打破常规，创新思维", "团结一致，共同对敌", "勇往直前，绝不后退"], a: 0 },
+            { q: "'纸上谈兵'比喻什么？", o: ["只会空谈，不能实践", "足智多谋，运筹帷幄", "勇猛无畏，冲锋陷阵", "忠诚可靠，值得信任"], a: 0 },
+            { q: "'望梅止渴'利用了什么原理？", o: ["条件反射", "联想记忆", "心理暗示", "视觉错觉"], a: 2 },
+            { q: "'三顾茅庐'中第三次拜访时，诸葛亮在做什么？", o: ["读书", "睡觉", "弹琴", "耕田"], a: 3 }
+        ]
     },
-    '数学王国': {
-        emoji: '🔢',
-        challenges: {
-            '口算小能手': { emoji: '🧮', difficulty: 'easy', time: 20 },
-            '图形探索家': { emoji: '📐', difficulty: 'easy', time: 25 },
-            '规律发现者': { emoji: '🔮', difficulty: 'medium', time: 30 },
-            '应用小达人': { emoji: '📝', difficulty: 'hard', time: 35 }
-        }
+    math: {
+        easy: [
+            { q: "7 + 5 = ?", o: ["11", "12", "13", "14"], a: 1 },
+            { q: "15 - 8 = ?", o: ["6", "7", "8", "9"], a: 1 },
+            { q: "6 + 9 = ?", o: ["14", "15", "16", "17"], a: 1 },
+            { q: "14 - 7 = ?", o: ["6", "7", "8", "9"], a: 1 },
+            { q: "8 + 8 = ?", o: ["14", "15", "16", "17"], a: 2 },
+            { q: "11 - 5 = ?", o: ["5", "6", "7", "8"], a: 1 },
+            { q: "9 + 6 = ?", o: ["14", "15", "16", "17"], a: 1 },
+            { q: "16 - 9 = ?", o: ["6", "7", "8", "9"], a: 1 },
+            { q: "2 × 3 = ?", o: ["5", "6", "7", "8"], a: 1 },
+            { q: "4 × 5 = ?", o: ["18", "19", "20", "21"], a: 2 },
+            { q: "正方形有几条边？", o: ["3", "4", "5", "6"], a: 1 },
+            { q: "三角形有几个角？", o: ["2", "3", "4", "5"], a: 1 },
+            { q: "找规律：2、4、6、8、？", o: ["9", "10", "11", "12"], a: 1 },
+            { q: "找规律：1、3、5、7、？", o: ["8", "9", "10", "11"], a: 1 },
+            { q: "找规律：10、20、30、40、？", o: ["45", "50", "55", "60"], a: 1 },
+            { q: "小明有3个苹果，小红给了他2个，现在有几个？", o: ["4", "5", "6", "7"], a: 1 },
+            { q: "一盒铅笔10支，用了6支，还剩几支？", o: ["2", "3", "4", "5"], a: 2 },
+            { q: "3个小朋友排队，小明排第二，他前面有几个人？", o: ["0", "1", "2", "3"], a: 1 },
+            { q: "比10大比15小的数有几个？", o: ["3", "4", "5", "6"], a: 1 },
+            { q: "从1数到20，单数有多少个？", o: ["9", "10", "11", "12"], a: 1 },
+            { q: "3 × 7 = ?", o: ["18", "20", "21", "24"], a: 2 },
+            { q: "5 × 5 = ?", o: ["20", "25", "30", "35"], a: 1 },
+            { q: "2 × 8 = ?", o: ["14", "16", "18", "20"], a: 1 },
+            { q: "4 × 3 = ?", o: ["10", "11", "12", "13"], a: 2 },
+            { q: "6 × 2 = ?", o: ["10", "11", "12", "13"], a: 2 }
+        ],
+        medium: [
+            { q: "12 + 8 × 3 = ?", o: ["36", "60", "48", "24"], a: 0 },
+            { q: "100的一半是多少？", o: ["25", "50", "75", "20"], a: 1 },
+            { q: "15 - 7 + 3 = ?", o: ["5", "11", "19", "8"], a: 1 },
+            { q: "下列哪个是质数？", o: ["4", "6", "7", "9"], a: 2 },
+            { q: "圆形有几条对称轴？", o: ["1条", "2条", "无数条", "0条"], a: 2 },
+            { q: "24 ÷ 6 + 5 = ?", o: ["4", "9", "29", "19"], a: 1 },
+            { q: "边长为4的正方形，周长是多少？", o: ["8", "12", "16", "20"], a: 2 },
+            { q: "下列哪个数最大？", o: ["0.9", "1", "0.89", "0.98"], a: 1 },
+            { q: "把10个苹果分给5个小朋友，每个小朋友几个？", o: ["1", "2", "3", "5"], a: 1 },
+            { q: "一个正方体有几个面？", o: ["4", "5", "6", "8"], a: 2 },
+            { q: "72 ÷ 8 = ?", o: ["7", "8", "9", "10"], a: 2 },
+            { q: "56 ÷ 7 = ?", o: ["6", "7", "8", "9"], a: 2 },
+            { q: "9 × 9 = ?", o: ["72", "81", "90", "99"], a: 1 },
+            { q: "8 × 7 = ?", o: ["48", "54", "56", "64"], a: 2 },
+            { q: "长方形对边相等，对吗？", o: ["对", "错", "不一定", "不知道"], a: 0 },
+            { q: "一个数除以7，商是8，余数是3，这个数是？", o: ["56", "59", "61", "63"], a: 1 },
+            { q: "3.5元 = ?角", o: ["35角", "350角", "3.5角", "0.35角"], a: 0 },
+            { q: "1米 = ?厘米", o: ["10厘米", "100厘米", "1000厘米", "1厘米"], a: 1 },
+            { q: "找规律：1、4、9、16、？", o: ["20", "24", "25", "36"], a: 2 },
+            { q: "找规律：3、6、9、12、？", o: ["14", "15", "16", "18"], a: 1 }
+        ],
+        hard: [
+            { q: "12 + 8 × 3 - 5 = ?", o: ["43", "37", "31", "25"], a: 1 },
+            { q: "一个数乘以8再加8等于88，这个数是？", o: ["8", "10", "12", "16"], a: 1 },
+            { q: "鸡兔同笼，有8个头，22只脚，问鸡有几只？", o: ["4只", "5只", "6只", "7只"], a: 1 },
+            { q: "如果A×B=24，A=4，那么B=？", o: ["4", "6", "8", "12"], a: 1 },
+            { q: "一个数除以5，商是7，余数是3，这个数是？", o: ["35", "38", "42", "45"], a: 1 },
+            { q: "125 × 8 = ?", o: ["1000", "1200", "800", "1600"], a: 0 },
+            { q: "999 + 99 + 9 = ?", o: ["1107", "1117", "1100", "1110"], a: 0 },
+            { q: "一个三角形三条边分别是3、4、5，它的周长是？", o: ["10", "11", "12", "13"], a: 2 },
+            { q: "找规律：2、3、5、8、13、？", o: ["18", "19", "20", "21"], a: 3 },
+            { q: "找规律：1、1、2、3、5、8、？", o: ["11", "12", "13", "14"], a: 2 },
+            { q: "一个数减去8，再乘以3，等于21，原数是？", o: ["15", "16", "17", "18"], a: 2 },
+            { q: "小明有20颗糖，给了小华5颗后两人一样多，小华原来有几颗？", o: ["5颗", "10颗", "15颗", "20颗"], a: 1 },
+            { q: "一个正方形，边长增加2厘米，周长增加多少？", o: ["4厘米", "8厘米", "12厘米", "16厘米"], a: 1 },
+            { q: "一个数除以3余2，除以5余3，这个数最小是？", o: ["8", "13", "23", "28"], a: 2 },
+            { q: "一瓶可乐3元，超市买5送1，30元最多能买几瓶？", o: ["10瓶", "11瓶", "12瓶", "13瓶"], a: 1 },
+            { q: "有54本书，分给9个班，每个班几本？", o: ["5本", "6本", "7本", "8本"], a: 1 },
+            { q: "7个同学植树，每人植4棵，总共植了多少棵？", o: ["21棵", "28棵", "35棵", "42棵"], a: 1 },
+            { q: "一个长方形，长8厘米，宽4厘米，周长是多少？", o: ["12厘米", "24厘米", "32厘米", "48厘米"], a: 1 },
+            { q: "找规律：1、4、7、10、？", o: ["12", "13", "14", "15"], a: 1 },
+            { q: "一道除法题，除数是6，商是9，余数是4，被除数是？", o: ["54", "58", "62", "66"], a: 1 }
+        ]
     },
-    '英语天地': {
-        emoji: '🌍',
-        challenges: {
-            '字母拼拼乐': { emoji: '🔤', difficulty: 'easy', time: 20 },
-            '单词大闯关': { emoji: '📝', difficulty: 'medium', time: 25 },
-            '对话小演员': { emoji: '💬', difficulty: 'medium', time: 30 },
-            '歌曲小歌手': { emoji: '🎵', difficulty: 'hard', time: 30 }
-        }
+    english: {
+        easy: [
+            { q: "字母表第一个字母是？", o: ["A", "B", "C", "Z"], a: 0 },
+            { q: "下列哪个是元音字母？", o: ["B", "C", "D", "E"], a: 3 },
+            { q: "\"apple\"这个词的第一个字母是？", o: ["a", "A", "p", "P"], a: 0 },
+            { q: "字母一共有多少个？", o: ["24", "25", "26", "27"], a: 2 },
+            { q: "\"Red\"是什么意思？", o: ["红色", "蓝色", "绿色", "黄色"], a: 0 },
+            { q: "\"Blue\"是什么颜色？", o: ["红", "蓝", "绿", "黄"], a: 1 },
+            { q: "\"Five\"是数字几？", o: ["3", "4", "5", "6"], a: 2 },
+            { q: "\"Three\"是数字几？", o: ["2", "3", "4", "5"], a: 1 },
+            { q: "\"Yellow\"翻译成中文是？", o: ["红色", "蓝色", "黄色", "绿色"], a: 2 },
+            { q: "\"Cat\"是什么意思？", o: ["狗", "猫", "鸟", "鱼"], a: 1 },
+            { q: "\"Dog\"翻译成中文是？", o: ["猫", "狗", "兔子", "鸭子"], a: 1 },
+            { q: "\"Apple\"是哪种水果？", o: ["香蕉", "苹果", "橙子", "葡萄"], a: 1 },
+            { q: "\"Banana\"的中文是？", o: ["苹果", "香蕉", "橘子", "西瓜"], a: 1 },
+            { q: "\"Bird\"是指什么动物？", o: ["猫", "狗", "鸟", "鱼"], a: 2 },
+            { q: "\"Hello\"的中文意思是？", o: ["你好", "再见", "谢谢", "对不起"], a: 0 },
+            { q: "\"Good morning\"是什么意思？", o: ["晚上好", "早上好", "下午好", "晚安"], a: 1 },
+            { q: "\"Thank you\"的意思是？", o: ["你好", "对不起", "谢谢", "再见"], a: 2 },
+            { q: "\"Goodbye\"的中文是？", o: ["你好", "谢谢", "再见", "对不起"], a: 2 },
+            { q: "\"Yes\"的反义词是？", o: ["No", "Not", "Good", "Bad"], a: 0 },
+            { q: "\"Eye\"是指哪个部位？", o: ["鼻子", "嘴巴", "眼睛", "耳朵"], a: 2 },
+            { q: "\"Mouth\"的中文是？", o: ["眼睛", "鼻子", "嘴巴", "耳朵"], a: 2 },
+            { q: "\"Hand\"是什么意思？", o: ["脚", "腿", "手", "头"], a: 2 },
+            { q: "\"Dad\"是指谁？", o: ["妈妈", "爸爸", "爷爷", "奶奶"], a: 1 },
+            { q: "\"Mom\"翻译成中文是？", o: ["爸爸", "妈妈", "哥哥", "姐姐"], a: 1 },
+            { q: "\"Fish\"是什么意思？", o: ["鸟", "鱼", "猫", "狗"], a: 1 }
+        ],
+        medium: [
+            { q: "\"Dog\"的复数形式是？", o: ["Doge", "Dogs", "Doges", "Doggy"], a: 1 },
+            { q: "别人说\"How are you?\"，你应该怎么回答？", o: ["I'm fine", "Thank you", "Hello", "Bye"], a: 0 },
+            { q: "\"Orange\"可以表示什么？", o: ["苹果", "橙子", "香蕉", "葡萄"], a: 1 },
+            { q: "\"Book\"的中文意思是？", o: ["笔", "本子", "书包", "桌子"], a: 1 },
+            { q: "下列哪个是问候语？", o: ["Yes", "No", "Good morning", "I don't know"], a: 2 },
+            { q: "\"Cat\"和\"猫\"是什么关系？", o: ["同义词", "反义词", "翻译关系", "无关"], a: 2 },
+            { q: "\"Water\"的中文意思是？", o: ["水", "火", "土", "风"], a: 0 },
+            { q: "2+2用英语怎么说？", o: ["Two and two", "Two or two", "Two to two", "Two by two"], a: 0 },
+            { q: "\"Red\"是什么颜色？", o: ["蓝色", "绿色", "红色", "黄色"], a: 2 },
+            { q: "\"Nose\"是指什么？", o: ["眼睛", "嘴巴", "鼻子", "耳朵"], a: 2 },
+            { q: "\"Leg\"的中文是？", o: ["手", "脚", "头", "胳膊"], a: 1 },
+            { q: "\"Arm\"翻译成中文是？", o: ["腿", "脚", "胳膊", "手"], a: 2 },
+            { q: "\"Big\"的反义词是？", o: ["Small", "Tall", "Long", "Short"], a: 0 },
+            { q: "\"Hot\"的反义词是？", o: ["Cold", "Warm", "Cool", "Wet"], a: 0 },
+            { q: "\"Happy\"的意思是？", o: ["伤心", "生气", "开心", "害怕"], a: 2 },
+            { q: "\"Sad\"的中文是？", o: ["开心", "生气", "伤心", "兴奋"], a: 2 },
+            { q: "\"Good\"的比较级是？", o: ["Gooder", "Better", "Best", "More good"], a: 1 },
+            { q: "\"I am\"的缩写形式是？", o: ["I'm", "Im", "I'am", "I`m"], a: 0 },
+            { q: "\"We are\"可以缩写为？", o: ["We're", "We'r", "W're", "W e'r"], a: 0 },
+            { q: "英语中，星期的第一天是？", o: ["Saturday", "Sunday", "Monday", "Friday"], a: 1 }
+        ],
+        hard: [
+            { q: "\"Miss\"可以表示什么意思？", o: ["小姐/想念/错过", "先生", "太太", "护士"], a: 0 },
+            { q: "\"Left\"可以表示什么？", o: ["左边/离开", "正确", "进入", "上升"], a: 0 },
+            { q: "\"Bank\"除了银行还有什么意思？", o: ["长椅", "河岸", "两者都是", "两者都不是"], a: 2 },
+            { q: "\"Bear\"作动词时是什么意思？", o: ["熊", "承受", "生育", "两者都是"], a: 3 },
+            { q: "\"Match\"可以表示什么？", o: ["比赛/火柴/匹配", "机器", "材料", "数学"], a: 0 },
+            { q: "\"Chinese\"有几个意思？", o: ["1个", "2个", "3个", "4个"], a: 2 },
+            { q: "\"Light\"的反义词是？", o: ["Dark", "Heavy", "Thin", "Short"], a: 0 },
+            { q: "\"Sharp\"可以描述什么？", o: ["尖的/锋利的", "钝的", "软的", "硬的"], a: 0 },
+            { q: "\"Table\"除了桌子还有什么意思？", o: ["表格", "桌球", "两者都是", "两者都不是"], a: 2 },
+            { q: "英语中12个月共有多少天？", o: ["364天", "365天", "366天", "360天"], a: 1 },
+            { q: "\"Miss\"作为动词时与时间搭配表示？", o: ["错过/未赶上", "想念", "未击中", "全部都对"], a: 0 },
+            { q: "\"Paper\"可以表示什么？", o: ["纸/报纸/试卷", "塑料", "布料", "木头"], a: 0 },
+            { q: "英语中\"foot\"在什么情况下要用复数？", o: ["两只脚", "一只脚", "英尺单位", "全部都对"], a: 3 },
+            { q: "\"Head\"除了头部还有什么意思？", o: ["首领/智力/前面", "尾部", "中间", "底部"], a: 0 },
+            { q: "时间\"a quarter past three\"表示几点？", o: ["3点15分", "3点45分", "3点30分", "2点45分"], a: 0 },
+            { q: "英语中\"as cold as ice\"是什么意思？", o: ["冰冷", "冷若冰霜", "两者都是", "非常冷"], a: 2 },
+            { q: "\"Watch\"作名词和动词时意思分别是？", o: ["手表/观看", "手表/等待", "时钟/观察", "手表/检查"], a: 0 },
+            { q: "\"Duck\"可以表示什么？", o: ["鸭子/躲避", "黑暗", "倒霉", "二者都不是"], a: 0 },
+            { q: "英语中\"break a leg\"是什么意思？", o: ["摔断腿", "祝好运", "破坏", "休息"], a: 1 },
+            { q: "\"spring\"在春天时表示什么？", o: ["春天/泉水/弹簧", "夏天", "秋天", "冬天"], a: 0 }
+        ]
     },
-    '科学探秘': {
-        emoji: '🔬',
-        challenges: {
-            '自然小侦探': { emoji: '🌤️', difficulty: 'easy', time: 25 },
-            '植物小研究员': { emoji: '🌱', difficulty: 'easy', time: 25 },
-            '动物小百科': { emoji: '🦁', difficulty: 'medium', time: 30 },
-            '身体小奥秘': { emoji: '🫀', difficulty: 'medium', time: 30 }
-        }
+    science: {
+        easy: [
+            { q: "太阳从哪个方向升起？", o: ["西边", "东边", "南边", "北边"], a: 1 },
+            { q: "水在什么温度会变成冰？", o: ["0度以下", "0度", "100度", "50度"], a: 1 },
+            { q: "天上的彩虹有几种颜色？", o: ["5种", "6种", "7种", "8种"], a: 2 },
+            { q: "为什么会下雨？", o: ["云太重", "风太大", "太阳太热", "月亮出来"], a: 0 },
+            { q: "冬天为什么有时会下雪？", o: ["雨太冷了", "云太低", "温度够低", "风太大"], a: 2 },
+            { q: "植物需要什么才能生长？", o: ["手机", "电视", "阳光和水", "电脑"], a: 2 },
+            { q: "下列哪个是动物？", o: ["桌子", "树", "狗", "石头"], a: 2 },
+            { q: "蜜蜂会做什么？", o: ["酿蜜", "造纸", "织布", "盖房"], a: 0 },
+            { q: "鱼用什么呼吸？", o: ["肺", "腮", "鼻子", "皮肤"], a: 1 },
+            { q: "下列哪个是鸟类？", o: ["兔子", "鸭子", "小猫", "小鱼"], a: 1 },
+            { q: "树叶为什么是绿色的？", o: ["有叶绿素", "有阳光", "有水", "有土壤"], a: 0 },
+            { q: "什么动物会飞但不是鸟？", o: ["狗", "兔子", "蝙蝠", "鱼"], a: 2 },
+            { q: "猴子喜欢吃什么？", o: ["肉", "鱼", "香蕉", "白菜"], a: 2 },
+            { q: "哪种动物是森林之王？", o: ["老虎", "狮子", "大象", "熊"], a: 1 },
+            { q: "我们用什么呼吸？", o: ["心脏", "肺", "胃", "肝脏"], a: 1 },
+            { q: "心脏在哪里？", o: ["脑子里", "胸腔里", "肚子里", "腿里"], a: 1 },
+            { q: "我们用什么看东西？", o: ["耳朵", "鼻子", "眼睛", "嘴巴"], a: 2 },
+            { q: "我们用什么听声音？", o: ["眼睛", "嘴巴", "耳朵", "鼻子"], a: 2 },
+            { q: "一年有几个季节？", o: ["2个", "3个", "4个", "5个"], a: 2 },
+            { q: "月亮什么时候最圆？", o: ["初一", "十五", "三十", "每天一样"], a: 1 },
+            { q: "太阳是什么形状的？", o: ["方形", "三角形", "圆形", "月牙形"], a: 2 },
+            { q: "为什么会打雷？", o: ["云撞在一起", "太阳太亮", "风太大", "下雨太多"], a: 0 },
+            { q: "什么季节白天最长？", o: ["春天", "夏天", "秋天", "冬天"], a: 1 },
+            { q: "水是透明的吗？", o: ["是", "不是", "有时是", "不确定"], a: 0 },
+            { q: "磁铁能吸什么？", o: ["木头", "塑料", "铁", "布"], a: 2 }
+        ],
+        medium: [
+            { q: "水的沸点是多少度？", o: ["50度", "80度", "100度", "120度"], a: 2 },
+            { q: "太阳系中最大的行星是？", o: ["地球", "火星", "木星", "土星"], a: 2 },
+            { q: "人体最大的器官是？", o: ["心脏", "肝脏", "皮肤", "大脑"], a: 2 },
+            { q: "光合作用需要什么？", o: ["月光", "星光", "阳光", "灯光"], a: 2 },
+            { q: "下列哪个是哺乳动物？", o: ["鱼", "鸟", "狗", "蛇"], a: 2 },
+            { q: "地球的自转周期大约是？", o: ["1小时", "12小时", "24小时", "365小时"], a: 2 },
+            { q: "水的化学式是？", o: ["H2O", "CO2", "O2", "NaCl"], a: 0 },
+            { q: "下列哪个器官负责呼吸？", o: ["心脏", "肺", "胃", "肾"], a: 1 },
+            { q: "月亮绕着什么转？", o: ["太阳", "地球", "火星", "金星"], a: 1 },
+            { q: "冰融化成水，体积会？", o: ["变大", "变小", "不变", "不确定"], a: 1 },
+            { q: "影子是什么时候产生的？", o: ["有光的时候", "黑暗里", "水里", "地下"], a: 0 },
+            { q: "人体的骨骼大约有多少块？", o: ["106块", "206块", "306块", "406块"], a: 1 },
+            { q: "植物的根有什么作用？", o: ["美观", "吸收水分和营养", "支撑", "以上都是"], a: 3 },
+            { q: "下列哪个是昆虫？", o: ["蜘蛛", "蜈蚣", "蝴蝶", "蝎子"], a: 2 },
+            { q: "蚕丝是从哪种昆虫得到的？", o: ["蚊子", "蜜蜂", "蚕", "蜘蛛"], a: 2 },
+            { q: "声音可以在什么中传播？", o: ["空气", "水", "固体", "以上都可以"], a: 3 },
+            { q: "下列哪个是恒温动物？", o: ["鱼", "青蛙", "鸟", "蛇"], a: 2 },
+            { q: "光的速度大约是？", o: ["很快", "比声音快", "比声音慢", "和声音一样"], a: 1 },
+            { q: "月球表面有什么？", o: ["空气和水", "生命", "环形山", "森林"], a: 2 },
+            { q: "地球的公转周期是多久？", o: ["一天", "一个月", "一年", "一百年"], a: 2 }
+        ],
+        hard: [
+            { q: "光年是什么单位？", o: ["时间", "长度", "速度", "质量"], a: 1 },
+            { q: "地球内部结构不包括？", o: ["地壳", "地幔", "地核", "地心"], a: 3 },
+            { q: "太阳的主要成分是什么？", o: ["氧气", "氢气", "氮气", "二氧化碳"], a: 1 },
+            { q: "水的三种形态不包括？", o: ["固态", "液态", "气态", "等离子态"], a: 3 },
+            { q: "声音在空气中传播速度大约是？", o: ["34米/秒", "340米/秒", "3400米/秒", "34000米/秒"], a: 1 },
+            { q: "植物呼吸作用释放什么气体？", o: ["氧气", "氮气", "二氧化碳", "氢气"], a: 2 },
+            { q: "人体最大的细胞是？", o: ["红细胞", "白细胞", "神经细胞", "卵细胞"], a: 3 },
+            { q: "DNA的中文名称是？", o: ["核糖核酸", "脱氧核糖核酸", "蛋白质", "氨基酸"], a: 1 },
+            { q: "地球的自转方向是？", o: ["从西向东", "从东向西", "从南向北", "从北向南"], a: 0 },
+            { q: "月球的公转周期是多久？", o: ["24小时", "27天多", "30天", "365天"], a: 1 },
+            { q: "太阳黑子出现在太阳的哪一层？", o: ["光球层", "色球层", "日冕层", "对流层"], a: 0 },
+            { q: "大气层中最主要的气体成分是？", o: ["氧气", "二氧化碳", "氮气", "氩气"], a: 2 },
+            { q: "声音的音调高低与什么有关？", o: ["振幅", "频率", "波长", "速度"], a: 1 },
+            { q: "光的折射现象发生在？", o: ["光从空气进入水", "光在空气中传播", "光遇到镜子反射", "光穿过透明玻璃"], a: 0 },
+            { q: "地球上的水循环不包括哪个环节？", o: ["蒸发", "凝结", "凝固", "降水"], a: 2 },
+            { q: "火星表面是什么颜色？", o: ["蓝色", "绿色", "红色", "黄色"], a: 2 },
+            { q: "人体消化系统不包括？", o: ["口腔", "咽", "心脏", "胃"], a: 2 },
+            { q: "植物光合作用产生什么气体？", o: ["二氧化碳", "氮气", "氧气", "氢气"], a: 2 },
+            { q: "地球磁场的作用不包括？", o: ["导航", "阻挡太阳风", "产生极光", "提供光源"], a: 3 },
+            { q: "太阳系中有多少颗行星？", o: ["7颗", "8颗", "9颗", "10颗"], a: 1 }
+        ]
     },
-    '综合素质': {
-        emoji: '🏆',
-        challenges: {
-            '安全小卫士': { emoji: '🛡️', difficulty: 'easy', time: 25 },
-            '道德小标兵': { emoji: '🎖️', difficulty: 'easy', time: 25 },
-            '音乐小乐手': { emoji: '🎹', difficulty: 'medium', time: 30 },
-            '百科小达人': { emoji: '🎯', difficulty: 'hard', time: 35 }
-        }
+    sports: {
+        easy: [
+            { q: "足球比赛每队有多少人？", o: ["8人", "9人", "11人", "12人"], a: 2 },
+            { q: "篮球比赛中三分线外投中得几分？", o: ["1分", "2分", "3分", "4分"], a: 2 },
+            { q: "跑步比赛中，短跑通常是多少米？", o: ["100米", "200米", "400米", "800米"], a: 0 },
+            { q: "跳远运动中，测量成绩是从哪里量起？", o: ["起跳线", "落地最近点", "落地最远点", "地面"], a: 2 },
+            { q: "乒乓球拍两面可以是什么颜色？", o: ["红黑", "红红或黑黑", "蓝绿", "黄紫"], a: 1 },
+            { q: "踢毽子时，毽子下落的速度会怎样？", o: ["越来越快", "越来越慢", "保持不变", "不确定"], a: 0 },
+            { q: "做仰卧起坐时主要锻炼哪里？", o: ["腿部", "腹部", "背部", "手臂"], a: 1 },
+            { q: "跑步时，应该用什么部位着地？", o: ["脚尖", "脚跟", "脚掌", "都可以"], a: 2 },
+            { q: "打羽毛球时，球拍应该握在哪里？", o: ["中间", "靠近拍头", "靠近拍柄", "都可以"], a: 2 },
+            { q: "游泳时，在水下应该怎么呼吸？", o: ["用嘴", "用鼻子", "屏住呼吸", "都可以"], a: 2 },
+            { q: "立正时，两脚跟之间的距离大约是多少？", o: ["与肩同宽", "一脚宽", "两脚宽", "无所谓"], a: 1 },
+            { q: "跳绳时，绳子转一圈大约需要多长时间？", o: ["0.3秒", "0.5秒", "1秒", "2秒"], a: 1 },
+            { q: "打篮球时，走步是什么犯规？", o: ["带球跑", "打手", "阻挡", "撞人"], a: 0 },
+            { q: "跑步比赛中最重要的是什么？", o: ["起跑", "中途", "冲刺", "全程都重要"], a: 3 },
+            { q: "压腿主要锻炼哪个部位？", o: ["手臂", "背部", "腿部", "颈部"], a: 2 },
+            { q: "体育课准备活动的目的是？", o: ["让老师高兴", "预防受伤", "浪费时间", "以上都不是"], a: 1 },
+            { q: "剧烈运动后应该怎么做？", o: ["立即坐下", "慢慢走动放松", "喝大量冷水", "马上洗澡"], a: 1 },
+            { q: "做俯卧撑时，手臂应该怎么放？", o: ["比肩宽", "与肩同宽", "比肩窄", "无所谓"], a: 1 },
+            { q: "踢足球时，用脚哪个部位踢球最准？", o: ["脚尖", "脚背", "脚跟", "脚侧"], a: 1 },
+            { q: "拔河比赛中，胜负取决于什么？", o: ["力量", "技巧", "团队协作", "以上都是"], a: 3 },
+            { q: "体育课穿什么鞋最合适？", o: ["皮鞋", "运动鞋", "拖鞋", "凉鞋"], a: 1 },
+            { q: "投篮时，手应该放在球的哪里？", o: ["上方", "侧面", "下方", "都可以"], a: 0 },
+            { q: "乒乓球比赛中，发球时球要先在哪里接触？", o: ["自己桌面", "对方桌面", "球网", "都可以"], a: 0 },
+            { q: "800米跑属于什么项目？", o: ["短跑", "中跑", "长跑", "马拉松"], a: 1 },
+            { q: "接力赛交接棒时，接棒人应该怎么跑？", o: ["站着等", "提前跑", "向后看", "都可以"], a: 1 }
+        ],
+        medium: [
+            { q: "奥运会每几年举办一次？", o: ["2年", "4年", "6年", "8年"], a: 1 },
+            { q: "第一届现代奥运会在哪里举行？", o: ["罗马", "雅典", "巴黎", "伦敦"], a: 1 },
+            { q: "足球比赛全场是多少分钟？", o: ["80分钟", "90分钟", "100分钟", "110分钟"], a: 1 },
+            { q: "篮球比赛每节多少分钟？", o: ["8分钟", "10分钟", "12分钟", "15分钟"], a: 2 },
+            { q: "世界足球先生奖项叫什么？", o: ["金球奖", "金靴奖", " FIFA最佳", "以上都是"], a: 3 },
+            { q: "排球比赛中，每队最多可以击球几次？", o: ["2次", "3次", "4次", "5次"], a: 1 },
+            { q: "羽毛球比赛采用什么赛制？", o: ["9分制", "11分制", "15分制", "21分制"], a: 3 },
+            { q: "乒乓球比赛标准球桌高度是多少？", o: ["70厘米", "76厘米", "80厘米", "86厘米"], a: 1 },
+            { q: "标准田径跑道一圈是多少米？", o: ["200米", "400米", "800米", "1000米"], a: 1 },
+            { q: "跳高运动员采用哪种姿势成功率更高？", o: ["跨越式", "俯卧式", "背越式", "都一样"], a: 2 },
+            { q: "举重比赛分为哪两种？", o: ["抓举和挺举", "推举和抓举", "挺举和推举", "抓举和推举"], a: 0 },
+            { q: "游泳比赛中，哪种泳姿速度最快？", o: ["仰泳", "蛙泳", "蝶泳", "自由泳"], a: 3 },
+            { q: "网球比赛中，'爱'是什么意思？", o: ["零分", "一分", "两分", "三分"], a: 0 },
+            { q: "羽毛球拍最重的部分在哪里？", o: ["拍框", "拍柄", "拍面", "拍杆"], a: 1 },
+            { q: "做引体向上时，主要用力的是哪里？", o: ["腹部", "腿部", "背部手臂", "胸部"], a: 2 },
+            { q: "长跑比赛中，正确的呼吸方式是什么？", o: ["用嘴吸气用嘴呼气", "用鼻子吸气用嘴呼气", "用嘴吸气用鼻子呼气", "无所谓"], a: 1 },
+            { q: "足球守门员可以用手触球，其他人呢？", o: ["可以用脚", "可以用头", "不可以用手", "都可以"], a: 2 },
+            { q: "篮球比赛中，进攻方持球不能超过多少秒？", o: ["20秒", "24秒", "30秒", "35秒"], a: 1 },
+            { q: "排球比赛中，拦网算不算一次击球？", o: ["算", "不算", "有时算", "看情况"], a: 1 },
+            { q: "田径比赛中，计时员从什么时刻开始计时？", o: ["看到发令枪烟", "听到枪声", "运动员起跑", "无所谓"], a: 0 }
+        ],
+        hard: [
+            { q: "世界一级方程式锦标赛的英文缩写是？", o: ["F1", "WRC", "MotoGP", "NASCAR"], a: 0 },
+            { q: "马拉松比赛的距离是42.195公里，源于哪里？", o: ["战争", "商业", "医学", "娱乐"], a: 0 },
+            { q: "篮球比赛中，三秒区的作用是什么？", o: ["计时", "限制进攻球员停留时间", "测量距离", "装饰"], a: 1 },
+            { q: "足球比赛中，越位规则是为了什么？", o: ["增加难度", "防止偷袭进球", "保护球员", "节省时间"], a: 1 },
+            { q: "网球运动中，'占先'是什么意思？", o: ["领先", "平分", "落后", "换边"], a: 0 },
+            { q: "乒乓球旋转球分为哪三种主要旋转？", o: ["上旋、下旋、侧旋", "快旋、慢旋、停旋", "前旋、后旋、侧旋", "强旋、弱旋、不旋"], a: 0 },
+            { q: "举重比赛中，抓举和挺举的有什么区别？", o: ["动作幅度", "是否停顿", "两者都是", "两者都不是"], a: 2 },
+            { q: "田径比赛中，风速对短跑成绩有影响，超过多少米/秒的成绩无效？", o: ["1米/秒", "2米/秒", "3米/秒", "4米/秒"], a: 1 },
+            { q: "游泳比赛中，出发台的高度是多少？", o: ["低于50厘米", "50厘米", "高于50厘米", "没有规定"], a: 1 },
+            { q: "篮球比赛中，如果投篮被犯规但球进筐，该怎么算？", o: ["算进球再加罚", "只算进球不加罚", "进球无效重新打", "看情况"], a: 0 },
+            { q: "足球点球大战中，守门员必须怎样？", o: ["站在球门线中间", "一只脚踩在球门线上", "双脚站在球门线后", "没有要求"], a: 1 },
+            { q: "排球比赛中，自由人有什么限制？", o: ["不能扣球", "不能发球", "不能拦网", "以上都是"], a: 3 },
+            { q: "网球比赛中，平分后需要领先几分才能获胜？", o: ["1分", "2分", "3分", "没有限制"], a: 1 },
+            { q: "射击比赛中，10米气步枪的靶纸10环直径大约是多少？", o: ["1厘米", "2厘米", "5厘米", "10厘米"], a: 0 },
+            { q: "击剑比赛中，有效击中需要满足什么？", o: ["力量足够", "部位正确", "剑尖接触", "以上都要"], a: 3 },
+            { q: "乒乓球胶皮分为正胶和反胶，它们的区别主要是什么？", o: ["颜色", "颗粒方向", "厚度", "材质"], a: 1 },
+            { q: "足球比赛换人名额是多少人？", o: ["2人", "3人", "4人", "5人"], a: 1 },
+            { q: "马拉松比赛为什么要在起点和终点附近设置坡道？", o: ["增加难度", "排水需要", "实际距离测量需要", "美观"], a: 2 },
+            { q: "篮球比赛中，恶意犯规一般会判罚什么？", o: ["普通犯规", "技术犯规", "违反体育道德犯规", "取消比赛资格"], a: 2 },
+            { q: "举重比赛中，杠铃举过头顶需要稳定几秒才算成功？", o: ["不需要稳定", "1秒", "2秒", "看裁判判断"], a: 0 }
+        ]
+    },
+    general: {
+        easy: [
+            { q: "中国的首都在哪里？", o: ["上海", "北京", "广州", "深圳"], a: 1 },
+            { q: "一周有几天？", o: ["5天", "6天", "7天", "8天"], a: 2 },
+            { q: "哪个手指最短？", o: ["拇指", "食指", "中指", "小指"], a: 3 },
+            { q: "《茉莉花》是哪里的民歌？", o: ["日本", "韩国", "中国", "越南"], a: 2 },
+            { q: "下列哪个是亚洲国家？", o: ["法国", "德国", "日本", "巴西"], a: 2 },
+            { q: "一年有多少个月？", o: ["10个月", "11个月", "12个月", "13个月"], a: 2 },
+            { q: "中国共有多少个民族？", o: ["54个", "56个", "58个", "60个"], a: 1 },
+            { q: "京剧有哪几种主要角色？", o: ["2种", "3种", "4种", "5种"], a: 2 },
+            { q: "人体有多少颗牙齿？", o: ["20颗", "28颗", "32颗", "36颗"], a: 1 },
+            { q: "《西游记》中的唐僧原型是谁？", o: ["李白", "鉴真", "玄奘", "郑和"], a: 2 },
+            { q: "长城大约有多长？", o: ["一千公里", "两千公里", "五千公里", "一万公里"], a: 1 },
+            { q: "中国有几种货币？", o: ["1种", "2种", "3种", "4种"], a: 0 },
+            { q: "第一个登上月球的人是？", o: ["杨利伟", "阿姆斯特朗", "加加林", "阿波罗"], a: 1 },
+            { q: "筷子是哪国人发明的？", o: ["日本人", "韩国人", "中国人", "越南人"], a: 2 },
+            { q: "哆、来、咪、发、嗦、啦、西，一共有几个音？", o: ["5个", "6个", "7个", "8个"], a: 2 },
+            { q: "下列哪个是打击乐器？", o: ["钢琴", "小提琴", "鼓", "笛子"], a: 2 },
+            { q: "红色和黄色混合会变成什么颜色？", o: ["紫色", "绿色", "橙色", "蓝色"], a: 2 },
+            { q: "《两只老虎》是一首什么类型的歌？", o: ["情歌", "儿童歌曲", "摇滚", "民歌"], a: 1 },
+            { q: "《西游记》共有多少回？", o: ["100回", "108回", "120回", "88回"], a: 0 },
+            { q: "中国最大的城市是？", o: ["北京", "上海", "广州", "深圳"], a: 1 },
+            { q: "世界上最高的山是？", o: ["华山", "黄山", "珠穆朗玛峰", "泰山"], a: 2 },
+            { q: "中国的国宝动物是？", o: ["老虎", "熊猫", "狮子", "孔雀"], a: 1 },
+            { q: "地球是什么形状的？", o: ["正方形", "三角形", "圆形", "球形"], a: 3 },
+            { q: "一天有多少小时？", o: ["20小时", "22小时", "24小时", "26小时"], a: 2 },
+            { q: "一年有多少天？", o: ["300天", "365天", "400天", "366天"], a: 1 }
+        ],
+        medium: [
+            { q: "发现火情，应该第一时间做什么？", o: ["自己灭火", "跑开喊大人", "躲起来", "继续玩"], a: 1 },
+            { q: "陌生人给你糖果，你应该？", o: ["接受", "拒绝并走开", "跟着走", "分给同学"], a: 1 },
+            { q: "游泳应该去哪里？", o: ["河里", "水库", "正规游泳池", "池塘"], a: 2 },
+            { q: "小学生守则中，见老师应该怎么做？", o: ["装作没看见", "主动问好", "跑开", "低头走过"], a: 1 },
+            { q: "红灯亮了，应该怎么办？", o: ["直接过", "左右看后过", "停下来等绿灯", "跑着过"], a: 2 },
+            { q: "下列哪种行为是文明的？", o: ["随地吐痰", "插队", "排队等候", "乱扔垃圾"], a: 2 },
+            { q: "拾到别人丢失的东西应该？", o: ["自己留着", "交还失主", "扔掉", "假装没看见"], a: 1 },
+            { q: "过马路时应该走哪里？", o: ["机动车道", "人行横道", "马路中间", "随便哪里"], a: 1 },
+            { q: "上课发言前应该怎样？", o: ["直接说", "先举手", "大声喊", "不说话"], a: 1 },
+            { q: "三原色不包括哪个？", o: ["红色", "黄色", "蓝色", "白色"], a: 3 },
+            { q: "蜜蜂为什么会跳舞？", o: ["高兴", "召唤同伴采蜜", "锻炼身体", "没有原因"], a: 1 },
+            { q: "指南针指向哪个方向？", o: ["西", "南", "北", "南或北"], a: 2 },
+            { q: "《论语》是记录谁的言行的？", o: ["老子", "孔子", "孟子", "庄子"], a: 1 },
+            { q: "中国四大发明不包括？", o: ["造纸术", "印刷术", "指南针", "自行车"], a: 3 },
+            { q: "奥运会五环的颜色，从上到下是什么？", o: ["蓝黄黑绿红", "黑蓝黄绿红", "红绿黄蓝黑", "黄蓝黑绿红"], a: 0 },
+            { q: "中国最高的点是哪里？", o: ["华山", "泰山", "珠穆朗玛峰", "黄山"], a: 2 },
+            { q: "《三国演义》的作者是谁？", o: ["罗贯中", "施耐庵", "吴承恩", "曹雪芹"], a: 0 },
+            { q: "京剧四大名旦不包括？", o: ["梅兰芳", "程砚秋", "荀慧生", "尚小云", "白玉兰"], a: 3 },
+            { q: "中国有多少个省级行政区？", o: ["23个", "25个", "33个", "35个"], a: 2 },
+            { q: "世界上最长的河流是？", o: ["长江", "黄河", "尼罗河", "亚马逊河"], a: 2 }
+        ],
+        hard: [
+            { q: "《道德经》的作者是谁？", o: ["孔子", "老子", "庄子", "墨子"], a: 1 },
+            { q: "中国历史上第一个皇帝是谁？", o: ["刘邦", "项羽", "秦始皇", "汉武帝"], a: 2 },
+            { q: "造纸术最早出现在哪个朝代？", o: ["秦朝", "汉朝", "唐朝", "宋朝"], a: 1 },
+            { q: "指南针最早叫什么？", o: ["司南", "罗盘", "指南针", "方位仪"], a: 0 },
+            { q: "活字印刷术是谁发明的？", o: ["蔡伦", "毕昇", "沈括", "张衡"], a: 1 },
+            { q: "《史记》的作者是谁？", o: ["司马迁", "司马光", "班固", "陈寿"], a: 0 },
+            { q: "中国第一部诗歌总集是？", o: ["楚辞", "诗经", "唐诗", "宋词"], a: 1 },
+            { q: "《资治通鉴》的作者是谁？", o: ["司马迁", "司马光", "班固", "陈寿"], a: 1 },
+            { q: "中国最早的乐器是什么？", o: ["笛子", "骨笛", "箫", "笙"], a: 1 },
+            { q: "汉字的演变顺序正确的是？", o: ["甲骨文-金文-小篆-隶书-楷书", "甲骨文-小篆-金文-隶书-楷书", "金文-甲骨文-小篆-隶书-楷书", "甲骨文-隶书-金文-小篆-楷书"], a: 0 },
+            { q: "中国四大古典名著不包括？", o: ["西游记", "红楼梦", "水浒传", "聊斋志异", "三国演义"], a: 3 },
+            { q: "《清明上河图》描绘的是哪个城市？", o: ["长安", "洛阳", "开封", "杭州"], a: 2 },
+            { q: "丝绸之路的起点是？", o: ["长安", "洛阳", "敦煌", "喀什"], a: 0 },
+            { q: "郑和下西洋最远到达哪里？", o: ["非洲东海岸", "欧洲", "美洲", "澳大利亚"], a: 0 },
+            { q: "中国第一部药学著作是？", o: ["伤寒杂病论", "本草纲目", "神农本草经", "千金方"], a: 2 },
+            { q: "古代科举制度中，会试第一名叫什么？", o: ["解元", "会元", "状元", "榜眼"], a: 1 },
+            { q: "《梦溪笔谈》的作者是谁？", o: ["张衡", "沈括", "蔡伦", "毕昇"], a: 1 },
+            { q: "中国古代建筑木结构体系主要采用什么方式？", o: ["榫卯", "钉子", "胶水", "铁钉"], a: 0 },
+            { q: "二十四节气中，立春之后的节气是？", o: ["雨水", "惊蛰", "春分", "清明"], a: 0 },
+            { q: "中国第一部断代史史书是？", o: ["史记", "汉书", "后汉书", "三国志"], a: 1 }
+        ]
     }
 };
 
-// ==================== 题库 ====================
-const questionBank = {
-    '拼音小达人': [
-        { q: '"b"是什么音？', o: ['声母', '韵母', '整体认读', '声调'], a: 0, d: 'easy' },
-        { q: '下列哪个是整体认读音节？', o: ['ba', 'bo', 'zhi', 'chi'], a: 2, d: 'easy' },
-        { q: '"妈"读几声？', o: ['一声', '二声', '三声', '四声'], a: 0, d: 'easy' },
-        { q: '韵母"ang"由哪两个组成？', o: ['a+ng', 'an+g', 'a+n+g', 'ang单独'], a: 0, d: 'easy' },
-        { q: '下列声母中和"n"发音相近的是？', o: ['m', 'l', 'g', 'h'], a: 1, d: 'easy' },
-        { q: '"ü"和"u"的区别是？', o: ['写法不同', '发音不同', '一样', '没有ü'], a: 1, d: 'medium' },
-        { q: '声母"zh"和"z"的发音区别是？', o: ['一样', 'zh卷舌，z不卷', 'zh轻，z重', '无法区分'], a: 1, d: 'medium' },
-        { q: '三拼音节"guo"由什么组成？', o: ['g+u+o', 'g+u+wo', 'g+uo', 'gu+o'], a: 0, d: 'medium' },
-        { q: '第一声调怎么表示？', o: ['ˉ', 'ˊ', 'ˇ', 'ˋ'], a: 0, d: 'easy' },
-        { q: '下列哪个不是韵母？', o: ['ai', 'ei', 'un', 'b'], a: 3, d: 'easy' },
-        { q: '"ie"和"ei"的区别是？', o: ['一样', 'i和e位置不同', 'ie是整体', '无法区分'], a: 1, d: 'medium' },
-        { q: '拼音声母共有多少个？', o: ['20个', '21个', '23个', '24个'], a: 2, d: 'medium' },
-        { q: '什么情况下"一"读成二声？', o: ['在句末', '在四声前', '在一声前', '单独读'], a: 1, d: 'hard' },
-        { q: '"不"的声调是？', o: ['一声', '二声', '三声', '四声'], a: 3, d: 'easy' },
-        { q: '轻声在音节中怎么标调？', o: ['标原调', '不标调', '标二声', '标四声'], a: 1, d: 'hard' },
-        { q: '音节"nǚ"中"ǚ"的声调是？', o: ['二声', '三声', '四声', '一声'], a: 2, d: 'easy' },
-        { q: '下列哪个是复韵母？', o: ['a', 'o', 'ei', 'an'], a: 2, d: 'easy' },
-        { q: 'jqx和ü相拼时，ü怎么写？', o: ['直接写ü', '写成u', '省略两点', '写成ü但不标调'], a: 2, d: 'hard' }
-    ],
-    '识字小先锋': [
-        { q: '"日"字加一笔可以变成？', o: ['目', '田', '白', '电'], a: 1, d: 'easy' },
-        { q: '下列哪个是上下结构？', o: ['明', '好', '林', '树'], a: 1, d: 'easy' },
-        { q: '"鸟"字去掉一点变成？', o: ['乌', '鸣', '鸡', '岛'], a: 0, d: 'easy' },
-        { q: '"大"字比"人"字少哪一笔？', o: ['撇', '捺', '横', '不少'], a: 1, d: 'medium' },
-        { q: '偏旁"氵"和什么有关？', o: ['水', '火', '土', '木'], a: 0, d: 'easy' },
-        { q: '"明"字由哪两部分组成？', o: ['日+月', '目+月', '日+门', '日+一'], a: 0, d: 'easy' },
-        { q: '下列字形最近的是？', o: ['土-士', '人-入', '己-已', '木-本'], a: 0, d: 'medium' },
-        { q: '宝盖头"宀"一般和什么有关？', o: ['动物', '房屋', '植物', '金属'], a: 1, d: 'medium' },
-        { q: '"吃"字用什么作偏旁？', o: ['口', '饣', '忄', '礻'], a: 0, d: 'easy' },
-        { q: '木子"李"是什么结构？', o: ['上下', '左右', '独体', '半包围'], a: 0, d: 'hard' },
-        { q: '绞丝旁"纟"和什么有关？', o: ['丝', '钱', '布', '都是'], a: 3, d: 'medium' },
-        { q: '下列哪个字是形声字？', o: ['人', '日', '河', '山'], a: 2, d: 'hard' },
-        { q: '"尖"字的意思是？', o: ['上面小下面大', '上面大下面小', '中间大两头小', '圆形'], a: 2, d: 'hard' },
-        { q: '月字旁一般和什么有关？', o: ['月亮', '身体', '时间', '都是'], a: 1, d: 'medium' },
-        { q: '心字底"心"和什么有关？', o: ['心脏', '思想', '颜色', '形状'], a: 1, d: 'medium' },
-        { q: '下列哪个字有五笔？', o: ['人', '大', '及', '子'], a: 2, d: 'hard' },
-        { q: '"从"字怎么数笔画？', o: ['3笔', '4笔', '5笔', '6笔'], a: 1, d: 'easy' },
-        { q: '走之旁"辶"和什么有关？', o: ['走路', '停止', '站立', '坐下'], a: 0, d: 'medium' }
-    ],
-    '成语小博士': [
-        { q: '"守株待兔"讲的是谁在等？', o: ['兔子', '农夫', '猎人', '国王'], a: 1, d: 'easy' },
-        { q: '"亡羊补牢"中羊圈破了，主人？', o: ['不管了', '修好了', '搬家了', '买新羊'], a: 1, d: 'easy' },
-        { q: '"刻舟求剑"的人能找到剑吗？', o: ['能', '不能', '有时能', '不知道'], a: 1, d: 'easy' },
-        { q: '"对牛弹琴"比喻对什么人没用？', o: ['聪明人', '外国人', '不懂的人', '聋人'], a: 2, d: 'medium' },
-        { q: '"狐假虎威"中狐狸借助了谁？', o: ['兔子', '老虎', '猴子', '狼'], a: 1, d: 'easy' },
-        { q: '"画蛇添足"的意思是？', o: ['画得很好', '多此一举', '画得很差', '锦上添花'], a: 1, d: 'easy' },
-        { q: '"掩耳盗铃"讲了什么道理？', o: ['偷东西不对', '自己骗自己', '铃铛很响', '要用耳朵听'], a: 1, d: 'medium' },
-        { q: '"亡羊补牢"下一句是？', o: ['犹未为晚', '为时不晚', '后悔莫及', '不能再失'], a: 1, d: 'medium' },
-        { q: '"井底之蛙"形容什么人？', o: ['青蛙', '眼界狭小的人', '跳得高的人', '会游泳的人'], a: 1, d: 'easy' },
-        { q: '"叶公好龙"中公好的是什么？', o: ['真龙', '假龙', '画上的龙', '龙的故事'], a: 0, d: 'medium' },
-        { q: '"杯弓蛇影"是说什么？', o: ['蛇', '弓', '疑神疑鬼', '喝水'], a: 2, d: 'medium' },
-        { q: '"揠苗助长"中宋人做了什么？', o: ['浇水', '施肥', '把苗拔高', '除草'], a: 2, d: 'hard' },
-        { q: '"买椟还珠"中买家要的是？', o: ['珠子', '盒子', '都要', '都不要'], a: 1, d: 'hard' },
-        { q: '"滥竽充数"讲的是谁？', o: ['会吹竽的人', '不会吹竽的人', '国王', '乐师'], a: 1, d: 'medium' },
-        { q: '"东施效颦"东施模仿谁？', o: ['西施', '貂蝉', '王昭君', '杨贵妃'], a: 0, d: 'hard' },
-        { q: '"破釜沉舟"讲的是谁的故事？', o: ['曹操', '刘备', '项羽', '韩信'], a: 2, d: 'hard' },
-        { q: '"四面楚歌"和谁有关？', o: ['刘邦', '项羽', '韩信', '张良'], a: 1, d: 'hard' },
-        { q: '"纸上谈兵"说的是谁？', o: ['廉颇', '蔺相如', '赵括', '白起'], a: 2, d: 'hard' }
-    ],
-    '古诗小诗人': [
-        { q: '《咏鹅》的作者是谁？', o: ['李白', '骆宾王', '王维', '贺知章'], a: 1, d: 'easy' },
-        { q: '"春眠不觉晓"下一句是？', o: ['处处闻啼鸟', '夜来风雨声', '花落知多少', '明月照窗前'], a: 0, d: 'easy' },
-        { q: '《静夜思》中"举头望明月"的下一句？', o: ['千里共婵娟', '低头思故乡', '月是故乡明', '海上生明月'], a: 1, d: 'easy' },
-        { q: '"两个黄鹂鸣翠柳"出自哪首诗？', o: ['静夜思', '春晓', '绝句', '悯农'], a: 2, d: 'easy' },
-        { q: '《悯农》告诉我们要怎样？', o: ['多吃饭', '不浪费粮食', '多干活', '爱劳动'], a: 1, d: 'easy' },
-        { q: '"锄禾日当午"下一句是？', o: ['汗滴禾下土', '粒粒皆辛苦', '谁知盘中餐', '禾下乘凉梦'], a: 0, d: 'easy' },
-        { q: '《登鹳雀楼》作者是？', o: ['李白', '王之涣', '王维', '孟浩然'], a: 1, d: 'medium' },
-        { q: '"白日依山尽"的下一句是？', o: ['黄河入海流', '欲穷千里目', '更上一层楼', '夕阳无限好'], a: 0, d: 'medium' },
-        { q: '《梅花》作者王安石是哪个朝代？', o: ['唐代', '宋代', '明代', '清代'], a: 1, d: 'medium' },
-        { q: '"墙角数枝梅"下一句是？', o: ['凌寒独自开', '遥知不是雪', '为有暗香来', '唯有暗香来'], a: 0, d: 'medium' },
-        { q: '《江雪》作者是？', o: ['李白', '杜甫', '柳宗元', '韩愈'], a: 2, d: 'medium' },
-        { q: '"千山鸟飞绝"下一句是？', o: ['万径人踪灭', '孤舟蓑笠翁', '独钓寒江雪', '万木尽枯'], a: 1, d: 'medium' },
-        { q: '《敕勒歌》是哪个民族的民歌？', o: ['汉族', '蒙古族', '藏族', '维吾尔族'], a: 1, d: 'hard' },
-        { q: '"天苍苍，野茫茫"下一句是？', o: ['风吹草低见牛羊', '一望无际大草原', '蓝天白云下', '牛羊成群走'], a: 0, d: 'medium' },
-        { q: '《望庐山瀑布》是李白写的吗？', o: ['是', '不是', '不知道', '可能是'], a: 0, d: 'easy' },
-        { q: '"飞流直下三千尺"形容的是？', o: ['黄河', '庐山瀑布', '长江', '洞庭湖'], a: 1, d: 'easy' },
-        { q: '《回乡偶书》作者贺知章自称什么？', o: ['四明狂客', '诗仙', '诗圣', '书圣'], a: 0, d: 'hard' },
-        { q: '"少小离家老大回"下一句是？', o: ['乡音无改鬓毛衰', '笑问客从何处来', '近乡情更怯', '每逢佳节倍思亲'], a: 0, d: 'medium' }
-    ],
-    '口算小能手': [
-        { q: '7 + 5 = ?', o: ['11', '12', '13', '14'], a: 1, d: 'easy' },
-        { q: '15 - 8 = ?', o: ['6', '7', '8', '9'], a: 1, d: 'easy' },
-        { q: '6 + 9 = ?', o: ['14', '15', '16', '17'], a: 1, d: 'easy' },
-        { q: '8 × 3 = ?', o: ['21', '24', '27', '30'], a: 1, d: 'easy' },
-        { q: '4 × 7 = ?', o: ['21', '24', '28', '32'], a: 2, d: 'easy' },
-        { q: '36 ÷ 4 = ?', o: ['7', '8', '9', '10'], a: 2, d: 'easy' },
-        { q: '9 + 8 = ?', o: ['16', '17', '18', '19'], a: 1, d: 'easy' },
-        { q: '14 - 6 = ?', o: ['7', '8', '9', '10'], a: 1, d: 'easy' },
-        { q: '5 × 6 = ?', o: ['25', '30', '35', '40'], a: 1, d: 'easy' },
-        { q: '18 ÷ 3 = ?', o: ['5', '6', '7', '8'], a: 1, d: 'easy' },
-        { q: '7 × 8 = ?', o: ['48', '54', '56', '64'], a: 2, d: 'medium' },
-        { q: '45 - 17 = ?', o: ['27', '28', '29', '30'], a: 1, d: 'medium' },
-        { q: '6 + 7 + 8 = ?', o: ['19', '20', '21', '22'], a: 2, d: 'medium' },
-        { q: '100 - 45 = ?', o: ['55', '65', '45', '75'], a: 0, d: 'easy' },
-        { q: '9 × 9 = ?', o: ['72', '81', '90', '99'], a: 1, d: 'medium' },
-        { q: '63 ÷ 7 = ?', o: ['8', '9', '10', '11'], a: 1, d: 'medium' },
-        { q: '56 - 29 = ?', o: ['26', '27', '28', '29'], a: 1, d: 'medium' },
-        { q: '8 + 9 + 7 = ?', o: ['22', '23', '24', '25'], a: 2, d: 'medium' },
-        { q: '72 ÷ 8 = ?', o: ['8', '9', '10', '11'], a: 1, d: 'medium' },
-        { q: '6 × 7 = ?', o: ['36', '42', '48', '54'], a: 1, d: 'easy' }
-    ],
-    '图形探索家': [
-        { q: '正方形有几条边？', o: ['3', '4', '5', '6'], a: 1, d: 'easy' },
-        { q: '三角形有几个角？', o: ['2', '3', '4', '5'], a: 1, d: 'easy' },
-        { q: '圆形是什么形状？', o: ['有角', '没有角', '有一个角', '有两个角'], a: 1, d: 'easy' },
-        { q: '长方形和正方形有什么相同点？', o: ['四条边一样长', '都有四个角', '都是圆形', '边数相同'], a: 3, d: 'medium' },
-        { q: '正方体有几个面？', o: ['4', '5', '6', '8'], a: 2, d: 'easy' },
-        { q: '下列哪个是球形？', o: ['篮球', '数学书', '文具盒', '魔方'], a: 0, d: 'easy' },
-        { q: '圆柱体有几个面？', o: ['1', '2', '3', '4'], a: 2, d: 'hard' },
-        { q: '平行四边形有多少条边？', o: ['3', '4', '5', '6'], a: 1, d: 'medium' },
-        { q: '长方形有几个直角？', o: ['1', '2', '3', '4'], a: 3, d: 'easy' },
-        { q: '五边形有几个角？', o: ['4', '5', '6', '7'], a: 1, d: 'easy' },
-        { q: '什么图形像鸡蛋？', o: ['圆形', '椭圆形', '正方形', '三角形'], a: 1, d: 'easy' },
-        { q: '正方形四条边长度怎么样？', o: ['都相等', '对边相等', '都不相等', '不确定'], a: 0, d: 'easy' },
-        { q: '长方形的对边怎么样？', o: ['都相等', '都垂直', '都平行', '不确定'], a: 0, d: 'medium' },
-        { q: '三角形按边分可以分成几种？', o: ['1种', '2种', '3种', '4种'], a: 1, d: 'hard' },
-        { q: '等边三角形三条边怎么样？', o: ['都不等', '两边等', '都相等', '不确定'], a: 2, d: 'medium' },
-        { q: '正方体有几个顶点？', o: ['4', '6', '8', '12'], a: 2, d: 'medium' },
-        { q: '圆柱体能滚动吗？', o: ['能', '不能', '只能横着滚', '只能竖着滚'], a: 0, d: 'easy' },
-        { q: '下列哪些图形可以堆起来？', o: ['圆形', '正方形', '长方形', '正方体'], a: 3, d: 'medium' }
-    ],
-    '规律发现者': [
-        { q: '找规律：2、4、6、8、？', o: ['9', '10', '11', '12'], a: 1, d: 'easy' },
-        { q: '找规律：1、3、5、7、？', o: ['8', '9', '10', '11'], a: 1, d: 'easy' },
-        { q: '找规律：10、20、30、40、？', o: ['45', '50', '55', '60'], a: 1, d: 'easy' },
-        { q: '找规律：3、6、9、12、？', o: ['14', '15', '16', '18'], a: 1, d: 'easy' },
-        { q: '找规律：1、4、9、16、？', o: ['20', '24', '25', '36'], a: 2, d: 'hard' },
-        { q: '找规律：2、4、8、16、？', o: ['24', '30', '32', '36'], a: 2, d: 'medium' },
-        { q: '找规律：1、1、2、3、5、8、？', o: ['11', '12', '13', '14'], a: 2, d: 'hard' },
-        { q: '比10大比15小的数有几个？', o: ['3', '4', '5', '6'], a: 1, d: 'easy' },
-        { q: '从1数到20，单数有几个？', o: ['9', '10', '11', '12'], a: 1, d: 'medium' },
-        { q: '找规律：1、3、2、4、3、5、？', o: ['4', '5', '6', '7'], a: 0, d: 'hard' },
-        { q: '找规律：100、90、80、70、？', o: ['50', '60', '65', '60'], a: 1, d: 'easy' },
-        { q: '找规律：2、5、10、17、？', o: ['24', '26', '28', '30'], a: 1, d: 'hard' },
-        { q: '1+3=4，2+4=10，3+5=？', o: ['12', '14', '16', '18'], a: 2, d: 'hard' },
-        { q: '找规律：☆○□☆○□☆○？', o: ['☆', '○', '□', '?'], a: 2, d: 'easy' },
-        { q: '找规律：1、2、4、8、？', o: ['12', '14', '16', '32'], a: 2, d: 'medium' },
-        { q: '85比78多几？比92少几？', o: ['7和7', '7和14', '14和7', '14和14'], a: 0, d: 'medium' },
-        { q: '找规律：1、4、7、10、？', o: ['11', '12', '13', '14'], a: 2, d: 'easy' },
-        { q: '最大的一位数和最小的两位数相差？', o: ['1', '9', '10', '11'], a: 0, d: 'medium' }
-    ],
-    '应用小达人': [
-        { q: '小明有3个苹果，小红给了他2个，现在？', o: ['4', '5', '6', '7'], a: 1, d: 'easy' },
-        { q: '一盒铅笔10支，用了6支，还剩？', o: ['2', '3', '4', '5'], a: 2, d: 'easy' },
-        { q: '3人排队，小明第二，他前面有几人？', o: ['0', '1', '2', '3'], a: 1, d: 'easy' },
-        { q: '10个苹果分给5个小朋友，每人几个？', o: ['1', '2', '3', '5'], a: 1, d: 'easy' },
-        { q: '小红买书用8元，还剩5元，她原来有？', o: ['12元', '13元', '14元', '15元'], a: 1, d: 'medium' },
-        { q: '一排树，每隔2米种一棵，5米能种几棵？', o: ['2棵', '3棵', '4棵', '5棵'], a: 1, d: 'hard' },
-        { q: '小华给小明3张邮票后，两人都有10张，小华原来？', o: ['13张', '14张', '15张', '16张'], a: 0, d: 'hard' },
-        { q: '一个数减8等于15，这个数是？', o: ['22', '23', '24', '25'], a: 1, d: 'medium' },
-        { q: '7个小朋友玩捉迷藏，1人找，剩下几个藏？', o: ['5个', '6个', '7个', '8个'], a: 1, d: 'easy' },
-        { q: '一本书，小明第一天看了5页，第二天看了8页，共看了？', o: ['12页', '13页', '14页', '15页'], a: 1, d: 'easy' },
-        { q: '小明排队，前面有5人，后面有3人，共几人？', o: ['7人', '8人', '9人', '10人'], a: 2, d: 'easy' },
-        { q: '18个球，平均分给3个小朋友，每人几个？', o: ['5', '6', '7', '8'], a: 1, d: 'easy' },
-        { q: '小华有20元，买文具盒用了一半，还剩？', o: ['5元', '10元', '15元', '20元'], a: 1, d: 'medium' },
-        { q: '一个数加5等于12，减去3等于？', o: ['4', '5', '6', '7'], a: 0, d: 'hard' },
-        { q: '小强体重30千克，小刚比他重5千克，小刚多重？', o: ['33千克', '34千克', '35千克', '36千克'], a: 2, d: 'medium' },
-        { q: '一桶水20千克，用了一半后又加了5千克，现在？', o: ['10千克', '15千克', '25千克', '30千克'], a: 1, d: 'hard' },
-        { q: '3个苹果的重量等于6个梨的重量，1个苹果等于？', o: ['1个梨', '2个梨', '3个梨', '4个梨'], a: 1, d: 'hard' },
-        { q: '小明从1楼走到3楼用了6秒，1楼到5楼用几秒？', o: ['10秒', '12秒', '14秒', '15秒'], a: 1, d: 'hard' }
-    ],
-    '字母拼拼乐': [
-        { q: '字母表第一个字母是？', o: ['A', 'B', 'C', 'Z'], a: 0, d: 'easy' },
-        { q: '哪个是元音字母？', o: ['B', 'C', 'D', 'E'], a: 3, d: 'easy' },
-        { q: '"apple"第一个字母是？', o: ['a', 'A', 'p', 'P'], a: 0, d: 'easy' },
-        { q: '字母有多少个？', o: ['24', '25', '26', '27'], a: 2, d: 'easy' },
-        { q: '大写字母Q像什么？', o: ['圆圈', '水滴', '鸡蛋', '皇冠'], a: 3, d: 'easy' },
-        { q: '"f"在小写字母表中排第几？', o: ['4', '5', '6', '7'], a: 2, d: 'medium' },
-        { q: '下列哪个是对应字母？', o: ['Aa', 'aA', 'AA', 'aa'], a: 0, d: 'easy' },
-        { q: '元音字母有几个？', o: ['3个', '4个', '5个', '6个'], a: 2, d: 'easy' },
-        { q: '"Z"的对应小写是？', o: ['z', 'x', 'y', 'w'], a: 0, d: 'easy' },
-        { q: '辅音字母有多少个？', o: ['20', '21', '22', '23'], a: 1, d: 'medium' },
-        { q: '字母表最后三个字母是？', o: ['x,y,z', 'w,x,y', 'u,v,w', 'x,y,z'], a: 0, d: 'easy' },
-        { q: '哪个字母是卷舌音？', o: ['s', 'z', 'sh', 'x'], a: 2, d: 'hard' },
-        { q: '"M"的对称字母是？', o: ['N', 'W', 'M', 'K'], a: 0, d: 'medium' },
-        { q: '字母表中间是哪个字母？', o: ['M', 'N', 'O', 'm'], a: 0, d: 'medium' },
-        { q: '小写字母b,d区分要看什么？', o: ['形状', '方向', '位置', '大小'], a: 1, d: 'easy' },
-        { q: '哪个字母只出现一次？', o: ['E', 'T', 'S', 'O'], a: 1, d: 'hard' },
-        { q: '大写Q小写是？', o: ['q', 'g', 'p', 'd'], a: 0, d: 'easy' },
-        { q: '字母I的小写像什么？', o: ['竖线', '数字1', '小写L', '十字'], a: 0, d: 'easy' }
-    ],
-    '单词大闯关': [
-        { q: '"Red"是什么意思？', o: ['红色', '蓝色', '绿色', '黄色'], a: 0, d: 'easy' },
-        { q: '"Blue"是什么颜色？', o: ['红', '蓝', '绿', '黄'], a: 1, d: 'easy' },
-        { q: '"Five"是数字几？', o: ['3', '4', '5', '6'], a: 2, d: 'easy' },
-        { q: '"Cat"是什么意思？', o: ['狗', '猫', '鸟', '鱼'], a: 1, d: 'easy' },
-        { q: '"Dog"翻译成中文是？', o: ['猫', '狗', '兔子', '鸭子'], a: 1, d: 'easy' },
-        { q: '"Apple"是哪种水果？', o: ['香蕉', '苹果', '橙子', '葡萄'], a: 1, d: 'easy' },
-        { q: '"Banana"的中文是？', o: ['苹果', '香蕉', '橘子', '西瓜'], a: 1, d: 'easy' },
-        { q: '"Bird"是指什么动物？', o: ['猫', '狗', '鸟', '鱼'], a: 2, d: 'easy' },
-        { q: '"Fish"是什么意思？', o: ['鸟', '鱼', '猫', '狗'], a: 1, d: 'easy' },
-        { q: '"Orange"可以表示什么？', o: ['苹果', '橙子', '香蕉', '葡萄'], a: 1, d: 'easy' },
-        { q: '"Eye"是指哪个部位？', o: ['鼻子', '嘴巴', '眼睛', '耳朵'], a: 2, d: 'easy' },
-        { q: '"Mouth"的中文是？', o: ['眼睛', '鼻子', '嘴巴', '耳朵'], a: 2, d: 'easy' },
-        { q: '"Hand"是什么意思？', o: ['脚', '腿', '手', '头'], a: 2, d: 'easy' },
-        { q: '"Dad"是指谁？', o: ['妈妈', '爸爸', '爷爷', '奶奶'], a: 1, d: 'easy' },
-        { q: '"Mom"翻译成中文是？', o: ['爸爸', '妈妈', '哥哥', '姐姐'], a: 1, d: 'easy' },
-        { q: '"Yellow"翻译成中文是？', o: ['红色', '蓝色', '黄色', '绿色'], a: 2, d: 'easy' },
-        { q: '"Green"是什么颜色？', o: ['红', '蓝', '绿', '黄'], a: 2, d: 'easy' },
-        { q: '"Three"是数字几？', o: ['2', '3', '4', '5'], a: 1, d: 'easy' }
-    ],
-    '对话小演员': [
-        { q: '"Hello"的中文意思是？', o: ['你好', '再见', '谢谢', '对不起'], a: 0, d: 'easy' },
-        { q: '"Good morning"是什么意思？', o: ['晚上好', '早上好', '下午好', '晚安'], a: 1, d: 'easy' },
-        { q: '"Thank you"的意思是？', o: ['你好', '对不起', '谢谢', '再见'], a: 2, d: 'easy' },
-        { q: '"Goodbye"的中文是？', o: ['你好', '谢谢', '再见', '对不起'], a: 2, d: 'easy' },
-        { q: '"Yes"的反义词是？', o: ['No', 'Not', 'Good', 'Bad'], a: 0, d: 'easy' },
-        { q: '别人说"How are you?"，应该怎么回答？', o: ["I'm fine", 'Thank you', 'Hello', 'Bye'], a: 0, d: 'easy' },
-        { q: '"Good night"是什么意思？', o: ['早上好', '下午好', '晚安', '晚晚上'], a: 2, d: 'easy' },
-        { q: '道歉应该说？', o: ['Hello', 'Sorry', 'Thank you', 'Bye'], a: 1, d: 'easy' },
-        { q: '"See you later"意思是？', o: ['你好', '谢谢', '再见', '对不起'], a: 2, d: 'medium' },
-        { q: '介绍自己应该说？', o: ['Who are you?', "My name is...", 'What is this?', 'How are you?'], a: 1, d: 'easy' },
-        { q: '"Please"是什么意思？', o: ['谢谢', '请', '对不起', '你好'], a: 1, d: 'easy' },
-        { q: '早上遇到同学应该说？', o: ['Good evening', 'Good morning', 'Good night', 'Goodbye'], a: 1, d: 'easy' },
-        { q: '送礼物时说什么？', o: ['Here you are', 'Thank you', 'Sorry', 'Hello'], a: 0, d: 'medium' },
-        { q: '收到礼物时应该说什么？', o: ['Here you are', 'Thank you', 'Sorry', 'Hello'], a: 1, d: 'medium' },
-        { q: '道别时说什么？', o: ['Hello', 'Thank you', 'See you', 'Sorry'], a: 2, d: 'easy' },
-        { q: '问名字怎么说？', o: ['What is your name?', 'How are you?', 'Where are you?', 'Who are you?'], a: 0, d: 'easy' },
-        { q: '"You are welcome"意思是？', o: ['谢谢你', '不客气', '对不起', '再见'], a: 1, d: 'medium' },
-        { q: '说错话后应该说？', o: ['Hello', 'Thank you', 'Sorry', 'Bye'], a: 2, d: 'easy' }
-    ],
-    '歌曲小歌手': [
-        { q: '"Twinkle Twinkle Little Star"第一句是什么？', o: ['Twinkle twinkle', 'How I wonder', 'Little star', 'Above the world'], a: 0, d: 'easy' },
-        { q: '英语儿歌"两只老虎"英文版是？', o: ['Jingle Bells', 'Two Tigers', 'Happy Birthday', 'ABC Song'], a: 1, d: 'easy' },
-        { q: '哆、来、咪、发、嗦、啦、西，一共有几个音？', o: ['5个', '6个', '7个', '8个'], a: 2, d: 'easy' },
-        { q: '"Happy Birthday to You"是唱给谁的？', o: ['圣诞节', '生日', '新年', '教师节'], a: 1, d: 'easy' },
-        { q: 'Do Re Mi Fa Sol La Si中Do旁边是谁？', o: ['Re', 'Mi', 'Si', 'Sol'], a: 0, d: 'easy' },
-        { q: '"Jingle Bells"是什么节日歌曲？', o: ['万圣节', '感恩节', '圣诞节', '新年'], a: 2, d: 'easy' },
-        { q: '"Row Row Row Your Boat"划的是什么？', o: ['Car', 'Boat', 'Plane', 'Bike'], a: 1, d: 'easy' },
-        { q: '音乐中"强"用什么表示？', o: ['p', 'f', 'mf', 'mp'], a: 1, d: 'hard' },
-        { q: '"Old McDonald Had a Farm"农场里有什么？', o: ['Factory', 'Farm', 'School', 'Hospital'], a: 1, d: 'easy' },
-        { q: '"Head Shoulders Knees and Toes"唱的是哪里？', o: ['五官', '身体部位', '家庭成员', '动物'], a: 1, d: 'easy' },
-        { q: '"If You Are Happy"应该怎么表达？', o: ['皱眉', '拍手', '哭', '睡觉'], a: 1, d: 'easy' },
-        { q: '音乐中的全音符唱几拍？', o: ['一拍', '二拍', '三拍', '四拍'], a: 1, d: 'hard' },
-        { q: '节拍器每分钟动60下叫什么？', o: ['Largo', 'Andante', 'Moderato', 'Allegro'], a: 1, d: 'hard' },
-        { q: '高音谱号的另一个名字是？', o: ['G谱号', 'F谱号', 'C谱号', 'D谱号'], a: 0, d: 'hard' },
-        { q: '四分音符和八分音符哪个长？', o: ['八分音符', '四分音符', '一样长', '无法比较'], a: 1, d: 'medium' },
-        { q: '"Mary Had a Little Lamb"羊是什么颜色？', o: ['Black', 'White', 'Brown', 'Gray'], a: 1, d: 'easy' }
-    ],
-    '自然小侦探': [
-        { q: '太阳从哪个方向升起？', o: ['西边', '东边', '南边', '北边'], a: 1, d: 'easy' },
-        { q: '水在什么温度会变成冰？', o: ['0度以下', '0度', '100度', '50度'], a: 1, d: 'easy' },
-        { q: '天上的彩虹有几种颜色？', o: ['5种', '6种', '7种', '8种'], a: 2, d: 'easy' },
-        { q: '为什么会下雨？', o: ['云太重', '风太大', '太阳太热', '月亮出来'], a: 0, d: 'easy' },
-        { q: '冬天为什么有时会下雪？', o: ['雨太冷了', '云太低', '温度够低', '风太大'], a: 2, d: 'easy' },
-        { q: '为什么会打雷？', o: ['云撞在一起', '太阳太亮', '风太大', '下雨太多'], a: 0, d: 'easy' },
-        { q: '云是怎么形成的？', o: ['风吹的', '水蒸气上升冷却', '太阳制造的', '凭空出现'], a: 1, d: 'medium' },
-        { q: '为什么会产生影子？', o: ['因为有光', '因为黑暗', '因为颜色', '因为形状'], a: 0, d: 'easy' },
-        { q: '一年中哪天白天最长？', o: ['春分', '夏至', '秋分', '冬至'], a: 1, d: 'hard' },
-        { q: '彩虹出现在什么时候？', o: ['一定下雨', '雨后有阳光', '阴天', '晚上'], a: 1, d: 'easy' },
-        { q: '月亮什么时候最圆？', o: ['初一', '十五', '三十', '每天一样'], a: 1, d: 'easy' },
-        { q: '地球是什么形状？', o: ['正方形', '三角形', '圆形', '球形'], a: 3, d: 'easy' },
-        { q: '水烧开时冒的白烟是什么？', o: ['烟', '水蒸气', '空气', '火'], a: 1, d: 'medium' },
-        { q: '结冰的衣服变干是什么现象？', o: ['融化', '凝固', '升华', '蒸发'], a: 2, d: 'hard' },
-        { q: '为什么天空是蓝色的？', o: ['水反射', '光散射', '云的颜色', '海的倒映'], a: 1, d: 'hard' },
-        { q: '雾和云有什么相同点？', o: ['都是水', '都是固体', '都是气体', '无法比较'], a: 0, d: 'medium' },
-        { q: '星星为什么会闪烁？', o: ['星星在动', '大气层折射', '云遮挡', '地球转动'], a: 1, d: 'hard' },
-        { q: '什么季节昼短夜长？', o: ['春季', '夏季', '秋季', '冬季'], a: 3, d: 'medium' }
-    ],
-    '植物小研究员': [
-        { q: '植物需要什么才能生长？', o: ['手机', '电视', '阳光和水', '电脑'], a: 2, d: 'easy' },
-        { q: '树叶为什么是绿色的？', o: ['有叶绿素', '有阳光', '有水', '有土壤'], a: 0, d: 'easy' },
-        { q: '种子发芽需要什么？', o: ['阳光', '水', '空气', '三者都需要'], a: 3, d: 'medium' },
-        { q: '植物的根一般长在哪里？', o: ['空气中', '土壤里', '水里', '随机'], a: 1, d: 'easy' },
-        { q: '花由哪几部分组成？', o: ['2部分', '3部分', '4部分以上', '无法确定'], a: 2, d: 'hard' },
-        { q: '向日葵为什么跟着太阳转？', o: ['喜欢阳光', '躲避阳光', '没有原因', '随风转'], a: 0, d: 'medium' },
-        { q: '什么植物靠风传播种子？', o: ['椰子', '蒲公英', '樱桃', '草莓'], a: 1, d: 'easy' },
-        { q: '仙人掌为什么能在沙漠生存？', o: ['不需要水', '储水能力强', '叶子特殊', '无法生存'], a: 1, d: 'medium' },
-        { q: '植物光合作用产生什么？', o: ['二氧化碳', '氧气', '氮气', '水'], a: 1, d: 'hard' },
-        { q: '花粉需要什么才能结果？', o: ['风力', '昆虫传播', '人工', '自动'], a: 1, d: 'medium' },
-        { q: '大多数树叶秋天变黄是因为？', o: ['叶子老了', '叶绿素减少', '生病了', '正常现象'], a: 1, d: 'medium' },
-        { q: '年轮长在树的哪个部位？', o: ['树叶', '树皮', '树干', '树根'], a: 2, d: 'easy' },
-        { q: '什么蔬菜吃的是根？', o: ['白菜', '萝卜', '黄瓜', '西红柿'], a: 1, d: 'easy' },
-        { q: '竹子是什么类型的植物？', o: ['灌木', '乔木', '草本', '藤本'], a: 2, d: 'hard' },
-        { q: '苹果长在什么上面？', o: ['藤', '树', '灌木', '地面'], a: 1, d: 'easy' },
-        { q: '什么是常绿植物？', o: ['一年四季都有绿叶', '永远不会落叶', '只长绿叶', '冬季落叶'], a: 0, d: 'medium' },
-        { q: '嫁接是为了什么？', o: ['让树更好看', '改良品种', '防病虫', '快速繁殖'], a: 1, d: 'hard' },
-        { q: '花粉和柱头的位置关系叫什么？', o: ['授粉', '受精', '杂交', '嫁接'], a: 0, d: 'hard' }
-    ],
-    '动物小百科': [
-        { q: '下列哪个是动物？', o: ['桌子', '树', '狗', '石头'], a: 2, d: 'easy' },
-        { q: '蜜蜂会做什么？', o: ['酿蜜', '造纸', '织布', '盖房'], a: 0, d: 'easy' },
-        { q: '鱼用什么呼吸？', o: ['肺', '腮', '鼻子', '皮肤'], a: 1, d: 'easy' },
-        { q: '下列哪个是鸟类？', o: ['兔子', '鸭子', '小猫', '小鱼'], a: 1, d: 'easy' },
-        { q: '什么动物会飞但不是鸟？', o: ['狗', '兔子', '蝙蝠', '鱼'], a: 2, d: 'easy' },
-        { q: '猴子喜欢吃什么？', o: ['肉', '鱼', '香蕉', '白菜'], a: 2, d: 'easy' },
-        { q: '哪种动物是森林之王？', o: ['老虎', '狮子', '大象', '熊'], a: 1, d: 'easy' },
-        { q: '蝴蝶的幼虫叫什么？', o: ['毛毛虫', '小虫', '幼虫', '虫卵'], a: 0, d: 'easy' },
-        { q: '哪种动物冬眠？', o: ['狗', '兔子', '熊', '猴子'], a: 2, d: 'easy' },
-        { q: '变色龙为什么会变色？', o: ['心情', '保护自己', '调节体温', '三种都有'], a: 3, d: 'hard' },
-        { q: '蜗牛背的是什么？', o: ['壳', '房子', '包', '帐篷'], a: 0, d: 'easy' },
-        { q: '企鹅生活在哪？', o: ['北极', '南极', '赤道', '森林'], a: 1, d: 'easy' },
-        { q: '大象的鼻子像什么？', o: ['水管', '手', '绳子', '三种都像'], a: 3, d: 'easy' },
-        { q: '什么动物眨眼不用闭眼？', o: ['鱼', '鸟', '狗', '猫'], a: 0, d: 'hard' },
-        { q: '熊猫主要吃什么？', o: ['肉', '鱼', '竹子', '昆虫'], a: 2, d: 'easy' },
-        { q: '萤火虫为什么会发光？', o: ['有电', '化学物质反应', '吸收阳光', '天生'], a: 1, d: 'hard' },
-        { q: '蜘蛛是昆虫吗？', o: ['是', '不是', '无法判断', '类似'], a: 1, d: 'medium' },
-        { q: '哪种动物是群居的？', o: ['老虎', '熊猫', '狼', '老虎'], a: 2, d: 'medium' }
-    ],
-    '身体小奥秘': [
-        { q: '人体最大的器官是？', o: ['心脏', '肝脏', '皮肤', '大脑'], a: 2, d: 'easy' },
-        { q: '我们用什么呼吸？', o: ['心脏', '肺', '胃', '肝脏'], a: 1, d: 'easy' },
-        { q: '心脏在哪里？', o: ['脑子里', '胸腔里', '肚子里', '腿里'], a: 1, d: 'easy' },
-        { q: '我们用什么看东西？', o: ['耳朵', '嘴巴', '眼睛', '鼻子'], a: 2, d: 'easy' },
-        { q: '我们用什么听声音？', o: ['眼睛', '嘴巴', '耳朵', '鼻子'], a: 2, d: 'easy' },
-        { q: '牙齿的作用是什么？', o: ['呼吸', '吃东西', '看东西', '闻东西'], a: 1, d: 'easy' },
-        { q: '我们吃进去的食物先去哪里？', o: ['大脑', '心脏', '胃', '肺'], a: 2, d: 'easy' },
-        { q: '血液在人体哪里流动？', o: ['血管', '器官表面', '皮肤下', '到处都是'], a: 0, d: 'medium' },
-        { q: '人的骨骼由什么组成？', o: ['铁', '钙', '蛋白质', '骨头'], a: 1, d: 'hard' },
-        { q: '我们用什么闻味道？', o: ['眼睛', '嘴巴', '耳朵', '鼻子'], a: 3, d: 'easy' },
-        { q: '大脑的主要功能是？', o: ['泵血', '思考', '消化', '呼吸'], a: 1, d: 'easy' },
-        { q: '小肠的主要作用是？', o: ['吸收营养', '消化食物', '储存食物', '排出废物'], a: 0, d: 'hard' },
-        { q: '人体有多少颗牙齿？', o: ['20颗', '28颗', '32颗', '36颗'], a: 0, d: 'medium' },
-        { q: '我们为什么需要睡觉？', o: ['不用为什么', '让身体休息和修复', '因为困', '习惯'], a: 1, d: 'medium' },
-        { q: '指纹有什么用？', o: ['好看', '增加摩擦力', '识别身份', '没有用'], a: 2, d: 'hard' },
-        { q: '为什么跑步时心跳会加快？', o: ['紧张', '泵更多血供氧', '兴奋', '无法控制'], a: 1, d: 'medium' },
-        { q: '胃的作用是什么？', o: ['吸收营养', '消化食物', '制造血液', '过滤废物'], a: 1, d: 'easy' },
-        { q: '眼泪是从哪里流出来的？', o: ['鼻子', '眼睛', '嘴巴', '耳朵'], a: 1, d: 'easy' }
-    ],
-    '安全小卫士': [
-        { q: '发现火情，应该第一时间做什么？', o: ['自己灭火', '跑开喊大人', '躲起来', '继续玩'], a: 1, d: 'easy' },
-        { q: '陌生人给你糖果，你应该？', o: ['接受', '拒绝并走开', '跟着走', '分给同学'], a: 1, d: 'easy' },
-        { q: '游泳应该去哪里？', o: ['河里', '水库', '正规游泳池', '池塘'], a: 2, d: 'easy' },
-        { q: '一个人在家有陌生人敲门，应该？', o: ['开门', '假装家里没人', '告诉父母', '让他进来'], a: 2, d: 'easy' },
-        { q: '发生火灾时，正确的逃生方式是？', o: ['坐电梯', '用湿毛巾捂住口鼻', '跳楼', '返回拿东西'], a: 1, d: 'easy' },
-        { q: '以下哪个行为容易发生危险？', o: ['红灯停绿灯行', '在马路边玩耍', '走人行道', '看红绿灯过马路'], a: 1, d: 'easy' },
-        { q: '遇到坏人应该怎么办？', o: ['跟他走', '大声呼救', '给他钱', '反抗'], a: 1, d: 'easy' },
-        { q: '过马路应该怎么做？', o: ['跑着过', '左右看后过', '低着头过', '不看路'], a: 1, d: 'easy' },
-        { q: '电器着火应该用什么灭火？', o: ['水', '干粉灭火器', '被子', '衣服'], a: 1, d: 'medium' },
-        { q: '地震时应该怎么做？', o: ['坐电梯', '躲在桌子下', '跳楼', '站在窗边'], a: 1, d: 'easy' },
-        { q: '看到有人溺水应该？', o: ['直接下水救', '喊大人用工具救', '自己跳下去', '不管'], a: 1, d: 'easy' },
-        { q: '雷雨天应该怎么做？', o: ['躲在大树下', '打电话', '在室内待着', '游泳'], a: 2, d: 'easy' },
-        { q: '放学后应该怎么回家？', o: ['和同学一起', '独自走', '绕远路', '在外面玩'], a: 0, d: 'easy' },
-        { q: '烫伤了应该怎么处理？', o: ['抹牙膏', '用冷水冲洗', '揭破水泡', '不处理'], a: 1, d: 'medium' },
-        { q: '被狗咬伤应该？', o: ['不管', '清洗伤口并就医', '打狗', '涂酒精'], a: 1, d: 'medium' },
-        { q: '乘坐电梯要注意什么？', o: ['乱跳', '不超重', '靠门站', '按很多按钮'], a: 1, d: 'easy' }
-    ],
-    '道德小标兵': [
-        { q: '小学生守则中，见老师应该怎么做？', o: ['装作没看见', '主动问好', '跑开', '低头走过'], a: 1, d: 'easy' },
-        { q: '红灯亮了，应该怎么办？', o: ['直接过', '左右看后过', '停下来等绿灯', '跑着过'], a: 2, d: 'easy' },
-        { q: '下列哪种行为是文明的？', o: ['随地吐痰', '插队', '排队等候', '乱扔垃圾'], a: 2, d: 'easy' },
-        { q: '在学校应该怎样和同学相处？', o: ['打架', '互相帮助', '不理人', '欺负人'], a: 1, d: 'easy' },
-        { q: '拾到别人丢失的东西应该？', o: ['自己留着', '交还失主', '扔掉', '假装没看见'], a: 1, d: 'easy' },
-        { q: '借了别人的东西应该？', o: ['不还', '及时归还', '弄坏也没事', '忘记'], a: 1, d: 'easy' },
-        { q: '上课发言前应该怎样？', o: ['直接说', '先举手', '大声喊', '不说话'], a: 1, d: 'easy' },
-        { q: '看到地上有垃圾应该？', o: ['踢到一边', '捡起来扔垃圾桶', '不管', '踩过去'], a: 1, d: 'easy' },
-        { q: '别人帮助你时应该说？', o: ['哼', '谢谢', '走吧', '滚'], a: 1, d: 'easy' },
-        { q: '做错了事应该？', o: ['不承认', '道歉', '怪别人', '逃避'], a: 1, d: 'easy' },
-        { q: '和别人约会迟到应该？', o: ['无所谓', '道歉', '不解释', '怪对方'], a: 1, d: 'easy' },
-        { q: '图书馆里应该怎么做？', o: ['大声喧哗', '安静看书', '跑来跑去', '吃东西'], a: 1, d: 'easy' },
-        { q: '乘坐公交车应该？', o: ['抢座位', '给老人让座', '堵门口', '乱扔垃圾'], a: 1, d: 'easy' },
-        { q: '好朋友有困难应该？', o: ['不管', '帮助他', '嘲笑他', '躲开'], a: 1, d: 'easy' },
-        { q: '答应别人的事应该？', o: ['忘记', '说到做到', '找借口', '无所谓'], a: 1, d: 'easy' }
-    ],
-    '音乐小乐手': [
-        { q: '哆、来、咪、发、嗦、啦、西，一共有几个音？', o: ['5个', '6个', '7个', '8个'], a: 2, d: 'easy' },
-        { q: '下列哪个是打击乐器？', o: ['钢琴', '小提琴', '鼓', '笛子'], a: 2, d: 'easy' },
-        { q: '红色和黄色混合会变成什么颜色？', o: ['紫色', '绿色', '橙色', '蓝色'], a: 2, d: 'easy' },
-        { q: '三原色不包括哪个？', o: ['红色', '黄色', '蓝色', '白色'], a: 3, d: 'easy' },
-        { q: '《两只老虎》是一首什么类型的歌？', o: ['情歌', '儿童歌曲', '摇滚', '民歌'], a: 1, d: 'easy' },
-        { q: '音乐中表示强的记号是？', o: ['p', 'f', 'mf', 'mp'], a: 1, d: 'medium' },
-        { q: '全音符唱几拍？', o: ['1拍', '2拍', '3拍', '4拍'], a: 3, d: 'medium' },
-        { q: '下列哪个是弦乐器？', o: ['鼓', '锣', '小提琴', '笛子'], a: 2, d: 'easy' },
-        { q: '音乐中的四分音符和八分音符哪个长？', o: ['八分音符', '四分音符', '一样长', '无法比较'], a: 1, d: 'medium' },
-        { q: '节拍器有什么用？', o: ['发出声音', '计算节拍', '演奏', '调音'], a: 1, d: 'easy' },
-        { q: '高音谱号又叫什么谱号？', o: ['G谱号', 'F谱号', 'C谱号', 'D谱号'], a: 0, d: 'medium' },
-        { q: 'Do Re Mi Fa Sol La Si中Sol在哪里？', o: ['第一个', '第五个', '第三个', '第七个'], a: 1, d: 'easy' },
-        { q: '什么符号表示停止？', o: ['休止符', '延长号', '渐强', '渐弱'], a: 0, d: 'easy' },
-        { q: '二胡是什么类型的乐器？', o: ['西洋', '民族', '电子', '打击'], a: 1, d: 'easy' },
-        { q: '音乐中的C调，中音Do在哪里？', o: ['第一线', '第二线', '第一间', '第二间'], a: 0, d: 'hard' },
-        { q: '钢琴有多少个键？', o: ['66', '77', '88', '99'], a: 2, d: 'medium' }
-    ],
-    '百科小达人': [
-        { q: '中国的首都在哪里？', o: ['上海', '北京', '广州', '深圳'], a: 1, d: 'easy' },
-        { q: '世界上最高的山是？', o: ['华山', '黄山', '珠穆朗玛峰', '泰山'], a: 2, d: 'easy' },
-        { q: '中国的国宝动物是？', o: ['老虎', '熊猫', '狮子', '孔雀'], a: 1, d: 'easy' },
-        { q: '一年有多少个月？', o: ['10个月', '11个月', '12个月', '13个月'], a: 2, d: 'easy' },
-        { q: '一周有几天？', o: ['5天', '6天', '7天', '8天'], a: 2, d: 'easy' },
-        { q: '《西游记》中的唐僧原型是谁？', o: ['李白', '鉴真', '玄奘', '郑和'], a: 2, d: 'medium' },
-        { q: '第一个登上月球的人是？', o: ['杨利伟', '阿姆斯特朗', '加加林', '阿波罗'], a: 1, d: 'easy' },
-        { q: '长城大约有多长？', o: ['一千公里', '两千公里', '五千公里', '一万公里'], a: 1, d: 'medium' },
-        { q: '中国的四大发明不包括？', o: ['造纸术', '印刷术', '指南针', '自行车'], a: 3, d: 'medium' },
-        { q: '《茉莉花》是哪里的民歌？', o: ['河南', '江苏', '广东', '四川'], a: 1, d: 'medium' },
-        { q: '人体有多少颗牙齿？', o: ['20颗', '28颗', '32颗', '36颗'], a: 0, d: 'medium' },
-        { q: '蜜蜂为什么会跳舞？', o: ['高兴', '召唤同伴采蜜', '锻炼身体', '没有原因'], a: 1, d: 'medium' },
-        { q: '指南针指向哪个方向？', o: ['西', '南', '北', '东'], a: 2, d: 'easy' },
-        { q: '地球自转一圈大约多长时间？', o: ['1小时', '12小时', '24小时', '48小时'], a: 2, d: 'easy' },
-        { q: '月亮绕着什么转？', o: ['太阳', '地球', '火星', '金星'], a: 1, d: 'easy' },
-        { q: '水的沸点是多少度？', o: ['50度', '80度', '100度', '120度'], a: 2, d: 'easy' },
-        { q: '太阳系中最大的行星是？', o: ['地球', '火星', '木星', '土星'], a: 2, d: 'medium' },
-        { q: '奥林匹克运动会每几年举办一次？', o: ['2年', '4年', '6年', '8年'], a: 1, d: 'easy' }
-    ]
+// ==================== GAME STATE ====================
+let gameState = {
+    player: {
+        level: 1,
+        exp: 0,
+        gold: 100,
+        characters: [],
+        fragments: {},
+        items: [],
+        equipment: {}
+    },
+    dailyTasks: {},
+    weeklyTasks: {},
+    settings: {}
 };
 
-// 修复语法错误
-questionBank['道德小标兵'][7] = { q: '看到地上有垃圾应该？', o: ['踢到一边', '捡起来扔垃圾桶', '不管', '踩过去'], a: 1, d: 'easy' };
-
-// ==================== 游戏状态 ====================
-let gameState = {
-    coins: 0,
-    currentSubject: null,
-    currentChallenge: null,
-    currentQuestion: 0,
+let currentQuiz = {
+    subject: null,
+    difficulty: 'easy',
+    mode: null,
+    questions: [],
+    currentQ: 0,
     lives: 3,
     score: 0,
-    correctCount: 0,
-    streak: 0,
-    questions: [],
+    timeLeft: 20,
     timerInterval: null,
-    unlockedChallenges: ['拼音小达人'],
-    challengeStars: {},
-    collectedItems: []
+    streak: 0,
+    totalAnswered: 0
 };
 
-// 难度奖励配置
-const difficultyRewards = { easy: 10, medium: 20, hard: 30 };
+// ==================== INITIALIZATION ====================
+function init() {
+    loadGame();
+    createParticles();
+    updateHomeUI();
+}
 
-// ==================== 数据持久化 ====================
-function loadGameData() {
-    const saved = localStorage.getItem('learningChallenge_v2');
+// ==================== DATA PERSISTENCE ====================
+function loadGame() {
+    const saved = localStorage.getItem('learningGameV2');
     if (saved) {
-        const data = JSON.parse(saved);
-        gameState.coins = data.coins || 0;
-        gameState.unlockedChallenges = data.unlockedChallenges || ['拼音小达人'];
-        gameState.challengeStars = data.challengeStars || {};
-        gameState.collectedItems = data.collectedItems || [];
+        gameState = JSON.parse(saved);
     }
 }
 
-function saveGameData() {
-    const data = {
-        coins: gameState.coins,
-        unlockedChallenges: gameState.unlockedChallenges,
-        challengeStars: gameState.challengeStars,
-        collectedItems: gameState.collectedItems
-    };
-    localStorage.setItem('learningChallenge_v2', JSON.stringify(data));
+function saveGame() {
+    localStorage.setItem('learningGameV2', JSON.stringify(gameState));
 }
 
-// ==================== 界面切换 ====================
+function updateHomeUI() {
+    document.getElementById('playerLevel').textContent = gameState.player.level;
+    document.getElementById('playerExp').textContent = gameState.player.exp;
+    document.getElementById('playerGold').textContent = gameState.player.gold;
+    renderCharShowcase();
+}
+
+function renderCharShowcase() {
+    const container = document.getElementById('charShowcase');
+    const chars = gameState.player.characters || [];
+    const ultraCount = chars.filter(c => ULTRA_HEROES.find(u => u.id === c)).length;
+    const tkCount = chars.filter(c => THREE_KINGDOMS.find(t => t.id === c)).length;
+
+    container.innerHTML = `
+        <div class="char-card">
+            <div class="char-icon">🧙</div>
+            <div class="char-name">奥特曼</div>
+            <div class="char-count">${ultraCount}/16</div>
+        </div>
+        <div class="char-card">
+            <div class="char-icon">⚔️</div>
+            <div class="char-name">三国人物</div>
+            <div class="char-count">${tkCount}/24</div>
+        </div>
+    `;
+}
+
+// ==================== NAVIGATION ====================
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+    document.getElementById('backBtn').style.display = pageId === 'homePage' ? 'none' : 'block';
 }
 
 function showHome() { showPage('homePage'); }
 
-function updateCoinsDisplay() {
-    const displays = ['coinsHeader', 'coinsChallenge', 'coinsShop', 'coinsCollection'];
-    displays.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = gameState.coins;
-    });
+function goBack() {
+    const currentPage = document.querySelector('.page.active').id;
+    if (currentPage === 'levelPage' || currentPage === 'galleryPage' || currentPage === 'shopPage' || currentPage === 'tasksPage') {
+        showHome();
+    } else if (currentPage === 'quizPage') {
+        stopTimer();
+        showLevelSelect();
+    } else {
+        showHome();
+    }
 }
 
-function showSubjects() {
-    loadGameData();
-    updateCoinsDisplay();
-    renderSubjects();
-    showPage('subjectsPage');
+function showLevelSelect() {
+    renderModeSelector();
+    renderSubjectGrid();
+    showPage('levelPage');
 }
 
-function showShop() {
-    loadGameData();
-    updateCoinsDisplay();
-    renderShop();
-    showPage('shopPage');
+// ==================== LEVEL SELECTION ====================
+let selectedDifficulty = 'easy';
+let selectedMode = null;
+
+function selectDifficulty(diff) {
+    selectedDifficulty = diff;
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.diff-btn.${diff}`).classList.add('active');
 }
 
-function showCollection() {
-    loadGameData();
-    updateCoinsDisplay();
-    renderCollection();
-    showPage('collectionPage');
+function renderModeSelector() {
+    const container = document.getElementById('modeSelector');
+    container.innerHTML = MODES.map(m => `
+        <div class="mode-btn" onclick="selectMode('${m.id}')">
+            <div class="mode-icon">${m.emoji}</div>
+            <div class="mode-name">${m.name}</div>
+            <div class="mode-desc">${m.desc}</div>
+        </div>
+    `).join('');
 }
 
-// ==================== 渲染科目 ====================
-function renderSubjects() {
-    const grid = document.getElementById('subjectsGrid');
-    grid.innerHTML = '';
-    Object.entries(subjects).forEach(([name, data]) => {
-        const card = document.createElement('div');
-        card.className = 'subject-card';
-        card.innerHTML = `
-            <div class="subject-emoji">${data.emoji}</div>
-            <div class="subject-name">${name}</div>
-            <div class="subject-stars">${getSubjectStars(name)} ⭐</div>
-        `;
-        card.onclick = () => showChallenges(name);
-        grid.appendChild(card);
-    });
+function selectMode(modeId) {
+    selectedMode = modeId;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
 }
 
-function getSubjectStars(subjectName) {
-    const subjectChallenges = Object.keys(subjects[subjectName].challenges);
-    let totalStars = 0;
-    subjectChallenges.forEach(c => {
-        totalStars += gameState.challengeStars[c] || 0;
-    });
-    return totalStars;
+function renderSubjectGrid() {
+    const container = document.getElementById('subjectGrid');
+    container.innerHTML = SUBJECTS.map((s, i) => `
+        <div class="subject-card ${i >= 3 ? 'locked' : ''}" onclick="startQuiz('${s.id}')">
+            <div class="subject-emoji">${s.emoji}</div>
+            <div class="subject-name">${s.name}</div>
+            <div class="subject-count">简单/中等/困难</div>
+        </div>
+    `).join('');
 }
 
-// ==================== 渲染闯关列表 ====================
-function showChallenges(subjectName) {
-    gameState.currentSubject = subjectName;
-    document.getElementById('challengesTitle').textContent = `${subjects[subjectName].emoji} ${subjectName}`;
-    updateCoinsDisplay();
-    renderChallenges();
-    showPage('challengesPage');
-}
+// ==================== QUIZ LOGIC ====================
+function startQuiz(subjectId) {
+    if (!selectedMode) {
+        alert('请先选择闯关模式！');
+        return;
+    }
 
-function renderChallenges() {
-    const grid = document.getElementById('challengesGrid');
-    grid.innerHTML = '';
-    const challenges = subjects[gameState.currentSubject].challenges;
-    Object.entries(challenges).forEach(([name, data]) => {
-        const card = document.createElement('div');
-        const isLocked = !gameState.unlockedChallenges.includes(name);
-        const stars = gameState.challengeStars[name] || 0;
-        card.className = 'challenge-card' + (isLocked ? ' locked' : '') + (stars > 0 ? ' completed' : '');
-        card.innerHTML = `
-            <div class="challenge-emoji">${data.emoji}</div>
-            <div class="challenge-name">${name}</div>
-            <div class="challenge-info">${isLocked ? '🔒 未解锁' : getDifficultyText(data.difficulty)}</div>
-            <div class="challenge-stars">${'⭐'.repeat(stars)}</div>
-        `;
-        if (!isLocked) card.onclick = () => startChallenge(name, data);
-        grid.appendChild(card);
-    });
-}
+    const modeConfig = MODES.find(m => m.id === selectedMode);
+    const bank = QUESTION_BANK[subjectId];
+    const diffQuestions = bank[selectedDifficulty] || [];
 
-function getDifficultyText(diff) {
-    const map = { easy: '⭐简单', medium: '⭐⭐中等', hard: '⭐⭐⭐困难' };
-    return map[diff] || diff;
-}
+    // Random select questions
+    const shuffled = [...diffQuestions].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, Math.min(modeConfig.questions, shuffled.length));
 
-// ==================== 开始闯关 ====================
-function startChallenge(challengeName, challengeData) {
-    gameState.currentChallenge = challengeName;
-    gameState.currentQuestion = 0;
-    gameState.lives = 3;
-    gameState.score = 0;
-    gameState.correctCount = 0;
-    gameState.streak = 0;
-    gameState.timeLimit = challengeData.time;
-    gameState.difficulty = challengeData.difficulty;
+    currentQuiz = {
+        subject: subjectId,
+        difficulty: selectedDifficulty,
+        mode: selectedMode,
+        questions: selected,
+        currentQ: 0,
+        lives: modeConfig.lives,
+        score: 0,
+        timeLeft: modeConfig.time === 999 ? 999 : modeConfig.time,
+        timerInterval: null,
+        streak: 0,
+        totalAnswered: 0
+    };
 
-    // 随机抽取3题
-    const allQuestions = questionBank[challengeName] || [];
-    gameState.questions = shuffleArray([...allQuestions]).slice(0, 3);
-
-    document.getElementById('challengeName').textContent = challengeName;
     showPage('quizPage');
     renderQuiz();
 }
 
 function renderQuiz() {
-    const q = gameState.questions[gameState.currentQuestion];
-    const progress = (gameState.currentQuestion / gameState.questions.length) * 100;
+    const q = currentQuiz.questions[currentQuiz.currentQ];
+    const modeConfig = MODES.find(m => m.id === currentQuiz.mode);
 
-    document.getElementById('progressFill').style.width = `${progress}%`;
-    document.getElementById('questionCount').textContent = `${gameState.currentQuestion + 1}/${gameState.questions.length}`;
-    document.getElementById('questionType').textContent = gameState.currentChallenge;
-    document.getElementById('questionText').textContent = q.q;
-    document.getElementById('questionDifficulty').textContent = getDifficultyText(q.d);
-
+    // Update header
     renderLives();
-    renderOptions(q);
-    startTimer();
+    document.getElementById('currentScore').textContent = currentQuiz.score;
+    document.getElementById('timer').textContent = currentQuiz.timeLeft === 999 ? '∞' : currentQuiz.timeLeft;
+    document.getElementById('timer').classList.remove('warning');
+
+    // Update progress
+    const progress = (currentQuiz.currentQ / currentQuiz.questions.length) * 100;
+    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('questionNumber').textContent = `第 ${currentQuiz.currentQ + 1} 题 / 共 ${currentQuiz.questions.length} 题`;
+    document.getElementById('modeBadge').textContent = modeConfig.name;
+
+    // Update question
+    document.getElementById('questionText').textContent = q.q;
+
+    // Update options
+    const optionsGrid = document.getElementById('optionsGrid');
+    const labels = ['A', 'B', 'C', 'D'];
+    optionsGrid.innerHTML = q.o.map((opt, i) => `
+        <button class="option-btn" onclick="selectAnswer(${i})">
+            <span class="option-label">${labels[i]}</span>
+            <span>${opt}</span>
+        </button>
+    `).join('');
+
+    // Start timer
+    if (currentQuiz.timeLeft !== 999) {
+        startTimer();
+    }
 }
 
 function renderLives() {
     const container = document.getElementById('lives');
-    container.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
-        const life = document.createElement('span');
-        life.className = 'life' + (i >= gameState.lives ? ' lost' : '');
-        life.textContent = '❤️';
-        container.appendChild(life);
-    }
-}
-
-function renderOptions(q) {
-    const grid = document.getElementById('optionsGrid');
-    grid.innerHTML = '';
-    const labels = ['A', 'B', 'C', 'D'];
-    q.o.forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span class="option-label">${labels[i]}</span>${opt}`;
-        btn.onclick = () => selectAnswer(i, q);
-        grid.appendChild(btn);
-    });
+    const maxLives = currentQuiz.lives;
+    container.innerHTML = Array(maxLives).fill(0).map((_, i) =>
+        `<span class="life ${i >= currentQuiz.lives ? 'lost' : ''}">❤️</span>`
+    ).join('');
 }
 
 function startTimer() {
-    clearInterval(gameState.timerInterval);
-    let timeLeft = gameState.timeLimit;
-    const timerEl = document.getElementById('timer');
-    timerEl.textContent = timeLeft;
-    timerEl.classList.remove('warning');
-
-    gameState.timerInterval = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        if (timeLeft <= 5) timerEl.classList.add('warning');
-        if (timeLeft <= 0) { clearInterval(gameState.timerInterval); handleTimeout(); }
+    clearInterval(currentQuiz.timerInterval);
+    currentQuiz.timerInterval = setInterval(() => {
+        if (currentQuiz.timeLeft > 0) {
+            currentQuiz.timeLeft--;
+            document.getElementById('timer').textContent = currentQuiz.timeLeft;
+            if (currentQuiz.timeLeft <= 10) {
+                document.getElementById('timer').classList.add('warning');
+            }
+            if (currentQuiz.timeLeft <= 0) {
+                handleTimeout();
+            }
+        }
     }, 1000);
 }
 
-function handleTimeout() {
-    showFeedback(false);
-    gameState.lives--;
-    gameState.streak = 0;
-    renderLives();
-    setTimeout(() => {
-        if (gameState.lives <= 0) endChallenge(false);
-        else nextQuestion();
-    }, 1200);
+function stopTimer() {
+    clearInterval(currentQuiz.timerInterval);
 }
 
-function selectAnswer(index, question) {
-    clearInterval(gameState.timerInterval);
-    const isCorrect = index === question.a;
+function handleTimeout() {
+    stopTimer();
+    showFeedback(false);
+    currentQuiz.lives--;
+    currentQuiz.streak = 0;
+    renderLives();
+
+    setTimeout(() => {
+        if (currentQuiz.lives <= 0) {
+            endQuiz(false);
+        } else {
+            nextQuestion();
+        }
+    }, 1500);
+}
+
+function selectAnswer(index) {
+    stopTimer();
+    currentQuiz.totalAnswered++;
+
+    const q = currentQuiz.questions[currentQuiz.currentQ];
+    const isCorrect = index === q.a;
     const buttons = document.querySelectorAll('.option-btn');
+
     buttons.forEach(b => b.classList.add('disabled'));
+    buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) {
+        buttons[q.a].classList.add('correct');
+    }
 
     if (isCorrect) {
-        buttons[index].classList.add('correct');
         showFeedback(true);
-        gameState.correctCount++;
-        gameState.streak++;
-        const baseReward = difficultyRewards[question.d] || 10;
-        const streakBonus = (gameState.streak - 1) * 5;
-        gameState.score += baseReward + streakBonus;
-        createCelebration(8);
+        createCelebration();
+        currentQuiz.streak++;
+        currentQuiz.score += 100;
+
+        // Mode specific bonuses
+        if (currentQuiz.mode === 'timed') {
+            currentQuiz.timeLeft += 3;
+        } else if (currentQuiz.mode === 'elite') {
+            currentQuiz.score += 100;
+        } else if (currentQuiz.mode === 'endurance' && currentQuiz.streak >= 3) {
+            currentQuiz.lives = Math.min(currentQuiz.lives + 1, 5);
+        }
     } else {
-        buttons[index].classList.add('wrong');
-        buttons[question.a].classList.add('correct');
         showFeedback(false);
-        gameState.lives--;
-        gameState.streak = 0;
+        currentQuiz.lives--;
+        currentQuiz.streak = 0;
         renderLives();
     }
 
     setTimeout(() => {
-        if (gameState.lives <= 0) endChallenge(false);
-        else if (gameState.currentQuestion >= gameState.questions.length - 1) endChallenge(true);
-        else nextQuestion();
-    }, 1200);
+        if (currentQuiz.lives <= 0) {
+            endQuiz(false);
+        } else if (currentQuiz.currentQ >= currentQuiz.questions.length - 1) {
+            endQuiz(true);
+        } else {
+            nextQuestion();
+        }
+    }, 1500);
 }
 
 function nextQuestion() {
-    gameState.currentQuestion++;
+    currentQuiz.currentQ++;
     renderQuiz();
 }
 
-// ==================== 结束闯关 ====================
-function endChallenge(success) {
-    clearInterval(gameState.timerInterval);
+function endQuiz(success) {
+    stopTimer();
     clearCelebration();
 
-    const stars = success ? gameState.correctCount : 0;
-    const challengeName = gameState.currentChallenge;
+    // Calculate rewards
+    const goldEarned = Math.floor(currentQuiz.score / 10);
+    const fragmentEarned = success ? Math.floor(Math.random() * 3) + 1 : 0;
 
-    // 更新最高星级
-    if (!gameState.challengeStars[challengeName] || stars > gameState.challengeStars[challengeName]) {
-        gameState.challengeStars[challengeName] = stars;
+    gameState.player.gold += goldEarned;
+    gameState.player.totalAnswered = (gameState.player.totalAnswered || 0) + currentQuiz.totalAnswered;
+
+    // Random fragment
+    if (fragmentEarned > 0 && Math.random() > 0.5) {
+        const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
+        const randomChar = allChars[Math.floor(Math.random() * allChars.length)];
+        gameState.player.fragments[randomChar.id] = (gameState.player.fragments[randomChar.id] || 0) + fragmentEarned;
     }
 
-    // 计算金币奖励
-    let coinReward = success ? stars * 30 : 10;
-    gameState.coins += coinReward;
+    saveGame();
 
-    // 解锁下一个闯关
-    const allChallenges = Object.keys(subjects[gameState.currentSubject].challenges);
-    const currentIndex = allChallenges.indexOf(challengeName);
-    if (currentIndex < allChallenges.length - 1) {
-        const nextChallenge = allChallenges[currentIndex + 1];
-        if (!gameState.unlockedChallenges.includes(nextChallenge)) {
-            gameState.unlockedChallenges.push(nextChallenge);
-        }
-    }
-
-    // 首次通关给道具
-    let newItem = null;
-    if (success && stars >= 1 && Math.random() < 0.3) {
-        newItem = getRandomItem();
-        if (newItem && !gameState.collectedItems.includes(newItem.id)) {
-            gameState.collectedItems.push(newItem.id);
-            coinReward += 20;
-        }
-    }
-
-    saveGameData();
-
-    // 显示结果
+    // Show result
     document.getElementById('resultEmoji').textContent = success ? '🏆' : '💔';
-    document.getElementById('resultTitle').textContent = success ? '挑战成功!' : '挑战失败';
+    document.getElementById('resultTitle').textContent = success ? '恭喜通关！' : '挑战失败';
     document.getElementById('resultTitle').className = 'result-title ' + (success ? 'success' : 'fail');
-    document.getElementById('resultStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-    document.getElementById('resultCoins').textContent = '+' + coinReward;
 
-    const itemEl = document.getElementById('resultItem');
-    if (newItem) {
-        itemEl.style.display = 'flex';
-        document.getElementById('resultItemIcon').textContent = newItem.icon;
-        document.getElementById('resultItemName').textContent = '获得 ' + newItem.name;
-    } else {
-        itemEl.style.display = 'none';
-    }
+    const accuracy = currentQuiz.totalAnswered > 0
+        ? Math.round((currentQuiz.questions.filter((_, i) => i < currentQuiz.currentQ && true).length / currentQuiz.totalAnswered) * 100)
+        : 0;
 
-    if (success && stars >= 1) createMassiveCelebration();
+    document.getElementById('finalScore').textContent = currentQuiz.score;
+    document.getElementById('finalAccuracy').textContent = `${Math.round((currentQuiz.currentQ + 1) / currentQuiz.questions.length * 100)}%`;
+    document.getElementById('finalGold').textContent = `+${goldEarned}`;
+
+    document.getElementById('resultRewards').innerHTML = `
+        <div class="reward-item">
+            <div class="reward-icon">🪙</div>
+            <div class="reward-value">+${goldEarned}</div>
+            <div class="reward-label">金币</div>
+        </div>
+        ${fragmentEarned > 0 ? `
+        <div class="reward-item">
+            <div class="reward-icon">✨</div>
+            <div class="reward-value">+${fragmentEarned}</div>
+            <div class="reward-label">碎片</div>
+        </div>
+        ` : ''}
+    `;
+
     showPage('resultPage');
-}
 
-function getRandomItem() {
-    const allItems = [...ultramanItems, ...threeKingdomsItems];
-    const randomIndex = Math.floor(Math.random() * allItems.length);
-    return allItems[randomIndex];
-}
-
-// ==================== 商店 ====================
-function renderShop() {
-    renderShopSection('ultramanShop', ultramanItems);
-    renderShopSection('threeKingdomsShop', threeKingdomsItems);
-    renderShopSection('specialShop', specialItems);
-}
-
-function renderShopSection(containerId, items) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    items.forEach(item => {
-        const owned = gameState.collectedItems.includes(item.id);
-        const affordable = gameState.coins >= item.price;
-        const div = document.createElement('div');
-        div.className = 'shop-item' + (owned ? ' owned' : '') + (affordable && !owned ? ' affordable' : '');
-        div.innerHTML = `
-            <div class="shop-item-icon">${item.icon}</div>
-            <div class="shop-item-name">${item.name}</div>
-            <div class="shop-item-price">🪙 ${item.price}</div>
-            <div class="shop-item-rarity">${item.rarity}</div>
-            ${owned ? '<div class="shop-item-owned">已拥有</div>' : ''}
-        `;
-        if (!owned && affordable) {
-            div.onclick = () => buyItem(item);
-        }
-        container.appendChild(div);
-    });
-}
-
-function buyItem(item) {
-    if (gameState.coins < item.price) {
-        showToast('金币不足!');
-        return;
+    if (success) {
+        createMassiveCelebration();
     }
-    if (gameState.collectedItems.includes(item.id)) {
-        showToast('已拥有!');
-        return;
-    }
-    gameState.coins -= item.price;
-    gameState.collectedItems.push(item.id);
-    saveGameData();
-    updateCoinsDisplay();
-    renderShop();
-    showToast(`获得 ${item.icon} ${item.name}!`);
-    createMassiveCelebration();
 }
 
-// ==================== 收藏 ====================
-function renderCollection() {
-    document.getElementById('totalItems').textContent = gameState.collectedItems.length;
-    let totalStars = 0;
-    Object.values(gameState.challengeStars).forEach(s => totalStars += s);
-    document.getElementById('totalStars').textContent = totalStars;
-
-    renderCollectionSection('ultramanCollection', ultramanItems, 'ultramanCount');
-    renderCollectionSection('threeKingdomsCollection', threeKingdomsItems, 'threeKingdomsCount');
+// ==================== GALLERY ====================
+function showGallery() {
+    renderGallery('ultra');
+    showPage('galleryPage');
 }
 
-function renderCollectionSection(containerId, items, countId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    let ownedCount = 0;
-    items.forEach(item => {
-        const owned = gameState.collectedItems.includes(item.id);
-        if (owned) ownedCount++;
-        const div = document.createElement('div');
-        div.className = 'collection-item' + (owned ? '' : ' locked');
-        div.innerHTML = `
-            <div class="collection-item-icon">${owned ? item.icon : '❓'}</div>
-            <div class="collection-item-name">${owned ? item.name : '???'}</div>
-            ${owned ? '<div class="collection-item-owned">✓</div>' : ''}
+function switchGalleryTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderGallery(tab);
+}
+
+function renderGallery(tab) {
+    const container = document.getElementById('galleryGrid');
+    const chars = tab === 'ultra' ? ULTRA_HEROES : THREE_KINGDOMS;
+    const owned = gameState.player.characters || [];
+
+    container.innerHTML = chars.map(c => {
+        const isOwned = owned.includes(c.id);
+        const fragments = gameState.player.fragments[c.id] || 0;
+        return `
+            <div class="char-card-full ${isOwned ? 'owned' : 'locked'}">
+                <div class="char-icon">${c.emoji}</div>
+                <div class="char-name">${c.name}</div>
+                <div class="char-rarity">${c.rarity}</div>
+                ${isOwned ? '<div style="color:var(--success)">已拥有</div>' : `<div class="fragments-count">碎片: ${fragments}/${c.fragments}</div>`}
+            </div>
         `;
-        container.appendChild(div);
-    });
-    document.getElementById(countId).textContent = `${ownedCount}/${items.length}`;
+    }).join('');
 }
 
-// ==================== 工具函数 ====================
-function showFeedback(isCorrect) {
-    const el = document.getElementById('feedback');
-    el.textContent = isCorrect ? '正确! 🎉' : '错误! 😢';
-    el.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong') + ' show';
-    setTimeout(() => el.classList.remove('show'), 1000);
+// ==================== SHOP ====================
+function showShop() {
+    renderShop('chars');
+    showPage('shopPage');
 }
 
-function showToast(message) {
-    const el = document.getElementById('toast');
-    el.textContent = message;
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2000);
+function switchShopTab(tab) {
+    document.querySelectorAll('.shop-tab').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderShop(tab);
 }
 
-function createCelebration(count) {
+function renderShop(tab) {
+    const container = document.getElementById('shopContent');
+
+    if (tab === 'chars') {
+        const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
+        container.innerHTML = allChars.map(c => {
+            const owned = gameState.player.characters.includes(c.id);
+            return `
+                <div class="shop-item">
+                    <div class="shop-item-icon">${c.emoji}</div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">${c.name} ${c.rarity}</div>
+                        <div class="shop-item-desc">技能：${c.skill}</div>
+                    </div>
+                    <div class="shop-item-price">🪙 ${c.price}</div>
+                    <button class="shop-item-btn" ${owned || gameState.player.gold < c.price ? 'disabled' : ''} onclick="buyChar('${c.id}')">
+                        ${owned ? '已拥有' : '购买'}
+                    </button>
+                </div>
+            `;
+        }).join('');
+    } else if (tab === 'items') {
+        container.innerHTML = SHOP_ITEMS.map(item => `
+            <div class="shop-item">
+                <div class="shop-item-icon">${item.emoji}</div>
+                <div class="shop-item-info">
+                    <div class="shop-item-name">${item.name}</div>
+                    <div class="shop-item-desc">${item.desc}</div>
+                </div>
+                <div class="shop-item-price">🪙 ${item.price}</div>
+                <button class="shop-item-btn" ${gameState.player.gold < item.price ? 'disabled' : ''} onclick="buyItem('${item.id}')">购买</button>
+            </div>
+        `).join('');
+    } else {
+        container.innerHTML = EQUIPMENT.map(eq => `
+            <div class="shop-item">
+                <div class="shop-item-icon">${eq.emoji}</div>
+                <div class="shop-item-info">
+                    <div class="shop-item-name">${eq.name}</div>
+                    <div class="shop-item-desc">装备槽位：${eq.slot}</div>
+                </div>
+                <div class="shop-item-price">🪙 ${eq.price}</div>
+                <button class="shop-item-btn" ${gameState.player.gold < eq.price ? 'disabled' : ''} onclick="buyEquip('${eq.id}')">购买</button>
+            </div>
+        `).join('');
+    }
+}
+
+function buyChar(id) {
+    const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
+    const char = allChars.find(c => c.id === id);
+    if (!char || gameState.player.characters.includes(id)) return;
+
+    if (gameState.player.gold >= char.price) {
+        gameState.player.gold -= char.price;
+        gameState.player.characters.push(id);
+        saveGame();
+        updateHomeUI();
+        renderShop('chars');
+        alert(`恭喜获得 ${char.name}！`);
+    }
+}
+
+function buyItem(id) {
+    const item = SHOP_ITEMS.find(i => i.id === id);
+    if (!item || gameState.player.gold < item.price) return;
+
+    gameState.player.gold -= item.price;
+    gameState.player.items.push({ id: item.id, count: 1 });
+    saveGame();
+    updateHomeUI();
+    renderShop('items');
+}
+
+function buyEquip(id) {
+    const eq = EQUIPMENT.find(e => e.id === id);
+    if (!eq || gameState.player.gold < eq.price) return;
+
+    gameState.player.gold -= eq.price;
+    gameState.player.equipment[eq.slot] = id;
+    saveGame();
+    updateHomeUI();
+    renderShop('equip');
+}
+
+// ==================== TASKS ====================
+function showTasks() {
+    renderTasks('daily');
+    showPage('tasksPage');
+}
+
+function switchTaskTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderTasks(tab);
+}
+
+function renderTasks(tab) {
+    const container = document.getElementById('tasksContent');
+    const tasks = tab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
+    const progress = tab === 'daily' ? (gameState.dailyTasks || {}) : (gameState.weeklyTasks || {});
+
+    container.innerHTML = tasks.map(t => {
+        const p = progress[t.id] || 0;
+        const completed = p >= t.target;
+        return `
+            <div class="task-card">
+                <div class="task-icon">${completed ? '✅' : '📋'}</div>
+                <div class="task-info">
+                    <div class="task-name">${t.name}</div>
+                    <div class="task-desc">${t.desc}</div>
+                    <div class="task-progress">${p}/${t.target}</div>
+                </div>
+                <div class="task-reward">
+                    <span>🪙 ${t.reward.value}</span>
+                    <button class="task-btn" ${completed ? 'disabled' : ''}>领取</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ==================== EFFECTS ====================
+function showFeedback(correct) {
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = correct ? '正确！🎉' : '错误！😢';
+    feedback.className = 'feedback ' + (correct ? 'correct' : 'wrong') + ' show';
+    setTimeout(() => feedback.className = 'feedback hide', 1200);
+}
+
+function createCelebration() {
     const container = document.getElementById('celebration');
     const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9'];
-    for (let i = 0; i < count; i++) {
-        const c = document.createElement('div');
-        c.className = 'confetti';
-        c.style.left = Math.random() * 100 + '%';
-        c.style.background = colors[Math.floor(Math.random() * colors.length)];
-        c.style.animationDelay = Math.random() * 0.3 + 's';
-        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-        container.appendChild(c);
-        setTimeout(() => c.remove(), 2500);
+    for (let i = 0; i < 15; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 2500);
     }
 }
 
 function createMassiveCelebration() {
-    createCelebration(50);
+    const container = document.getElementById('celebration');
+    const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9'];
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        container.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+    }
 }
 
 function clearCelebration() {
     document.getElementById('celebration').innerHTML = '';
 }
 
-function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
-
-function confirmQuit() {
-    if (confirm('确定要退出挑战吗？')) {
-        clearInterval(gameState.timerInterval);
-        showSubjects();
-    }
-}
-
 function createParticles() {
     const container = document.getElementById('particles');
     for (let i = 0; i < 15; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDelay = Math.random() * 15 + 's';
-        p.style.animationDuration = (10 + Math.random() * 10) + 's';
-        container.appendChild(p);
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+        container.appendChild(particle);
     }
 }
 
-// ==================== 初始化 ====================
-function init() {
-    loadGameData();
-    createParticles();
-}
-
-init();
-
-// PWA Service Worker
+// ==================== PWA ====================
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(() => {});
     });
 }
+
+// Initialize
+init();
 </script>
 </body>
 </html>
