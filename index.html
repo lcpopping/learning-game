@@ -899,7 +899,11 @@ function endBattle(victory) {
                 }
             }
         });
-        if (currentBattle.level > (gameState.chapterProgress[currentBattle.chapter - 1] || 0)) { gameState.chapterProgress[currentBattle.chapter - 1] = currentBattle.level; }
+        if (currentBattle.level > (gameState.chapterProgress[currentBattle.chapter - 1] || 0)) {
+            if (currentBattle.chapter <= 5) {
+                gameState.chapterProgress[currentBattle.chapter - 1] = currentBattle.level;
+            }
+        }
         if (currentBattle.level % 10 === 0 && currentBattle.chapter < 5) { gameState.unlockedChapters = Math.max(gameState.unlockedChapters, currentBattle.chapter + 1); }
     }
     let fragmentDrop = null;
