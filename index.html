@@ -53,6 +53,7 @@
         .char-card.selected { border-color: var(--accent); background: rgba(253,203,110,0.15); }
         .char-card.on-team { border-color: var(--success); }
         .char-emoji { font-size: 2.5rem; }
+        .char-img { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 5px; object-fit: cover; background: rgba(255,255,255,0.1); }
         .char-name { font-size: 0.85rem; margin-top: 5px; }
         .char-level { font-size: 0.7rem; color: var(--secondary); }
         .char-hp { font-size: 0.65rem; color: var(--error); margin-top: 3px; }
@@ -299,6 +300,48 @@
 
 <script>
 // ==================== GAME DATA ====================
+// Character image URLs using DiceBear API (free, no copyright)
+const CHAR_IMAGES = {
+    chinese: 'https://api.dicebear.com/7.x/lorelei/svg?seed=chinese-teacher&backgroundColor=b6e3f4',
+    math: 'https://api.dicebear.com/7.x/lorelei/svg?seed=math-prince&backgroundColor=c0aede',
+    english: 'https://api.dicebear.com/7.x/lorelei/svg?seed=english-master&backgroundColor=d1d4f9',
+    science: 'https://api.dicebear.com/7.x/lorelei/svg?seed=science-genius&backgroundColor=b9f2bc',
+    sports: 'https://api.dicebear.com/7.x/lorelei/svg?seed=sports-star&backgroundColor=ffee4b',
+    art: 'https://api.dicebear.com/7.x/lorelei/svg?seed=art-master&backgroundColor=ffd5dc',
+    ultraman: 'https://api.dicebear.com/7.x/bottts/svg?seed=ultraman&backgroundColor=ff6b6b',
+    seven: 'https://api.dicebear.com/7.x/bottts/svg?seed=seven-man&backgroundColor=ffd93d',
+    jack: 'https://api.dicebear.com/7.x/bottts/svg?seed=jack-man&backgroundColor=6bcb77',
+    ace: 'https://api.dicebear.com/7.x/bottts/svg?seed=ace-man&backgroundColor=4d96ff',
+    taro: 'https://api.dicebear.com/7.x/bottts/svg?seed=taro-man&backgroundColor=ff6b6b',
+    leo: 'https://api.dicebear.com/7.x/bottts/svg?seed=leo-man&backgroundColor=c9b1ff',
+    diga: 'https://api.dicebear.com/7.x/bottts/svg?seed=diga-man&backgroundColor=00cec9',
+    dyna: 'https://api.dicebear.com/7.x/bottts/svg?seed=dyna-man&backgroundColor=81ecec',
+    ginga: 'https://api.dicebear.com/7.x/bottts/svg?seed=ginga-man&backgroundColor=fdcb6e',
+    victory: 'https://api.dicebear.com/7.x/bottts/svg?seed=victory-man&backgroundColor=a29bfe',
+    orb: 'https://api.dicebear.com/7.x/bottts/svg?seed=orb-man&backgroundColor=55efc4',
+    geiz: 'https://api.dicebear.com/7.x/bottts/svg?seed=geiz-man&backgroundColor=fab1a0',
+    robu: 'https://api.dicebear.com/7.x/bottts/svg?seed=robu-man&backgroundColor=74b9ff',
+    grigio: 'https://api.dicebear.com/7.x/bottts/svg?seed=grigio-girl&backgroundColor=fd79a8',
+    taiga: 'https://api.dicebear.com/7.x/bottts/svg?seed=taiga-man&backgroundColor=e17055',
+    zearth: 'https://api.dicebear.com/7.x/bottts/svg?seed=zearth-man&backgroundColor=0984e3',
+    zhugeliang: 'https://api.dicebear.com/7.x/adventurer/svg?seed=zhugeliang&backgroundColor=b2bec3',
+    guanyu: 'https://api.dicebear.com/7.x/adventurer/svg?seed=guanyu&backgroundColor=ff7675',
+    lvbu: 'https://api.dicebear.com/7.x/adventurer/svg?seed=lvbu&backgroundColor=fdcb6e',
+    zhaoyun: 'https://api.dicebear.com/7.x/adventurer/svg?seed=zhaoyun&backgroundColor=74b9ff',
+    zhangfei: 'https://api.dicebear.com/7.x/adventurer/svg?seed=zhangfei&backgroundColor=55a3ff',
+    caocao: 'https://api.dicebear.com/7.x/adventurer/svg?seed=caocao&backgroundColor=d63031',
+    zhouyu: 'https://api.dicebear.com/7.x/adventurer/svg?seed=zhouyu&backgroundColor=e84393',
+    simayi: 'https://api.dicebear.com/7.x/adventurer/svg?seed=simayi&backgroundColor=636e72',
+    sunquan: 'https://api.dicebear.com/7.x/adventurer/svg?seed=sunquan&backgroundColor=0984e3',
+    dianwei: 'https://api.dicebear.com/7.x/adventurer/svg?seed=dianwei&backgroundColor=e17055',
+    xiahoudun: 'https://api.dicebear.com/7.x/adventurer/svg?seed=xiahoudun&backgroundColor=fab1a0',
+    luxun: 'https://api.dicebear.com/7.x/adventurer/svg?seed=luxun&backgroundColor=00b894',
+    jiangwei: 'https://api.dicebear.com/7.x/adventurer/svg?seed=jiangwei&backgroundColor=6c5ce7',
+    diaochan: 'https://api.dicebear.com/7.x/lorelei/svg?seed=diaochan&backgroundColor=fd79a8',
+    huangzhong: 'https://api.dicebear.com/7.x/adventurer/svg?seed=huangzhong&backgroundColor=f39c12',
+    zhangliao: 'https://api.dicebear.com/7.x/adventurer/svg?seed=zhangliao&backgroundColor=00cec9'
+};
+
 const SUBJECT_CHARS = [
     { id: 'chinese', name: '语文老师', emoji: '📖', hp: 100, atk: 10, talent: '诗词结界', talentDesc: '答错时20%概率免疫', subject: 'chinese' },
     { id: 'math', name: '数学王子', emoji: '🔢', hp: 80, atk: 15, talent: '计算风暴', talentDesc: '答题速度+50%', subject: 'math' },
@@ -461,7 +504,37 @@ const QUESTION_BANK = {
         { q: "'Thank you'的意思是？", o: ["你好", "对不起", "谢谢", "再见"], a: 2 },
         { q: "'Goodbye'的中文是？", o: ["你好", "谢谢", "再见", "对不起"], a: 2 },
         { q: "'Yes'的反义词是？", o: ["No", "Not", "Good", "Bad"], a: 0 },
-        { q: "'Eye'是指哪个部位？", o: ["鼻子", "嘴巴", "眼睛", "耳朵"], a: 2 }
+        { q: "'Eye'是指哪个部位？", o: ["鼻子", "嘴巴", "眼睛", "耳朵"], a: 2 },,
+        { q: "Water是什么意思？", o: ["土地", "水", "天空", "火焰"], a: 1 },
+        { q: "Fire的中文是？", o: ["水", "土", "火", "风"], a: 2 },
+        { q: "Sun是指哪个天体？", o: ["月亮", "太阳", "星星", "地球"], a: 1 },
+        { q: "Moon翻译成中文是？", o: ["太阳", "月亮", "星星", "地球"], a: 1 },
+        { q: "Book是什么意思？", o: ["笔记本", "书", "本子", "报纸"], a: 1 },
+        { q: "School的中文是？", o: ["商店", "学校", "医院", "公园"], a: 1 },
+        { q: "Teacher是指什么人？", o: ["医生", "老师", "学生", "护士"], a: 1 },
+        { q: "Pencil是什么文具？", o: ["橡皮", "铅笔", "尺子", "书包"], a: 1 },
+        { q: "Chair是指什么家具？", o: ["桌子", "椅子", "床", "沙发"], a: 1 },
+        { q: "Table翻译成中文是？", o: ["椅子", "桌子", "床", "柜子"], a: 1 },
+        { q: "Run是什么意思？", o: ["走路", "跑步", "跳跃", "游泳"], a: 1 },
+        { q: "Jump的中文是？", o: ["跑步", "走路", "跳跃", "站立"], a: 1 },
+        { q: "Swim是指什么运动？", o: ["跑步", "游泳", "踢球", "跳绳"], a: 1 },
+        { q: "Eat是什么意思？", o: ["喝", "吃", "睡", "玩"], a: 1 },
+        { q: "Drink的中文是？", o: ["吃", "喝", "睡", "跑"], a: 1 },
+        { q: "Read是指什么动作？", o: ["写", "读", "画", "唱"], a: 1 },
+        { q: "Write是什么意思？", o: ["读", "写", "画", "算"], a: 1 },
+        { q: "Sing的中文是？", o: ["跳舞", "唱歌", "演奏", "听"], a: 1 },
+        { q: "Dance是指什么？", o: ["唱歌", "跳舞", "演戏", "说话"], a: 1 },
+        { q: "Play可以表示什么？", o: ["工作", "学习", "玩耍", "休息"], a: 2 },
+        { q: "I am a student意思是？", o: ["我是老师", "我是学生", "我在学校", "我回家了"], a: 1 },
+        { q: "This is my book翻译成中文是？", o: ["那是我的书", "这是我的书", "这是你的书", "那不是我的书"], a: 1 },
+        { q: "How are you?的正确回答是？", o: ["I am 10", "I am fine", "I am a boy", "I go to school"], a: 1 },
+        { q: "What is your name?问的是什么？", o: ["年龄", "姓名", "学校", "班级"], a: 1 },
+        { q: "Nice to meet you是什么意思？", o: ["很高兴见到你", "很高兴你来了", "很高兴你走了", "很高兴你走了"], a: 0 },
+        { q: "How old are you?问的是？", o: ["姓名", "年龄", "学校", "班级"], a: 1 },
+        { q: "I like apples的意思是？", o: ["我不喜欢苹果", "我喜欢苹果", "我爱香蕉", "我不爱吃水果"], a: 1 },
+        { q: "It is a cat翻译成中文是？", o: ["那是一只狗", "这是一只猫", "这是一只鸟", "那是一只鱼"], a: 1 },
+        { q: "I can swim的意思是？", o: ["我不会游泳", "我会游泳", "我想游泳", "我需要游泳"], a: 1 },
+        { q: "She is a girl翻译成中文是？", o: ["他是一个男孩", "她是一个女孩", "它是一只猫", "她很漂亮"], a: 1 }
     ],
     science: [
         { q: "太阳从哪个方向升起？", o: ["西边", "东边", "南边", "北边"], a: 1 },
@@ -483,7 +556,35 @@ const QUESTION_BANK = {
         { q: "我们用什么看东西？", o: ["耳朵", "鼻子", "眼睛", "嘴巴"], a: 2 },
         { q: "我们用什么听声音？", o: ["眼睛", "嘴巴", "耳朵", "鼻子"], a: 2 },
         { q: "一年有几个季节？", o: ["2个", "3个", "4个", "5个"], a: 2 },
-        { q: "月亮什么时候最圆？", o: ["初一", "十五", "三十", "每天一样"], a: 1 }
+        { q: "月亮什么时候最圆？", o: ["初一", "十五", "三十", "每天一样"], a: 1 },,
+        { q: "为什么会打雷？", o: ["云太重", "两只云碰撞", "风太大", "太阳消失"], a: 1 },
+        { q: "彩虹一般出现在什么时候？", o: ["中午", "下雨后", "早上", "晚上"], a: 1 },
+        { q: "星星为什么会闪烁？", o: ["星星在动", "大气层折射", "云挡着了", "地球转动"], a: 1 },
+        { q: "什么季节白天最短？", o: ["春天", "夏天", "秋天", "冬天"], a: 3 },
+        { q: "夏天为什么热？", o: ["太阳离地球近", "地球转得快", "风是热的", "下雨少"], a: 0 },
+        { q: "什么动物会冬眠？", o: ["狗", "熊", "兔子", "马"], a: 1 },
+        { q: "变色龙会改变颜色为了什么？", o: ["好玩", "伪装保护自己", "心情不好", "吸引异性"], a: 1 },
+        { q: "鸟巢为什么一般建在高处？", o: ["好看", "安全", "通风", "方便"], a: 1 },
+        { q: "乌龟为什么爬得慢？", o: ["腿短", "有壳", "累了", "不着急"], a: 1 },
+        { q: "兔子的眼睛为什么是红色的？", o: ["血统问题", "色素问题", "血管问题", "光线问题"], a: 1 },
+        { q: "血液为什么是红色的？", o: ["有铁", "有氧", "有红细胞", "有色素"], a: 2 },
+        { q: "大脑在哪里？", o: ["胸腔", "腹腔", "头骨内", "脊椎里"], a: 2 },
+        { q: "胃的作用是什么？", o: ["消化食物", "过滤血液", "产生血液", "呼吸空气"], a: 0 },
+        { q: "骨头有什么作用？", o: ["造血", "支撑身体", "产生热量", "调节体温"], a: 1 },
+        { q: "我们吃进去的食物到哪里去了？", o: ["消失了", "胃和小肠消化", "直接变成能量", "排出体外"], a: 1 },
+        { q: "地球是什么形状的？", o: ["平的", "方的", "球形", "三角形"], a: 2 },
+        { q: "月亮自己不发光，它的光从哪来？", o: ["太阳", "星星", "地球", "自己发光的"], a: 0 },
+        { q: "太阳系中有几颗行星？", o: ["7颗", "8颗", "9颗", "10颗"], a: 1 },
+        { q: "什么星白天也出现在天上？", o: ["月亮", "火星", "金星", "所有星星"], a: 0 },
+        { q: "一年是多少天？", o: ["300天", "365天", "400天", "366天"], a: 1 },
+        { q: "水烧开时会变成什么？", o: ["冰", "水蒸气", "空气", "消失"], a: 1 },
+        { q: "冰融化成水需要什么？", o: ["加盐", "加热", "加糖", "加冰"], a: 1 },
+        { q: "镜子为什么能照出人影？", o: ["光滑", "反光", "透明", "有颜色"], a: 1 },
+        { q: "放大镜能把东西放大是因为什么？", o: ["镜片厚", "镜片薄", "光线折射", "颜色"], a: 2 },
+        { q: "为什么先看到闪电后听到雷声？", o: ["眼睛快", "耳朵慢", "光速比声速快", "距离问题"], a: 2 },
+        { q: "磁铁能吸引什么？", o: ["木头", "塑料", "铁", "布"], a: 2 },
+        { q: "声音可以在哪里传播？", o: ["真空", "空气", "太空", "都不对"], a: 1 },
+        { q: "植物的种子是怎么传播的？", o: ["风吹", "动物携带", "水流", "以上都有可能"], a: 3 }
     ],
     sports: [
         { q: "足球比赛每队有多少人？", o: ["8人", "9人", "11人", "12人"], a: 2 },
@@ -505,7 +606,37 @@ const QUESTION_BANK = {
         { q: "做俯卧撑时，手臂应该怎么放？", o: ["比肩宽", "与肩同宽", "比肩窄", "无所谓"], a: 1 },
         { q: "踢足球时，用脚哪个部位踢球最准？", o: ["脚尖", "脚背", "脚跟", "脚侧"], a: 1 },
         { q: "拔河比赛中，胜负取决于什么？", o: ["力量", "技巧", "团队协作", "以上都是"], a: 3 },
-        { q: "体育课穿什么鞋最合适？", o: ["皮鞋", "运动鞋", "拖鞋", "凉鞋"], a: 1 }
+        { q: "体育课穿什么鞋最合适？", o: ["皮鞋", "运动鞋", "拖鞋", "凉鞋"], a: 1 },,
+        { q: "长跑比赛中1500米属于哪种距离？", o: ["短跑", "中跑", "长跑", "超长跑"], a: 1 },
+        { q: "游泳时哪种姿势最快？", o: ["蛙泳", "仰泳", "自由泳", "狗刨"], a: 2 },
+        { q: "打网球时，球拍一般用什么材质？", o: ["木头", "金属或碳纤维", "塑料", "玻璃"], a: 1 },
+        { q: "铅球比赛中，铅球有多重？", o: ["1公斤", "2公斤", "4公斤", "5公斤"], a: 1 },
+        { q: "体操比赛中，空翻属于什么动作？", o: ["力量动作", "柔韧动作", "技巧动作", "平衡动作"], a: 2 },
+        { q: "剧烈运动前为什么要做准备活动？", o: ["让老师高兴", "预防肌肉拉伤", "多此一举", "为了好看"], a: 1 },
+        { q: "运动后大量出汗应该补充什么？", o: ["纯净水", "淡盐水或运动饮料", "可乐", "果汁"], a: 1 },
+        { q: "如果扭伤脚踝第一时间应该怎么做？", o: ["按摩", "热敷", "冰敷", "走动"], a: 2 },
+        { q: "运动时心率加快说明什么？", o: ["生病了", "正常生理反应", "太累了", "要停下来"], a: 1 },
+        { q: "每天运动多长时间比较合适？", o: ["越久越好", "30分钟到1小时", "10分钟", "2小时以上"], a: 1 },
+        { q: "乒乓球比赛中，每局是多少分？", o: ["11分", "15分", "21分", "25分"], a: 0 },
+        { q: "足球比赛中，越位是什么意思？", o: ["越过界线", "进攻球员在球前", "守门员出禁区", "进球无效"], a: 1 },
+        { q: "排球比赛中，拦网属于什么技术？", o: ["进攻技术", "防守技术", "发球技术", "传球技术"], a: 1 },
+        { q: "网球大满贯赛事不包括哪个？", o: ["澳网", "法网", "英网", "美网"], a: 2 },
+        { q: "高尔夫球为什么要用球杆打？", o: ["球很硬", "球很轻", "距离远用手打不到", "规则规定"], a: 2 },
+        { q: "奥运会每几年举办一次？", o: ["2年", "3年", "4年", "5年"], a: 2 },
+        { q: "2028年奥运会将在哪里举办？", o: ["东京", "巴黎", "洛杉矶", "北京"], a: 2 },
+        { q: "残奥会的参赛选手是哪些人？", o: ["年轻人", "老年人", "残疾人", "运动员"], a: 2 },
+        { q: "冬季奥运会和夏季奥运会举办时间相同吗？", o: ["相同", "不同", "交替举办", "合并举办"], a: 1 },
+        { q: "奥运五环代表什么？", o: ["五大洲", "五种运动", "五个国家", "五个人"], a: 0 },
+        { q: "篮球比赛中持球进攻最多能走几步？", o: ["1步", "2步", "3步", "0步"], a: 1 },
+        { q: "足球比赛中点球是什么意思？", o: ["在点上踢球", "防守方犯规后进攻方射门", "中场踢球", "角球"], a: 1 },
+        { q: "为什么运动员要穿运动服参加比赛？", o: ["好看", "便于运动", "规定必须穿", "便宜"], a: 1 },
+        { q: "引体向上主要锻炼哪里？", o: ["腹部", "腿部", "背部", "胸部"], a: 2 },
+        { q: "坐位体前屈主要测试什么？", o: ["力量", "柔韧性", "速度", "耐力"], a: 1 },
+        { q: "正常人安静时的心率大约是多少？", o: ["40-50次/分", "60-100次/分", "100-120次/分", "120次以上"], a: 1 },
+        { q: "跑步时呼吸应该怎么做？", o: ["只用鼻子", "只用嘴", "鼻吸口呼", "都不对"], a: 2 },
+        { q: "剧烈运动后为什么不能马上坐下？", o: ["会变胖", "血液回流受影响", "裤子会脏", "没有为什么"], a: 1 },
+        { q: "运动前吃什么比较好？", o: ["什么都不吃", "流质食物", "高脂肪食物", "大鱼大肉"], a: 1 },
+        { q: "最佳的锻炼时间是？", o: ["空腹时", "饭后1-2小时", "随时都可以", "睡前"], a: 1 }
     ],
     general: [
         { q: "中国的首都在哪里？", o: ["上海", "北京", "广州", "深圳"], a: 1 },
@@ -527,7 +658,42 @@ const QUESTION_BANK = {
         { q: "《两只老虎》是一首什么类型的歌？", o: ["情歌", "儿童歌曲", "摇滚", "民歌"], a: 1 },
         { q: "世界上最高的山是？", o: ["华山", "黄山", "珠穆朗玛峰", "泰山"], a: 2 },
         { q: "中国的国宝动物是？", o: ["老虎", "熊猫", "狮子", "孔雀"], a: 1 },
-        { q: "地球是什么形状的？", o: ["正方形", "三角形", "圆形", "球形"], a: 3 }
+        { q: "地球是什么形状的？", o: ["正方形", "三角形", "圆形", "球形"], a: 3 },,
+        { q: "中国有多少个省级行政区？", o: ["23个", "31个", "33个", "35个"], a: 1 },
+        { q: "长江流经哪个城市？", o: ["北京", "上海", "武汉", "西安"], a: 2 },
+        { q: "黄河发源于哪个省？", o: ["青海", "四川", "甘肃", "西藏"], a: 0 },
+        { q: "中国最大的淡水湖是哪个？", o: ["洞庭湖", "鄱阳湖", "太湖", "西湖"], a: 1 },
+        { q: "喜马拉雅山主峰叫什么？", o: ["乔戈里峰", "珠穆朗玛峰", "干城章嘉峰", "洛子峰"], a: 1 },
+        { q: "秦始皇统一六国是在哪个朝代？", o: ["西周", "春秋", "战国", "秦朝"], a: 3 },
+        { q: "三国时期不包括哪个国家？", o: ["魏", "蜀", "吴", "燕"], a: 3 },
+        { q: "唐朝的开国皇帝是谁？", o: ["李世民", "李渊", "李隆基", "武则天"], a: 1 },
+        { q: "郑和下西洋去了多少次？", o: ["5次", "6次", "7次", "8次"], a: 2 },
+        { q: "中国近代史的开端是哪个事件？", o: ["甲午战争", "鸦片战争", "辛亥革命", "五四运动"], a: 1 },
+        { q: "《蒙娜丽莎》是谁画的？", o: ["米开朗基罗", "达芬奇", "拉斐尔", "毕加索"], a: 1 },
+        { q: "钢琴有几组黑白键？", o: ["6组", "7组", "8组", "9组"], a: 1 },
+        { q: "《月光奏鸣曲》是谁的作品？", o: ["莫扎特", "贝多芬", "肖邦", "李斯特"], a: 1 },
+        { q: "二胡有几根弦？", o: ["1根", "2根", "3根", "4根"], a: 1 },
+        { q: "国画按题材分为哪三类？", o: ["山水、花鸟、人物", "人物、风景、动物", "花鸟、虫鱼、人物", "以上都不是"], a: 0 },
+        { q: "火警电话是多少？", o: ["110", "120", "119", "114"], a: 2 },
+        { q: "急救电话是多少？", o: ["110", "120", "119", "114"], a: 1 },
+        { q: "中国的传统节日端午节是纪念谁？", o: ["屈原", "孔子", "老子", "孟子"], a: 0 },
+        { q: "元宵节是农历哪一天？", o: ["正月十五", "正月十五", "八月十五", "腊月十五"], a: 1 },
+        { q: "下列哪种行为节约用水？", o: ["长时间淋浴", "用流动水洗手", "刷牙时关闭水龙头", "洗车一直用水管"], a: 2 },
+        { q: "过马路时应该走哪里？", o: ["人行道", "机动车道", "哪里都行", "隧道"], a: 0 },
+        { q: "发生火灾时应该怎么做？", o: ["坐电梯下楼", "用湿毛巾捂住口鼻", "从窗户跳下", "返回取东西"], a: 1 },
+        { q: "一个人在家有陌生人敲门应该怎么做？", o: ["直接开门", "假装家里没人", "询问并确认身份后再开门", "大声尖叫"], a: 2 },
+        { q: "发生地震时在室内应该怎么做？", o: ["跑出去", "躲在桌子等坚固家具下", "跳窗", "坐电梯"], a: 1 },
+        { q: "游泳时看到有人溺水应该怎么做？", o: ["自己下水救人", "立即呼救找大人帮忙", "离开不管", "扔漂浮物"], a: 1 },
+        { q: "中国书法有哪几种书体？", o: ["2种", "3种", "4种", "5种"], a: 2 },
+        { q: "文房四宝是指什么？", o: ["笔墨纸砚", "笔墨纸书", "笔刷纸砚", "笔墨纸卷"], a: 0 },
+        { q: "春节贴福字象征什么？", o: ["福气", "福到", "幸福", "都是"], a: 3 },
+        { q: "中秋节是农历哪一天？", o: ["七月十五", "八月十五", "九月十五", "十月十五"], a: 1 },
+        { q: "重阳节是农历哪一天？", o: ["七月初九", "八月初九", "九月初九", "十月初九"], a: 2 },
+        { q: "二十四节气中哪一个是节气之首？", o: ["春分", "夏至", "立春", "冬至"], a: 2 },
+        { q: "中国戏曲中扇子功是什么？", o: ["用扇子打人", "表演技巧", "扇风乘凉", "装饰品"], a: 1 },
+        { q: "太极拳的发源地是哪里？", o: ["北京", "河南", "四川", "广东"], a: 1 },
+        { q: "中国有多少个民族？", o: ["54个", "56个", "58个", "60个"], a: 1 },
+        { q: "中国最大的岛屿是哪个？", o: ["海南岛", "台湾岛", "舟山岛", "崇明岛"], a: 1 }
     ]
 };
 
@@ -559,7 +725,9 @@ function renderCharGrid() {
     container.innerHTML = SUBJECT_CHARS.map(sc => {
         const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 };
         const isOnTeam = gameState.team.includes(sc.id);
-        return `<div class="char-card ${isOnTeam ? 'on-team' : ''}" onclick="toggleTeamMember('${sc.id}')"><div class="team-indicator">${isOnTeam ? '✅' : ''}</div><div class="char-emoji">${sc.emoji}</div><div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
+        const imgUrl = CHAR_IMAGES[sc.id] || '';
+        const iconHtml = imgUrl ? `<img class="char-img" src="${imgUrl}" alt="${sc.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="char-emoji" style="display:none">${sc.emoji}</span>` : `<span class="char-emoji">${sc.emoji}</span>`;
+        return `<div class="char-card ${isOnTeam ? 'on-team' : ''}" onclick="toggleTeamMember('${sc.id}')"><div class="team-indicator">${isOnTeam ? '✅' : ''}</div>${iconHtml}<div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
     }).join('');
 }
 
@@ -616,12 +784,14 @@ function renderTeamSelect() {
     document.getElementById('maxTeam').textContent = maxTeam;
     document.getElementById('teamCount').textContent = gameState.team.length;
     const teamDisplay = document.getElementById('teamDisplay');
-    teamDisplay.innerHTML = gameState.team.map(id => { const sc = SUBJECT_CHARS.find(s => s.id === id); return `<div class="team-slot filled">${sc.emoji}</div>`; }).join('') + Array(maxTeam - gameState.team.length).fill('<div class="team-slot"></div>').join('');
+    teamDisplay.innerHTML = gameState.team.map(id => { const sc = SUBJECT_CHARS.find(s => s.id === id); const imgUrl = CHAR_IMAGES[sc.id] || ''; return `<div class="team-slot filled">${imgUrl ? `<img src="${imgUrl}" style="width:40px;height:40px;border-radius:50%">` : sc.emoji}</div>`; }).join('') + Array(maxTeam - gameState.team.length).fill('<div class="team-slot"></div>').join('');
     const charGrid = document.getElementById('teamCharGrid');
     charGrid.innerHTML = SUBJECT_CHARS.map(sc => {
         const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 };
         const isOnTeam = gameState.team.includes(sc.id);
-        return `<div class="char-card ${isOnTeam ? 'selected' : ''}" onclick="toggleTeamMember('${sc.id}')"><div class="char-emoji">${sc.emoji}</div><div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
+        const imgUrl = CHAR_IMAGES[sc.id] || '';
+        const iconHtml = imgUrl ? `<img class="char-img" src="${imgUrl}" alt="${sc.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="char-emoji" style="display:none">${sc.emoji}</span>` : `<span class="char-emoji">${sc.emoji}</span>`;
+        return `<div class="char-card ${isOnTeam ? 'selected' : ''}" onclick="toggleTeamMember('${sc.id}')">${iconHtml}<div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
     }).join('');
 }
 
@@ -754,7 +924,11 @@ function renderGallery(tab) {
     if (tab === 'chars') { items = SUBJECT_CHARS.map(sc => { const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 }; return { ...sc, owned: true, level: charData.level }; }); }
     else if (tab === 'ultra') { items = ULTRA_HEROES.map(h => ({ ...h, owned: gameState.player.characters?.includes(h.id), fragments: gameState.player.fragments[h.id] || 0 })); }
     else { items = TK_HEROES.map(h => ({ ...h, owned: gameState.player.characters?.includes(h.id), fragments: gameState.player.fragments[h.id] || 0 })); }
-    container.innerHTML = items.map(item => `<div class="gallery-card ${item.owned ? 'owned' : 'locked'}"><div class="gallery-icon">${item.emoji}</div><div class="gallery-name">${item.name}</div><div class="gallery-rarity">${item.rarity || ''}</div>${item.owned ? '<div style="color:var(--success);font-size:0.7rem">已拥有</div>' : `<div class="gallery-frags">碎片: ${item.fragments}/${item.fragments}</div>`}</div>`).join('');
+    container.innerHTML = items.map(item => {
+        const imgUrl = CHAR_IMAGES[item.id] || '';
+        const iconHtml = imgUrl ? `<img class="char-img" src="${imgUrl}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="gallery-icon" style="display:none">${item.emoji}</span>` : `<span class="gallery-icon">${item.emoji}</span>`;
+        return `<div class="gallery-card ${item.owned ? 'owned' : 'locked'}">${iconHtml}<div class="gallery-name">${item.name}</div><div class="gallery-rarity">${item.rarity || ''}</div>${item.owned ? '<div style="color:var(--success);font-size:0.7rem">已拥有</div>' : `<div class="gallery-frags">碎片: ${item.fragments}/${item.fragments}</div>`}</div>`;
+    }).join('');
 }
 
 function switchGalleryTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'chars' ? '科目' : tab === 'ultra' ? '奥特曼' : '三国'))); renderGallery(tab); }
