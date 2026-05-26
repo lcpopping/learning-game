@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#6C5CE7">
-    <meta name="description" content="学习大闯关 - 收集奥特曼和三国人物！">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>学习大闯关</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
@@ -21,181 +18,157 @@
             --text: #FFFFFF;
             --error: #FF6B6B;
             --success: #26DE81;
-            --common: #BDBDBD;
-            --uncommon: #26DE81;
-            --rare: #4D9FFF;
-            --epic: #A855F7;
-            --legendary: #F97316;
         }
         body {
-            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-light));
             min-height: 100vh;
             color: var(--text);
             overflow-x: hidden;
         }
         .container { max-width: 800px; margin: 0 auto; padding: 15px; min-height: 100vh; }
-        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page { display: none; animation: fadeIn 0.4s; }
         .page.active { display: flex; flex-direction: column; align-items: center; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
 
-        /* Header */
-        .header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; }
+        .header { width: 100%; display: flex; justify-content: space-between; padding: 12px 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 15px; gap: 10px; }
         .player-info { display: flex; align-items: center; gap: 10px; }
-        .player-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .player-stats { font-size: 0.85rem; }
-        .player-level { background: var(--accent); color: #333; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .level-badge { background: var(--accent); color: #333; padding: 2px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
         .gold-display { display: flex; align-items: center; gap: 5px; color: var(--accent); font-weight: bold; }
 
-        /* Buttons */
-        .btn { padding: 12px 30px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; }
+        .btn { padding: 12px 25px; font-size: 1rem; font-weight: bold; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s; font-family: inherit; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 5px 20px rgba(108,92,231,0.4); }
         .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2); }
-        .btn:hover { transform: translateY(-2px) scale(1.03); }
+        .btn:hover { transform: translateY(-2px); }
         .btn:active { transform: scale(0.98); }
 
-        /* Home Page */
-        .home-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.5rem; text-align: center; margin: 20px 0; background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .home-icon { font-size: 4rem; animation: bounce 2s ease-in-out infinite; }
+        .home-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 2.2rem; text-align: center; margin: 15px 0; background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .home-icon { font-size: 3.5rem; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .character-showcase { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
-        .char-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 10px 15px; text-align: center; min-width: 70px; }
-        .char-icon { font-size: 2rem; }
-        .char-name { font-size: 0.7rem; margin-top: 5px; color: rgba(255,255,255,0.7); }
-        .char-count { font-size: 0.8rem; color: var(--accent); margin-top: 5px; }
 
-        /* Level Select */
-        .section-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.5rem; color: var(--accent); margin: 20px 0 15px; text-align: center; }
-        .difficulty-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .diff-btn { padding: 8px 20px; border-radius: 20px; border: 2px solid transparent; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
-        .diff-btn.active { border-color: var(--accent); background: rgba(253,203,110,0.2); }
-        .diff-btn.easy { color: var(--uncommon); }
-        .diff-btn.medium { color: var(--rare); }
-        .diff-btn.hard { color: var(--legendary); }
-        .mode-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .mode-btn { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
-        .mode-btn:hover { transform: translateY(-3px); }
-        .mode-btn.selected { border-color: var(--secondary); background: rgba(0,206,201,0.15); }
-        .mode-icon { font-size: 1.8rem; }
-        .mode-name { font-size: 0.85rem; margin-top: 5px; }
-        .mode-desc { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+        .char-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; margin: 15px 0; }
+        .char-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; border: 2px solid transparent; }
+        .char-card:hover:not(.locked) { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
+        .char-card.selected { border-color: var(--accent); background: rgba(253,203,110,0.15); }
+        .char-card.on-team { border-color: var(--success); }
+        .char-emoji { font-size: 2.5rem; }
+        .char-name { font-size: 0.85rem; margin-top: 5px; }
+        .char-level { font-size: 0.7rem; color: var(--secondary); }
+        .char-hp { font-size: 0.65rem; color: var(--error); margin-top: 3px; }
+        .team-indicator { position: absolute; top: 5px; right: 5px; font-size: 0.8rem; }
 
-        /* Subject Grid */
-        .subject-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
-        .subject-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
-        .subject-card:hover:not(.locked) { transform: translateY(-3px); background: rgba(255,255,255,0.1); }
-        .subject-card.locked { opacity: 0.4; cursor: not-allowed; }
-        .subject-card.locked::after { content: '🔒'; position: absolute; top: 5px; right: 5px; font-size: 1rem; }
-        .subject-card.completed { border: 2px solid var(--success); }
-        .subject-card.completed::before { content: '✅'; position: absolute; top: 5px; right: 5px; font-size: 0.9rem; }
-        .subject-emoji { font-size: 2rem; }
-        .subject-name { font-size: 0.9rem; margin-top: 5px; }
-        .subject-count { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+        .section-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.3rem; color: var(--accent); margin: 15px 0 10px; text-align: center; }
 
-        /* Quiz Page */
-        .quiz-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; }
-        .lives { display: flex; gap: 5px; }
-        .life { font-size: 1.3rem; transition: all 0.3s; }
-        .life.lost { opacity: 0.3; transform: scale(0.8); }
-        .timer { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
-        .timer.warning { color: var(--error); animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .score-display { font-size: 0.9rem; color: var(--accent); }
-        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.5s ease; }
-        .question-card { width: 100%; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 20px; text-align: center; }
-        .question-number { font-size: 0.8rem; color: var(--secondary); margin-bottom: 10px; }
-        .question-text { font-size: 1.2rem; line-height: 1.6; }
-        .mode-badge { display: inline-block; padding: 3px 10px; background: var(--primary); border-radius: 10px; font-size: 0.7rem; margin-bottom: 10px; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
-        .option-btn { padding: 15px; font-size: 1rem; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; cursor: pointer; transition: all 0.3s; font-family: inherit; text-align: left; display: flex; align-items: center; gap: 10px; }
+        .mode-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+        .mode-tab { padding: 10px 20px; border-radius: 20px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-family: inherit; font-size: 0.9rem; }
+        .mode-tab.active { background: var(--primary); }
+
+        .level-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; margin-bottom: 15px; }
+        .level-node { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border-radius: 10px; font-size: 0.9rem; cursor: pointer; position: relative; }
+        .level-node.completed { background: rgba(38,222,129,0.2); color: var(--success); }
+        .level-node.current { background: rgba(253,203,110,0.2); color: var(--accent); animation: pulse 2s infinite; }
+        .level-node.locked { opacity: 0.4; cursor: not-allowed; }
+        .level-node.boss { background: rgba(255,107,107,0.2); color: var(--error); }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(253,203,110,0.4); } 50% { box-shadow: 0 0 15px 5px rgba(253,203,110,0.3); } }
+
+        .chapter-title { font-size: 1rem; color: var(--secondary); margin: 10px 0 5px; }
+
+        .quiz-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+        .quiz-hp { display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
+        .hp-bar { width: 80px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .hp-fill { height: 100%; background: var(--error); border-radius: 4px; transition: width 0.3s; }
+        .quiz-wave { font-size: 0.85rem; color: var(--secondary); }
+        .quiz-timer { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        .quiz-timer.warning { color: var(--error); animation: blink 0.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-bottom: 15px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 6px; transition: width 0.5s; }
+
+        .team-display { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .team-slot { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 2px dashed rgba(255,255,255,0.2); }
+        .team-slot.filled { border-style: solid; border-color: var(--secondary); }
+
+        .question-card { width: 100%; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 15px; text-align: center; }
+        .question-num { font-size: 0.8rem; color: var(--secondary); margin-bottom: 10px; }
+        .question-text { font-size: 1.1rem; line-height: 1.5; }
+        .subject-badge { display: inline-block; padding: 3px 12px; background: var(--primary); border-radius: 10px; font-size: 0.7rem; margin-bottom: 8px; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .option-btn { padding: 12px; font-size: 0.95rem; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; cursor: pointer; transition: all 0.3s; text-align: center; }
         .option-btn:hover:not(.disabled) { background: rgba(255,255,255,0.15); border-color: var(--primary); }
         .option-btn.disabled { cursor: not-allowed; }
-        .option-btn.correct { background: var(--success); border-color: var(--success); animation: pop 0.4s ease; }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .option-btn.wrong { background: var(--error); border-color: var(--error); animation: shake 0.4s ease; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-8px); } 80% { transform: translateX(8px); } }
-        .option-label { width: 28px; height: 28px; line-height: 28px; background: rgba(255,255,255,0.15); border-radius: 50%; text-align: center; font-weight: bold; }
+        .option-btn.correct { background: var(--success); border-color: var(--success); }
+        .option-btn.wrong { background: var(--error); border-color: var(--error); }
 
-        /* Result Page */
-        .result-card { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 30px; text-align: center; width: 100%; max-width: 400px; }
-        .result-emoji { font-size: 4rem; margin-bottom: 15px; }
-        .result-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; margin-bottom: 15px; }
-        .result-title.success { color: var(--success); }
-        .result-title.fail { color: var(--error); }
-        .result-rewards { display: flex; gap: 15px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
-        .reward-item { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 12px; text-align: center; }
-        .reward-icon { font-size: 1.5rem; }
-        .reward-value { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
-        .reward-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
-        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .battle-log { width: 100%; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px; margin-top: 15px; font-size: 0.8rem; max-height: 80px; overflow-y: auto; }
+        .log-entry { padding: 3px 0; }
+        .log-damage { color: var(--error); }
+        .log-heal { color: var(--success); }
+
+        .result-card { background: rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; text-align: center; width: 100%; max-width: 380px; }
+        .result-emoji { font-size: 3.5rem; }
+        .result-title { font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.5rem; margin: 10px 0; }
+        .result-title.victory { color: var(--success); }
+        .result-title.defeat { color: var(--error); }
+        .rewards-row { display: flex; gap: 15px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+        .reward-badge { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 12px; text-align: center; }
+        .reward-icon { font-size: 1.3rem; }
+        .reward-val { font-size: 0.9rem; color: var(--accent); font-weight: bold; }
         .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
 
-        /* Gallery Page */
-        .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 8px 20px; border-radius: 20px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-family: inherit; }
+        .tab-bar { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn { padding: 8px 15px; border-radius: 15px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-size: 0.85rem; }
         .tab-btn.active { background: var(--primary); }
-        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; }
-        .char-card-full { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px 10px; text-align: center; position: relative; }
-        .char-card-full.locked { opacity: 0.5; }
-        .char-card-full.owned { border: 2px solid var(--accent); }
-        .char-card-full .char-icon { font-size: 2.5rem; }
-        .char-card-full .char-name { font-size: 0.75rem; margin-top: 5px; }
-        .char-card-full .char-rarity { font-size: 0.7rem; margin-top: 3px; }
-        .fragments-count { font-size: 0.7rem; color: var(--secondary); margin-top: 3px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .gallery-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 8px; text-align: center; }
+        .gallery-card.locked { opacity: 0.5; }
+        .gallery-card.owned { border: 2px solid var(--accent); }
+        .gallery-icon { font-size: 2rem; }
+        .gallery-name { font-size: 0.7rem; margin-top: 5px; }
+        .gallery-rarity { font-size: 0.65rem; color: var(--secondary); margin-top: 2px; }
+        .gallery-frags { font-size: 0.65rem; color: var(--accent); margin-top: 2px; }
 
-        /* Shop Page */
-        .shop-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .shop-tab { padding: 8px 15px; border-radius: 15px; background: rgba(255,255,255,0.1); border: none; color: white; cursor: pointer; font-family: inherit; }
-        .shop-tab.active { background: var(--primary); }
-        .shop-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
-        .shop-item-icon { font-size: 2rem; width: 50px; text-align: center; }
-        .shop-item-info { flex: 1; }
-        .shop-item-name { font-size: 1rem; font-weight: bold; }
-        .shop-item-desc { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .shop-item-price { display: flex; align-items: center; gap: 5px; color: var(--accent); font-weight: bold; }
-        .shop-item-btn { padding: 8px 20px; border-radius: 15px; border: none; background: var(--primary); color: white; cursor: pointer; font-family: inherit; }
-        .shop-item-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Tasks Page */
-        .task-card { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; }
-        .task-icon { font-size: 2rem; width: 45px; text-align: center; }
+        .task-card { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 10px; width: 100%; }
+        .task-icon { font-size: 1.8rem; width: 40px; text-align: center; }
         .task-info { flex: 1; }
-        .task-name { font-size: 0.95rem; font-weight: bold; }
-        .task-desc { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .task-progress { font-size: 0.8rem; color: var(--secondary); margin-top: 3px; }
-        .task-reward { display: flex; align-items: center; gap: 5px; }
-        .task-btn { padding: 8px 15px; border-radius: 12px; border: none; background: var(--accent); color: #333; cursor: pointer; font-family: inherit; font-weight: bold; }
+        .task-name { font-size: 0.9rem; font-weight: bold; }
+        .task-desc { font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+        .task-progress { font-size: 0.75rem; color: var(--secondary); margin-top: 3px; }
+        .task-reward { font-size: 0.8rem; color: var(--accent); }
+        .task-btn { padding: 8px 15px; border-radius: 12px; border: none; background: var(--accent); color: #333; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
         .task-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Feedback */
-        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px 40px; border-radius: 15px; font-size: 1.5rem; font-weight: bold; z-index: 100; animation: pop 0.4s ease; }
+        .dungeon-card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; width: 100%; margin-bottom: 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .dungeon-card:hover { transform: translateY(-3px); }
+        .dungeon-card.ultra { border: 2px solid #ff6b6b; }
+        .dungeon-card.tk { border: 2px solid #ffd93d; }
+        .dungeon-icon { font-size: 3rem; }
+        .dungeon-name { font-size: 1.2rem; font-weight: bold; margin: 10px 0; }
+        .dungeon-desc { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+        .dungeon-countdown { font-size: 0.85rem; color: var(--accent); margin-top: 8px; }
+
+        .event-banner { width: 100%; background: linear-gradient(135deg, #ff6b6b, #ffd93d); border-radius: 15px; padding: 15px; margin-bottom: 15px; text-align: center; cursor: pointer; }
+        .event-title { font-size: 1rem; font-weight: bold; color: #333; }
+        .event-time { font-size: 0.75rem; color: rgba(0,0,0,0.6); margin-top: 5px; }
+
+        .back-btn { position: fixed; top: 15px; left: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: white; font-size: 1.2rem; cursor: pointer; z-index: 50; }
+        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 30px; border-radius: 15px; font-size: 1.3rem; font-weight: bold; z-index: 100; animation: pop 0.4s; display: none; }
         .feedback.correct { background: var(--success); }
         .feedback.wrong { background: var(--error); }
-        .feedback.show { display: block; }
-        .feedback.hide { display: none; }
-
-        /* Celebration */
+        @keyframes pop { 0% { transform: translate(-50%,-50%) scale(0); } 50% { transform: translate(-50%,-50%) scale(1.2); } 100% { transform: translate(-50%,-50%) scale(1); } }
         .celebration { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; }
-        .confetti { position: absolute; width: 12px; height: 12px; animation: fall 2s ease-out forwards; }
-        @keyframes fall { 0% { transform: translateY(-50px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-
-        /* Particles */
+        .confetti { position: absolute; width: 10px; height: 10px; animation: fall 2s forwards; }
+        @keyframes fall { 0% { transform: translateY(-50px); opacity: 1; } 100% { transform: translateY(100vh); opacity: 0; } }
         .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .particle { position: absolute; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; opacity: 0.3; animation: float 15s infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+        .particle { position: absolute; width: 5px; height: 5px; background: var(--primary); border-radius: 50%; opacity: 0.3; animation: float 15s infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(100vh); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh); opacity: 0; } }
 
-        /* Back button */
-        .back-btn { position: fixed; top: 15px; left: 15px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: white; font-size: 1.2rem; cursor: pointer; z-index: 50; }
-
-        /* Responsive */
         @media (max-width: 500px) {
-            .home-title { font-size: 2rem; }
-            .subject-grid { grid-template-columns: repeat(2, 1fr); }
-            .mode-selector { grid-template-columns: repeat(2, 1fr); }
+            .home-title { font-size: 1.8rem; }
+            .char-grid { grid-template-columns: repeat(2, 1fr); }
             .options-grid { grid-template-columns: 1fr; }
             .gallery-grid { grid-template-columns: repeat(3, 1fr); }
-            .header { flex-wrap: wrap; gap: 10px; }
         }
     </style>
 </head>
@@ -206,156 +179,155 @@
     <button class="back-btn" id="backBtn" style="display:none;" onclick="goBack()">←</button>
 
     <div class="container">
-        <!-- Home Page -->
         <div class="page active" id="homePage">
             <div class="home-icon">🎓</div>
             <h1 class="home-title">学习大闯关</h1>
             <div class="header">
                 <div class="player-info">
-                    <div class="player-avatar">👤</div>
+                    <div class="avatar">👤</div>
                     <div>
-                        <div class="player-level">Lv.<span id="playerLevel">1</span></div>
-                        <div class="player-stats">经验: <span id="playerExp">0</span></div>
+                        <div class="level-badge">Lv.<span id="playerLevel">1</span></div>
+                        <div style="font-size:0.75rem;color:rgba(255,255,255,0.6)">金币: <span id="playerGold">100</span></div>
                     </div>
                 </div>
-                <div class="gold-display">🪙 <span id="playerGold">100</span></div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <div class="gold-display">❤️ <span id="playerHP">10</span></div>
+                    <button class="btn btn-secondary" style="padding:8px 15px;font-size:0.8rem;" onclick="showTasks()">📋</button>
+                </div>
             </div>
 
-            <div class="section-title">已收集角色</div>
-            <div class="character-showcase" id="charShowcase"></div>
+            <div class="event-banner" onclick="showEvents()">
+                <div class="event-title">🌸 春节特辑 - 限定角色</div>
+                <div class="event-time">活动倒计时: <span id="eventTime">7天</span></div>
+            </div>
 
-            <button class="btn btn-primary" onclick="showLevelSelect()" style="margin: 20px 0;">开始挑战</button>
+            <div class="section-title">🎭 科目角色</div>
+            <div class="char-grid" id="charGrid"></div>
 
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <button class="btn btn-primary" onclick="showMainline()" style="margin:15px 0;">⚔️ 主线闯关</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                <button class="btn btn-secondary" onclick="showDungeon('ultra')">🌀 奥特曼副本</button>
+                <button class="btn btn-secondary" onclick="showDungeon('tk')">⚔️ 三国副本</button>
                 <button class="btn btn-secondary" onclick="showGallery()">📖 图鉴</button>
                 <button class="btn btn-secondary" onclick="showShop()">🛒 商店</button>
-                <button class="btn btn-secondary" onclick="showTasks()">📋 任务</button>
             </div>
         </div>
 
-        <!-- Level Select Page -->
-        <div class="page" id="levelPage">
-            <div class="section-title">选择难度</div>
-            <div class="difficulty-selector">
-                <button class="diff-btn easy active" onclick="selectDifficulty('easy')">⭐ 简单</button>
-                <button class="diff-btn medium" onclick="selectDifficulty('medium')">⭐⭐ 中等</button>
-                <button class="diff-btn hard" onclick="selectDifficulty('hard')">⭐⭐⭐ 困难</button>
-            </div>
-
-            <div class="section-title">选择模式</div>
-            <div class="mode-selector" id="modeSelector"></div>
-
-            <div class="section-title">选择学科</div>
-            <div class="subject-grid" id="subjectGrid"></div>
+        <div class="page" id="mainlinePage">
+            <div class="section-title">⚔️ 主线闯关</div>
+            <div class="mode-tabs" id="chapterTabs"></div>
+            <div id="levelContent"></div>
         </div>
 
-        <!-- Quiz Page -->
+        <div class="page" id="teamPage">
+            <div class="section-title">🎯 选择上阵角色</div>
+            <div class="team-display" id="teamDisplay"></div>
+            <div class="section-title" style="font-size:1rem;">已上阵: <span id="teamCount">0</span>/<span id="maxTeam">1</span></div>
+            <div class="char-grid" id="teamCharGrid"></div>
+            <button class="btn btn-primary" onclick="startBattle()" style="margin-top:15px;">开始战斗</button>
+        </div>
+
         <div class="page" id="quizPage">
             <div class="quiz-header">
-                <div class="lives" id="lives"></div>
-                <div class="score-display">🪙 +<span id="currentScore">0</span></div>
-                <div class="timer" id="timer">20</div>
+                <div class="quiz-hp"><span>❤️</span><div class="hp-bar"><div class="hp-fill" id="baseHPFill" style="width:100%"></div></div><span id="baseHP">10</span></div>
+                <div class="quiz-wave" id="waveInfo">波次 1/5</div>
+                <div class="quiz-timer" id="timer">20</div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+            <div class="team-display" id="quizTeamDisplay"></div>
             <div class="question-card">
-                <div class="mode-badge" id="modeBadge">限时挑战</div>
-                <div class="question-number" id="questionNumber">第 1 题</div>
+                <div class="subject-badge" id="subjectBadge">语文</div>
+                <div class="question-num" id="questionNum">题目 1/5</div>
                 <div class="question-text" id="questionText">题目内容</div>
             </div>
             <div class="options-grid" id="optionsGrid"></div>
+            <div class="battle-log" id="battleLog"></div>
         </div>
 
-        <!-- Result Page -->
         <div class="page" id="resultPage">
             <div class="result-card">
                 <div class="result-emoji" id="resultEmoji">🏆</div>
-                <div class="result-title" id="resultTitle">恭喜通关！</div>
-                <div class="result-rewards" id="resultRewards"></div>
-                <div class="stat-row"><span>得分</span><span id="finalScore">0</span></div>
-                <div class="stat-row"><span>正确率</span><span id="finalAccuracy">0%</span></div>
-                <div class="stat-row"><span>获得金币</span><span id="finalGold">+0</span></div>
+                <div class="result-title" id="resultTitle">胜利!</div>
+                <div class="rewards-row" id="resultRewards"></div>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="showLevelSelect()">再闯一关</button>
+                    <button class="btn btn-primary" onclick="showMainline()">继续闯关</button>
                     <button class="btn btn-secondary" onclick="showHome()">返回首页</button>
                 </div>
             </div>
         </div>
 
-        <!-- Gallery Page -->
         <div class="page" id="galleryPage">
             <div class="section-title">📖 角色图鉴</div>
             <div class="tab-bar">
-                <button class="tab-btn active" onclick="switchGalleryTab('ultra')">奥特曼</button>
-                <button class="tab-btn" onclick="switchGalleryTab('threeKingdoms')">三国人物</button>
+                <button class="tab-btn active" onclick="switchGalleryTab('chars')">科目角色</button>
+                <button class="tab-btn" onclick="switchGalleryTab('ultra')">奥特曼</button>
+                <button class="tab-btn" onclick="switchGalleryTab('tk')">三国人物</button>
             </div>
             <div class="gallery-grid" id="galleryGrid"></div>
         </div>
 
-        <!-- Shop Page -->
+        <div class="page" id="dungeonPage">
+            <div class="section-title" id="dungeonTitle">🌀 副本</div>
+            <div id="dungeonContent"></div>
+        </div>
+
         <div class="page" id="shopPage">
             <div class="section-title">🛒 商店</div>
-            <div class="shop-tabs">
-                <button class="shop-tab active" onclick="switchShopTab('chars')">角色</button>
-                <button class="shop-tab" onclick="switchShopTab('items')">道具</button>
-                <button class="shop-tab" onclick="switchShopTab('equip')">装备</button>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchShopTab('chars')">角色</button>
+                <button class="tab-btn" onclick="switchShopTab('items')">道具</button>
+                <button class="tab-btn" onclick="switchShopTab('equip')">装备</button>
             </div>
             <div id="shopContent"></div>
         </div>
 
-        <!-- Tasks Page -->
         <div class="page" id="tasksPage">
             <div class="section-title">📋 任务中心</div>
             <div class="tab-bar">
-                <button class="tab-btn active" onclick="switchTaskTab('daily')">每日</button>
+                <button class="tab-btn active" onclick="switchTaskTab('daily')">日常</button>
                 <button class="tab-btn" onclick="switchTaskTab('weekly')">每周</button>
+                <button class="tab-btn" onclick="switchTaskTab('event')">活动</button>
             </div>
             <div id="tasksContent"></div>
+        </div>
+
+        <div class="page" id="eventsPage">
+            <div class="section-title">🎉 活动中心</div>
+            <div id="eventsContent"></div>
         </div>
     </div>
 
 <script>
 // ==================== GAME DATA ====================
-
-const SUBJECTS = [
-    { id: 'chinese', name: '语文', emoji: '📖', unlocked: true },
-    { id: 'math', name: '数学', emoji: '🔢', unlocked: true },
-    { id: 'english', name: '英语', emoji: '🔤', unlocked: true },
-    { id: 'science', name: '科学', emoji: '🔬', unlocked: true },
-    { id: 'sports', name: '体育', emoji: '⚽', unlocked: true },
-    { id: 'general', name: '综合素质', emoji: '🎨', unlocked: true }
-];
-
-const MODES = [
-    { id: 'timed', name: '限时挑战', emoji: '⏱️', desc: '20秒/题，答对+3秒', time: 20, lives: 3, questions: 5, bonus: 'time' },
-    { id: 'endurance', name: '耐力赛', emoji: '🏃', desc: '1条命，10题连答', time: 30, lives: 1, questions: 10, bonus: 'heal' },
-    { id: 'elite', name: '精英挑战', emoji: '💎', desc: '双倍积分奖励', time: 25, lives: 2, questions: 3, bonus: 'double' },
-    { id: 'precise', name: '精准挑战', emoji: '🎯', desc: '不限时，100%准确通关', time: 999, lives: 1, questions: 5, bonus: 'none' },
-    { id: 'random', name: '随机闯关', emoji: '🎰', desc: '随机科目难度', time: 20, lives: 3, questions: 5, bonus: 'random' },
-    { id: 'guardian', name: '守护挑战', emoji: '🛡️', desc: '5条命，保护模式', time: 30, lives: 5, questions: 5, bonus: 'shield' }
+const SUBJECT_CHARS = [
+    { id: 'chinese', name: '语文老师', emoji: '📖', hp: 100, atk: 10, talent: '诗词结界', talentDesc: '答错时20%概率免疫', subject: 'chinese' },
+    { id: 'math', name: '数学王子', emoji: '🔢', hp: 80, atk: 15, talent: '计算风暴', talentDesc: '答题速度+50%', subject: 'math' },
+    { id: 'english', name: '英语达人', emoji: '🔤', hp: 90, atk: 12, talent: '词汇护盾', talentDesc: '跳过难题', subject: 'english' },
+    { id: 'science', name: '科学怪人', emoji: '🔬', hp: 85, atk: 14, talent: '实验加成', talentDesc: '正确率+20%', subject: 'science' },
+    { id: 'sports', name: '体育健将', emoji: '⚽', hp: 95, atk: 11, talent: '体能冲刺', talentDesc: '时间+10秒', subject: 'sports' },
+    { id: 'art', name: '艺术大师', emoji: '🎨', hp: 75, atk: 18, talent: '灵感爆发', talentDesc: '分数双倍', subject: 'general' }
 ];
 
 const ULTRA_HEROES = [
     { id: 'ultraman', name: '奥特曼', emoji: '🧑', rarity: '⭐⭐⭐', fragments: 50, skill: '分数+10%', price: 500 },
-    { id: 'seven', name: '赛文奥特曼', emoji: '🥸', rarity: '⭐⭐⭐', fragments: 45, skill: '时间+5秒', price: 450 },
-    { id: 'jack', name: '杰克奥特曼', emoji: '🧔', rarity: '⭐⭐⭐', fragments: 40, skill: '生命+1', price: 400 },
-    { id: 'ace', name: '艾斯奥特曼', emoji: '🦸', rarity: '⭐⭐⭐', fragments: 35, skill: '连击翻倍', price: 350 },
-    { id: 'taro', name: '泰罗奥特曼', emoji: '🦸‍♂️', rarity: '⭐⭐⭐', fragments: 35, skill: '金币+20%', price: 350 },
-    { id: 'leo', name: '雷欧奥特曼', emoji: '💪', rarity: '⭐⭐', fragments: 30, skill: '免伤一次', price: 300 },
-    { id: 'diga', name: '迪迦奥特曼', emoji: '🫡', rarity: '⭐⭐', fragments: 25, skill: '提示功能', price: 250 },
-    { id: 'dyna', name: '戴拿奥特曼', emoji: '⚡', rarity: '⭐⭐', fragments: 25, skill: '传送门', price: 250 },
-    { id: 'ginga', name: '银河奥特曼', emoji: '🌌', rarity: '⭐⭐⭐', fragments: 30, skill: '能量爆发', price: 300 },
+    { id: 'seven', name: '赛文', emoji: '🥸', rarity: '⭐⭐⭐', fragments: 45, skill: '时间+5秒', price: 450 },
+    { id: 'jack', name: '杰克', emoji: '🧔', rarity: '⭐⭐⭐', fragments: 40, skill: '生命+1', price: 400 },
+    { id: 'ace', name: '艾斯', emoji: '🦸', rarity: '⭐⭐⭐', fragments: 35, skill: '连击翻倍', price: 350 },
+    { id: 'taro', name: '泰罗', emoji: '🦸‍♂️', rarity: '⭐⭐⭐', fragments: 35, skill: '金币+20%', price: 350 },
+    { id: 'leo', name: '雷欧', emoji: '💪', rarity: '⭐⭐', fragments: 30, skill: '免伤一次', price: 300 },
+    { id: 'diga', name: '迪迦', emoji: '🫡', rarity: '⭐⭐', fragments: 25, skill: '提示功能', price: 250 },
+    { id: 'dyna', name: '戴拿', emoji: '⚡', rarity: '⭐⭐', fragments: 25, skill: '传送门', price: 250 },
+    { id: 'ginga', name: '银河', emoji: '🌌', rarity: '⭐⭐⭐', fragments: 30, skill: '能量爆发', price: 300 },
     { id: 'victory', name: '维克特利', emoji: '💎', rarity: '⭐⭐', fragments: 25, skill: '屏障护身', price: 250 },
-    { id: 'orb', name: '欧布奥特曼', emoji: '🟠', rarity: '⭐⭐⭐', fragments: 30, skill: '属性转换', price: 300 },
-    { id: 'geiz', name: '捷德奥特曼', emoji: '🔱', rarity: '⭐', fragments: 20, skill: '命运羁绊', price: 200 },
-    { id: 'robu', name: '罗布奥特曼', emoji: '🔴', rarity: '⭐', fragments: 20, skill: '水火之力', price: 200 },
+    { id: 'orb', name: '欧布', emoji: '🟠', rarity: '⭐⭐⭐', fragments: 30, skill: '属性转换', price: 300 },
+    { id: 'geiz', name: '捷德', emoji: '🔱', rarity: '⭐', fragments: 20, skill: '命运羁绊', price: 200 },
+    { id: 'robu', name: '罗布', emoji: '🔴', rarity: '⭐', fragments: 20, skill: '水火之力', price: 200 },
     { id: 'grigio', name: '格丽乔', emoji: '🩷', rarity: '⭐', fragments: 15, skill: '治愈之光', price: 150 },
-    { id: 'taiga', name: '泰迦奥特曼', emoji: '🔥', rarity: '⭐⭐', fragments: 25, skill: '父子之力', price: 250 },
-    { id: 'zearth', name: '泽塔奥特曼', emoji: '⬆️', rarity: '⭐⭐⭐', fragments: 30, skill: '无限形态', price: 300 }
+    { id: 'taiga', name: '泰迦', emoji: '🔥', rarity: '⭐⭐', fragments: 25, skill: '父子之力', price: 250 },
+    { id: 'zearth', name: '泽塔', emoji: '⬆️', rarity: '⭐⭐⭐', fragments: 30, skill: '无限形态', price: 300 }
 ];
 
-const THREE_KINGDOMS = [
+const TK_HEROES = [
     { id: 'zhugeliang', name: '诸葛亮', emoji: '🧠', rarity: '⭐⭐⭐', fragments: 45, skill: '神机妙算', price: 450 },
     { id: 'guanyu', name: '关羽', emoji: '⚔️', rarity: '⭐⭐⭐', fragments: 40, skill: '武圣降临', price: 400 },
     { id: 'lvbu', name: '吕布', emoji: '🦾', rarity: '⭐⭐⭐', fragments: 35, skill: '无双乱舞', price: 350 },
@@ -366,1079 +338,494 @@ const THREE_KINGDOMS = [
     { id: 'simayi', name: '司马懿', emoji: '🦊', rarity: '⭐⭐', fragments: 25, skill: '隐忍待机', price: 250 },
     { id: 'sunquan', name: '孙权', emoji: '👸', rarity: '⭐', fragments: 20, skill: '江东之虎', price: 200 },
     { id: 'dianwei', name: '典韦', emoji: '🪓', rarity: '⭐⭐', fragments: 25, skill: '古之恶来', price: 250 },
-    { id: 'xuchu', name: '许褚', emoji: '🐯', rarity: '⭐', fragments: 20, skill: '虎痴之力', price: 200 },
-    { id: 'zhangliao', name: '张辽', emoji: '🌊', rarity: '⭐⭐', fragments: 25, skill: '逍遥津威', price: 250 },
     { id: 'xiahoudun', name: '夏侯惇', emoji: '👁️', rarity: '⭐', fragments: 20, skill: '拔矢啖睛', price: 200 },
     { id: 'luxun', name: '陆逊', emoji: '🌾', rarity: '⭐⭐', fragments: 25, skill: '火烧连营', price: 250 },
     { id: 'jiangwei', name: '姜维', emoji: '⚔️', rarity: '⭐⭐', fragments: 25, skill: '麒麟儿', price: 250 },
     { id: 'diaochan', name: '貂蝉', emoji: '🌸', rarity: '⭐', fragments: 20, skill: '闭月羞花', price: 200 },
-    { id: 'sunshangxiang', name: '孙尚香', emoji: '🏹', rarity: '⭐', fragments: 20, skill: '美女连环', price: 200 },
-    { id: 'yuanshao', name: '袁绍', emoji: '📜', rarity: '⭐', fragments: 15, skill: '四世三公', price: 150 },
-    { id: 'taoqian', name: '陶谦', emoji: '🙏', rarity: '⭐', fragments: 15, skill: '三让徐州', price: 150 },
-    { id: 'huaxiong', name: '华雄', emoji: '⚔️', rarity: '⭐', fragments: 20, skill: '汜水关威', price: 200 },
-    { id: 'dengai', name: '邓艾', emoji: '📚', rarity: '⭐⭐', fragments: 20, skill: '偷渡阴平', price: 200 },
-    { id: 'sima_zhao', name: '司马昭', emoji: '👁️', rarity: '⭐⭐', fragments: 20, skill: '司马昭心', price: 200 },
-    { id: 'weiyan', name: '魏延', emoji: '💢', rarity: '⭐', fragments: 15, skill: '反骨狂徒', price: 150 },
-    { id: 'huangzhong', name: '黄忠', emoji: '🏹', rarity: '⭐⭐', fragments: 25, skill: '老当益壮', price: 250 }
+    { id: 'huangzhong', name: '黄忠', emoji: '🏹', rarity: '⭐⭐', fragments: 25, skill: '老当益壮', price: 250 },
+    { id: 'zhangliao', name: '张辽', emoji: '🌊', rarity: '⭐⭐', fragments: 25, skill: '逍遥津威', price: 250 }
+];
+
+const CHAPTERS = [
+    { id: 1, name: '第一章 起步', levels: 10, unlocked: true },
+    { id: 2, name: '第二章 成长', levels: 10, unlocked: false },
+    { id: 3, name: '第三章 挑战', levels: 10, unlocked: false },
+    { id: 4, name: '第四章 突破', levels: 10, unlocked: false },
+    { id: 5, name: '第五章 巅峰', levels: 10, unlocked: false }
+];
+
+const DAILY_TASKS = [
+    { id: 'login', name: '每日登录', desc: '登录游戏', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
+    { id: 'answer_10', name: '学业进步', desc: '答对10题', reward: { type: 'gold', value: 30 }, target: 10, progress: 0 },
+    { id: 'clear_1', name: '闯关达人', desc: '通关主线1次', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
+    { id: 'answer_20', name: '勤奋学子', desc: '答对20题', reward: { type: 'fragment', value: 2 }, target: 20, progress: 0 },
+    { id: 'answer_30', name: '持之以恒', desc: '答对30题', reward: { type: 'gold', value: 60 }, target: 30, progress: 0 },
+    { id: 'clear_3', name: '连连通关', desc: '通关主线3次', reward: { type: 'item', value: 'health_potion' }, target: 3, progress: 0 },
+    { id: 'use_skill', name: '技能大师', desc: '使用技能5次', reward: { type: 'gold', value: 80 }, target: 5, progress: 0 },
+    { id: 'collect_frags', name: '碎片收集', desc: '收集10个碎片', reward: { type: 'fragment', value: 3 }, target: 10, progress: 0 }
+];
+
+const WEEKLY_TASKS = [
+    { id: 'login_7', name: '坚持不懈', desc: '累计登录7天', reward: { type: 'fragment', value: 5 }, target: 7, progress: 0 },
+    { id: 'clear_10', name: '闯关高手', desc: '通关主线10次', reward: { type: 'fragment', value: 3 }, target: 10, progress: 0 },
+    { id: 'all_subjects', name: '全科达人', desc: '全部科目通关1次', reward: { type: 'char', value: 1 }, target: 6, progress: 0 },
+    { id: 'answer_100', name: '学业有成', desc: '累计答对100题', reward: { type: 'gold', value: 200 }, target: 100, progress: 0 },
+    { id: 'clear_dungeon', name: '副本猎手', desc: '通关副本3次', reward: { type: 'equip', value: 1 }, target: 3, progress: 0 },
+    { id: 'level_10', name: '角色培养', desc: '角色升10级', reward: { type: 'fragment', value: 5 }, target: 10, progress: 0 },
+    { id: 'collect_50', name: '收藏家', desc: '收集50个碎片', reward: { type: 'equip', value: 'epic' }, target: 50, progress: 0 },
+    { id: 'combo_50', name: '连击达人', desc: '达成50连击', reward: { type: 'char', value: 'tk' }, target: 50, progress: 0 }
+];
+
+const EVENT_TASKS = [
+    { id: 'spring_login', name: '春节登录', desc: '春节期间登录', reward: { type: 'char', value: 'spring_nian' }, target: 1, progress: 0 },
+    { id: 'spring_answer', name: '春节答题', desc: '春节期间答对50题', reward: { type: 'gold', value: 500 }, target: 50, progress: 0 },
+    { id: 'spring_clear', name: '春节通关', desc: '春节期间通关5次', reward: { type: 'skin', value: 'spring' }, target: 5, progress: 0 }
 ];
 
 const SHOP_ITEMS = [
-    { id: 'health_potion', name: '生命药水', emoji: '🧪', desc: '生命值+1', price: 50 },
+    { id: 'health_potion', name: '生命药水', emoji: '🧪', desc: '基地+3生命', price: 50 },
     { id: 'time_hourglass', name: '时间沙漏', emoji: '⏳', desc: '时间+10秒', price: 30 },
     { id: 'hint_card', name: '提示卡', emoji: '💡', desc: '显示正确答案', price: 80 },
-    { id: 'exp_book', name: '经验书', emoji: '📚', desc: '角色升级材料', price: 100 }
+    { id: 'exp_book', name: '经验书', emoji: '📚', desc: '角色+100经验', price: 100 }
 ];
 
 const EQUIPMENT = [
     { id: 'weapon', name: '青龙偃月刀', emoji: '🗡️', slot: 'weapon', quality: 'legendary', price: 1000 },
     { id: 'armor', name: '八卦阵', emoji: '🛡️', slot: 'armor', quality: 'epic', price: 800 },
-    { id: 'helmet', name: '凤翼盔', emoji: '👑', slot: 'helmet', quality: 'rare', price: 500 },
-    { id: 'ring', name: '连环甲', emoji: '💍', slot: 'ring', quality: 'uncommon', price: 300 },
-    { id: 'boots', name: '赤兔靴', emoji: '👟', slot: 'boots', quality: 'epic', price: 600 },
-    { id: 'bag', name: '锦囊', emoji: '🎒', slot: 'bag', quality: 'rare', price: 400 }
+    { id: 'helmet', name: '凤翼盔', emoji: '👑', slot: 'helmet', quality: 'rare', price: 500 }
 ];
 
-const DAILY_TASKS = [
-    { id: 'login', name: '每日登录', desc: '登录游戏', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
-    { id: 'answer_10', name: '学业进步', desc: '完成10题', reward: { type: 'gold', value: 30 }, target: 10, progress: 0 },
-    { id: 'clear_1', name: '闯关达人', desc: '通关任意关卡', reward: { type: 'gold', value: 50 }, target: 1, progress: 0 },
-    { id: 'answer_20', name: '勤奋学子', desc: '完成20题', reward: { type: 'fragment', value: 2 }, target: 20, progress: 0 }
-];
-
-const WEEKLY_TASKS = [
-    { id: 'login_7', name: '坚持不懈', desc: '连续7天登录', reward: { type: 'fragment', value: 5 }, target: 7, progress: 0 },
-    { id: 'clear_hard', name: '挑战困难', desc: '困难关卡通关', reward: { type: 'fragment', value: 3 }, target: 1, progress: 0 },
-    { id: 'all_subjects', name: '全科达人', desc: '6个学科各通关1次', reward: { type: 'char', value: 1 }, target: 6, progress: 0 }
-];
-
-// ==================== QUESTION BANK (1000+ questions) ====================
+// ==================== QUESTION BANK ====================
 const QUESTION_BANK = {
-    chinese: {
-        easy: [
-            { q: "'baba'的声母是什么？", o: ["b", "p", "m", "f"], a: 0 },
-            { q: "下列哪个是整体认读音节？", o: ["ba", "bo", "zhi", "zh"], a: 2 },
-            { q: "'花'的拼音第三声是？", o: ["huā", "huá", "huà", "huǎ"], a: 1 },
-            { q: "'天'字有几笔？", o: ["3笔", "4笔", "5笔", "6笔"], a: 1 },
-            { q: "'日'字加一笔可以变成？", o: ["目", "田", "白", "电"], a: 1 },
-            { q: "'大'字比'人'字少哪一笔？", o: ["撇", "捺", "横", "没有少"], a: 1 },
-            { q: "下列哪个字是上下结构？", o: ["好", "明", "林", "树"], a: 1 },
-            { q: "'鸟'字去掉一点是？", o: ["乌", "鸣", "鸡", "鸭"], a: 0 },
-            { q: "'河'字的偏旁是？", o: ["氵", "阝", "木", "石"], a: 0 },
-            { q: "'花'字是什么偏旁？", o: ["艹", "氵", "宀", "辶"], a: 0 },
-            { q: "《咏鹅》的作者是？", o: ["李白", "骆宾王", "王维", "贺知章"], a: 1 },
-            { q: "'春眠不觉晓'的下一句是？", o: ["处处闻啼鸟", "夜来风雨声", "花落知多少", "明月照窗前"], a: 0 },
-            { q: "《静夜思》中'举头望明月'的下一句是？", o: ["千里共婵娟", "低头思故乡", "月是故乡明", "海上生明月"], a: 1 },
-            { q: "'两个黄鹂鸣翠柳'出自哪首诗？", o: ["《静夜思》", "《春晓》", "《绝句》", "《悯农》"], a: 2 },
-            { q: "《悯农》告诉我们要怎样？", o: ["多吃饭", "不浪费粮食", "多干活", "爱劳动"], a: 1 },
-            { q: "'明'字由哪两个部分组成？", o: ["日+月", "日+门", "目+月", "日+一"], a: 0 },
-            { q: "'树'字的偏旁是？", o: ["木", "寸", "又", "村"], a: 0 },
-            { q: "'家'字的宝盖头下面是什么？", o: ["豕", "象", "猪", "牛"], a: 0 },
-            { q: "成语'守株待兔'中的'株'是什么意思？", o: ["树桩", "兔子", "农夫", "庄稼"], a: 0 },
-            { q: "'红'是什么偏旁？", o: ["纟", "氵", "艹", "木"], a: 0 },
-            { q: "'学习'的'学'字有几笔？", o: ["7笔", "8笔", "9笔", "10笔"], a: 1 },
-            { q: "下列哪个是左包围结构？", o: ["国", "同", "问", "妈"], a: 2 },
-            { q: "'口'字加一笔可以变成？", o: ["日", "目", "田", "白"], a: 2 },
-            { q: "'上'字的笔顺是？", o: ["竖、横、竖", "横、竖、横", "竖、横、横", "横、横、竖"], a: 1 },
-            { q: "'人'字的笔顺是？", o: ["撇、捺", "捺、撇", "横、撇", "撇、点"], a: 0 }
-        ],
-        medium: [
-            { q: "成语'守株待兔'讲的是谁在等？", o: ["兔子", "农夫", "猎人", "国王"], a: 1 },
-            { q: "'亡羊补牢'中羊圈破了，主人后来？", o: ["不管了", "修好了", "搬家了", "买新羊"], a: 1 },
-            { q: "成语'刻舟求剑'的人能找到剑吗？", o: ["能", "不能", "不知道", "有时能"], a: 1 },
-            { q: "'对牛弹琴'比喻对什么人说话没用？", o: ["聪明人", "外国人", "不懂的人", "聋人"], a: 2 },
-            { q: "成语'狐假虎威'中狐狸借助了谁？", o: ["兔子", "老虎", "猴子", "狼"], a: 1 },
-            { q: "'欲穷千里目'的下一句是？", o: ["更上一层楼", "抬头望明月", "低头思故乡", "举头望明月"], a: 0 },
-            { q: "'轻舟已过万重山'出自哪首诗？", o: ["《静夜思》", "《望庐山瀑布》", "《早发白帝城》", "《黄鹤楼送孟浩然》"], a: 2 },
-            { q: "成语'画蛇添足'的意思是？", o: ["画得很好", "多此一举", "画得很差", "锦上添花"], a: 1 },
-            { q: "下列哪个是贬义词？", o: ["眉开眼笑", "胸有成竹", "得意忘形", "聚精会神"], a: 2 },
-            { q: "'桃李满天下'比喻什么？", o: ["桃花和李花", "学生众多", "水果丰收", "春天景色"], a: 1 },
-            { q: "《西游记》中的'唐僧'法号是？", o: ["孙悟空", "唐三藏", "猪八戒", "沙和尚"], a: 1 },
-            { q: "下列哪个字有'多'的意思？", o: ["孤", "众", "独", "单"], a: 1 },
-            { q: "'吾将上下而求索'出自？", o: ["《论语》", "《离骚》", "《史记》", "《庄子》"], a: 1 },
-            { q: "'春风得意'形容什么心情？", o: ["悲伤", "高兴", "生气", "害怕"], a: 1 },
-            { q: "'一目十行'形容什么能力？", o: ["写字快", "读书快", "走路快", "吃饭快"], a: 1 },
-            { q: "下列哪个是形声字？", o: ["人", "口", "河", "日"], a: 2 },
-            { q: "'望梅止渴'讲的是谁的故事？", o: ["刘备", "曹操", "孙权", "诸葛亮"], a: 1 },
-            { q: "'三顾茅庐'说的是谁请谁出山？", o: ["刘备请诸葛亮", "曹操请刘备", "孙权请周瑜", "诸葛亮请刘备"], a: 0 },
-            { q: "'纸上谈兵'说的是谁的故事？", o: ["廉颇", "赵括", "项羽", "韩信"], a: 1 },
-            { q: "'草木皆兵'出自哪个战役？", o: ["赤壁之战", "淝水之战", "官渡之战", "长平之战"], a: 1 }
-        ],
-        hard: [
-            { q: "'纸上谈兵'这个成语出自哪个历史时期？", o: ["战国", "三国", "秦朝", "汉朝"], a: 0 },
-            { q: "《论语》是记录谁言行的书？", o: ["老子", "孔子", "孟子", "荀子"], a: 1 },
-            { q: "'讳疾忌医'这个成语讲的是谁？", o: ["扁鹊", "华佗", "张仲景", "李时珍"], a: 0 },
-            { q: "'四面楚歌'说的是哪个历史人物？", o: ["秦始皇", "刘邦", "项羽", "韩信"], a: 2 },
-            { q: "'破釜沉舟'这个成语讲的是谁？", o: ["韩信", "项羽", "刘邦", "曹操"], a: 1 },
-            { q: "《道德经》的作者是？", o: ["孔子", "老子", "庄子", "墨子"], a: 1 },
-            { q: "'指鹿为马'说的是谁的故事？", o: ["刘邦", "项羽", "赵高", "秦二世"], a: 2 },
-            { q: "'卧薪尝胆'说的是谁？", o: ["夫差", "勾践", "伍子胥", "范蠡"], a: 1 },
-            { q: "'完璧归赵'讲的是谁的故事？", o: ["廉颇", "蔺相如", "赵括", "秦王"], a: 1 },
-            { q: "'负荆请罪'讲的是哪两个人？", o: ["刘邦和项羽", "廉颇和蔺相如", "秦王和赵王", "诸葛亮和周瑜"], a: 1 },
-            { q: "《西游记》中的'唐僧'法名是什么？", o: ["唐三藏", "玄奘", "两者都是", "两者都不是"], a: 2 },
-            { q: "'程门立雪'讲的是谁尊敬老师？", o: ["杨时", "程颢", "朱熹", "陆九渊"], a: 0 },
-            { q: "'囊萤映雪'讲的是谁刻苦读书？", o: ["孙康", "车胤", "两者都是", "两者都不是"], a: 2 },
-            { q: "'洛阳纸贵'形容什么作品非常受欢迎？", o: ["诗", "词", "文章", "小说"], a: 2 },
-            { q: "'一字千金'说的是谁的文章？", o: ["司马迁", "吕不韦", "刘向", "韩非"], a: 1 },
-            { q: "'四面楚歌'出自哪场战役？", o: ["巨鹿之战", "垓下之战", "彭城之战", "荥阳之战"], a: 1 },
-            { q: "'破釜沉舟'这个成语的比喻意义是？", o: ["下定决心，不怕牺牲", "打破常规，创新思维", "团结一致，共同对敌", "勇往直前，绝不后退"], a: 0 },
-            { q: "'纸上谈兵'比喻什么？", o: ["只会空谈，不能实践", "足智多谋，运筹帷幄", "勇猛无畏，冲锋陷阵", "忠诚可靠，值得信任"], a: 0 },
-            { q: "'望梅止渴'利用了什么原理？", o: ["条件反射", "联想记忆", "心理暗示", "视觉错觉"], a: 2 },
-            { q: "'三顾茅庐'中第三次拜访时，诸葛亮在做什么？", o: ["读书", "睡觉", "弹琴", "耕田"], a: 3 }
-        ]
-    },
-    math: {
-        easy: [
-            { q: "7 + 5 = ?", o: ["11", "12", "13", "14"], a: 1 },
-            { q: "15 - 8 = ?", o: ["6", "7", "8", "9"], a: 1 },
-            { q: "6 + 9 = ?", o: ["14", "15", "16", "17"], a: 1 },
-            { q: "14 - 7 = ?", o: ["6", "7", "8", "9"], a: 1 },
-            { q: "8 + 8 = ?", o: ["14", "15", "16", "17"], a: 2 },
-            { q: "11 - 5 = ?", o: ["5", "6", "7", "8"], a: 1 },
-            { q: "9 + 6 = ?", o: ["14", "15", "16", "17"], a: 1 },
-            { q: "16 - 9 = ?", o: ["6", "7", "8", "9"], a: 1 },
-            { q: "2 × 3 = ?", o: ["5", "6", "7", "8"], a: 1 },
-            { q: "4 × 5 = ?", o: ["18", "19", "20", "21"], a: 2 },
-            { q: "正方形有几条边？", o: ["3", "4", "5", "6"], a: 1 },
-            { q: "三角形有几个角？", o: ["2", "3", "4", "5"], a: 1 },
-            { q: "找规律：2、4、6、8、？", o: ["9", "10", "11", "12"], a: 1 },
-            { q: "找规律：1、3、5、7、？", o: ["8", "9", "10", "11"], a: 1 },
-            { q: "找规律：10、20、30、40、？", o: ["45", "50", "55", "60"], a: 1 },
-            { q: "小明有3个苹果，小红给了他2个，现在有几个？", o: ["4", "5", "6", "7"], a: 1 },
-            { q: "一盒铅笔10支，用了6支，还剩几支？", o: ["2", "3", "4", "5"], a: 2 },
-            { q: "3个小朋友排队，小明排第二，他前面有几个人？", o: ["0", "1", "2", "3"], a: 1 },
-            { q: "比10大比15小的数有几个？", o: ["3", "4", "5", "6"], a: 1 },
-            { q: "从1数到20，单数有多少个？", o: ["9", "10", "11", "12"], a: 1 },
-            { q: "3 × 7 = ?", o: ["18", "20", "21", "24"], a: 2 },
-            { q: "5 × 5 = ?", o: ["20", "25", "30", "35"], a: 1 },
-            { q: "2 × 8 = ?", o: ["14", "16", "18", "20"], a: 1 },
-            { q: "4 × 3 = ?", o: ["10", "11", "12", "13"], a: 2 },
-            { q: "6 × 2 = ?", o: ["10", "11", "12", "13"], a: 2 }
-        ],
-        medium: [
-            { q: "12 + 8 × 3 = ?", o: ["36", "60", "48", "24"], a: 0 },
-            { q: "100的一半是多少？", o: ["25", "50", "75", "20"], a: 1 },
-            { q: "15 - 7 + 3 = ?", o: ["5", "11", "19", "8"], a: 1 },
-            { q: "下列哪个是质数？", o: ["4", "6", "7", "9"], a: 2 },
-            { q: "圆形有几条对称轴？", o: ["1条", "2条", "无数条", "0条"], a: 2 },
-            { q: "24 ÷ 6 + 5 = ?", o: ["4", "9", "29", "19"], a: 1 },
-            { q: "边长为4的正方形，周长是多少？", o: ["8", "12", "16", "20"], a: 2 },
-            { q: "下列哪个数最大？", o: ["0.9", "1", "0.89", "0.98"], a: 1 },
-            { q: "把10个苹果分给5个小朋友，每个小朋友几个？", o: ["1", "2", "3", "5"], a: 1 },
-            { q: "一个正方体有几个面？", o: ["4", "5", "6", "8"], a: 2 },
-            { q: "72 ÷ 8 = ?", o: ["7", "8", "9", "10"], a: 2 },
-            { q: "56 ÷ 7 = ?", o: ["6", "7", "8", "9"], a: 2 },
-            { q: "9 × 9 = ?", o: ["72", "81", "90", "99"], a: 1 },
-            { q: "8 × 7 = ?", o: ["48", "54", "56", "64"], a: 2 },
-            { q: "长方形对边相等，对吗？", o: ["对", "错", "不一定", "不知道"], a: 0 },
-            { q: "一个数除以7，商是8，余数是3，这个数是？", o: ["56", "59", "61", "63"], a: 1 },
-            { q: "3.5元 = ?角", o: ["35角", "350角", "3.5角", "0.35角"], a: 0 },
-            { q: "1米 = ?厘米", o: ["10厘米", "100厘米", "1000厘米", "1厘米"], a: 1 },
-            { q: "找规律：1、4、9、16、？", o: ["20", "24", "25", "36"], a: 2 },
-            { q: "找规律：3、6、9、12、？", o: ["14", "15", "16", "18"], a: 1 }
-        ],
-        hard: [
-            { q: "12 + 8 × 3 - 5 = ?", o: ["43", "37", "31", "25"], a: 1 },
-            { q: "一个数乘以8再加8等于88，这个数是？", o: ["8", "10", "12", "16"], a: 1 },
-            { q: "鸡兔同笼，有8个头，22只脚，问鸡有几只？", o: ["4只", "5只", "6只", "7只"], a: 1 },
-            { q: "如果A×B=24，A=4，那么B=？", o: ["4", "6", "8", "12"], a: 1 },
-            { q: "一个数除以5，商是7，余数是3，这个数是？", o: ["35", "38", "42", "45"], a: 1 },
-            { q: "125 × 8 = ?", o: ["1000", "1200", "800", "1600"], a: 0 },
-            { q: "999 + 99 + 9 = ?", o: ["1107", "1117", "1100", "1110"], a: 0 },
-            { q: "一个三角形三条边分别是3、4、5，它的周长是？", o: ["10", "11", "12", "13"], a: 2 },
-            { q: "找规律：2、3、5、8、13、？", o: ["18", "19", "20", "21"], a: 3 },
-            { q: "找规律：1、1、2、3、5、8、？", o: ["11", "12", "13", "14"], a: 2 },
-            { q: "一个数减去8，再乘以3，等于21，原数是？", o: ["15", "16", "17", "18"], a: 2 },
-            { q: "小明有20颗糖，给了小华5颗后两人一样多，小华原来有几颗？", o: ["5颗", "10颗", "15颗", "20颗"], a: 1 },
-            { q: "一个正方形，边长增加2厘米，周长增加多少？", o: ["4厘米", "8厘米", "12厘米", "16厘米"], a: 1 },
-            { q: "一个数除以3余2，除以5余3，这个数最小是？", o: ["8", "13", "23", "28"], a: 2 },
-            { q: "一瓶可乐3元，超市买5送1，30元最多能买几瓶？", o: ["10瓶", "11瓶", "12瓶", "13瓶"], a: 1 },
-            { q: "有54本书，分给9个班，每个班几本？", o: ["5本", "6本", "7本", "8本"], a: 1 },
-            { q: "7个同学植树，每人植4棵，总共植了多少棵？", o: ["21棵", "28棵", "35棵", "42棵"], a: 1 },
-            { q: "一个长方形，长8厘米，宽4厘米，周长是多少？", o: ["12厘米", "24厘米", "32厘米", "48厘米"], a: 1 },
-            { q: "找规律：1、4、7、10、？", o: ["12", "13", "14", "15"], a: 1 },
-            { q: "一道除法题，除数是6，商是9，余数是4，被除数是？", o: ["54", "58", "62", "66"], a: 1 }
-        ]
-    },
-    english: {
-        easy: [
-            { q: "字母表第一个字母是？", o: ["A", "B", "C", "Z"], a: 0 },
-            { q: "下列哪个是元音字母？", o: ["B", "C", "D", "E"], a: 3 },
-            { q: "\"apple\"这个词的第一个字母是？", o: ["a", "A", "p", "P"], a: 0 },
-            { q: "字母一共有多少个？", o: ["24", "25", "26", "27"], a: 2 },
-            { q: "\"Red\"是什么意思？", o: ["红色", "蓝色", "绿色", "黄色"], a: 0 },
-            { q: "\"Blue\"是什么颜色？", o: ["红", "蓝", "绿", "黄"], a: 1 },
-            { q: "\"Five\"是数字几？", o: ["3", "4", "5", "6"], a: 2 },
-            { q: "\"Three\"是数字几？", o: ["2", "3", "4", "5"], a: 1 },
-            { q: "\"Yellow\"翻译成中文是？", o: ["红色", "蓝色", "黄色", "绿色"], a: 2 },
-            { q: "\"Cat\"是什么意思？", o: ["狗", "猫", "鸟", "鱼"], a: 1 },
-            { q: "\"Dog\"翻译成中文是？", o: ["猫", "狗", "兔子", "鸭子"], a: 1 },
-            { q: "\"Apple\"是哪种水果？", o: ["香蕉", "苹果", "橙子", "葡萄"], a: 1 },
-            { q: "\"Banana\"的中文是？", o: ["苹果", "香蕉", "橘子", "西瓜"], a: 1 },
-            { q: "\"Bird\"是指什么动物？", o: ["猫", "狗", "鸟", "鱼"], a: 2 },
-            { q: "\"Hello\"的中文意思是？", o: ["你好", "再见", "谢谢", "对不起"], a: 0 },
-            { q: "\"Good morning\"是什么意思？", o: ["晚上好", "早上好", "下午好", "晚安"], a: 1 },
-            { q: "\"Thank you\"的意思是？", o: ["你好", "对不起", "谢谢", "再见"], a: 2 },
-            { q: "\"Goodbye\"的中文是？", o: ["你好", "谢谢", "再见", "对不起"], a: 2 },
-            { q: "\"Yes\"的反义词是？", o: ["No", "Not", "Good", "Bad"], a: 0 },
-            { q: "\"Eye\"是指哪个部位？", o: ["鼻子", "嘴巴", "眼睛", "耳朵"], a: 2 },
-            { q: "\"Mouth\"的中文是？", o: ["眼睛", "鼻子", "嘴巴", "耳朵"], a: 2 },
-            { q: "\"Hand\"是什么意思？", o: ["脚", "腿", "手", "头"], a: 2 },
-            { q: "\"Dad\"是指谁？", o: ["妈妈", "爸爸", "爷爷", "奶奶"], a: 1 },
-            { q: "\"Mom\"翻译成中文是？", o: ["爸爸", "妈妈", "哥哥", "姐姐"], a: 1 },
-            { q: "\"Fish\"是什么意思？", o: ["鸟", "鱼", "猫", "狗"], a: 1 }
-        ],
-        medium: [
-            { q: "\"Dog\"的复数形式是？", o: ["Doge", "Dogs", "Doges", "Doggy"], a: 1 },
-            { q: "别人说\"How are you?\"，你应该怎么回答？", o: ["I'm fine", "Thank you", "Hello", "Bye"], a: 0 },
-            { q: "\"Orange\"可以表示什么？", o: ["苹果", "橙子", "香蕉", "葡萄"], a: 1 },
-            { q: "\"Book\"的中文意思是？", o: ["笔", "本子", "书包", "桌子"], a: 1 },
-            { q: "下列哪个是问候语？", o: ["Yes", "No", "Good morning", "I don't know"], a: 2 },
-            { q: "\"Cat\"和\"猫\"是什么关系？", o: ["同义词", "反义词", "翻译关系", "无关"], a: 2 },
-            { q: "\"Water\"的中文意思是？", o: ["水", "火", "土", "风"], a: 0 },
-            { q: "2+2用英语怎么说？", o: ["Two and two", "Two or two", "Two to two", "Two by two"], a: 0 },
-            { q: "\"Red\"是什么颜色？", o: ["蓝色", "绿色", "红色", "黄色"], a: 2 },
-            { q: "\"Nose\"是指什么？", o: ["眼睛", "嘴巴", "鼻子", "耳朵"], a: 2 },
-            { q: "\"Leg\"的中文是？", o: ["手", "脚", "头", "胳膊"], a: 1 },
-            { q: "\"Arm\"翻译成中文是？", o: ["腿", "脚", "胳膊", "手"], a: 2 },
-            { q: "\"Big\"的反义词是？", o: ["Small", "Tall", "Long", "Short"], a: 0 },
-            { q: "\"Hot\"的反义词是？", o: ["Cold", "Warm", "Cool", "Wet"], a: 0 },
-            { q: "\"Happy\"的意思是？", o: ["伤心", "生气", "开心", "害怕"], a: 2 },
-            { q: "\"Sad\"的中文是？", o: ["开心", "生气", "伤心", "兴奋"], a: 2 },
-            { q: "\"Good\"的比较级是？", o: ["Gooder", "Better", "Best", "More good"], a: 1 },
-            { q: "\"I am\"的缩写形式是？", o: ["I'm", "Im", "I'am", "I`m"], a: 0 },
-            { q: "\"We are\"可以缩写为？", o: ["We're", "We'r", "W're", "W e'r"], a: 0 },
-            { q: "英语中，星期的第一天是？", o: ["Saturday", "Sunday", "Monday", "Friday"], a: 1 }
-        ],
-        hard: [
-            { q: "\"Miss\"可以表示什么意思？", o: ["小姐/想念/错过", "先生", "太太", "护士"], a: 0 },
-            { q: "\"Left\"可以表示什么？", o: ["左边/离开", "正确", "进入", "上升"], a: 0 },
-            { q: "\"Bank\"除了银行还有什么意思？", o: ["长椅", "河岸", "两者都是", "两者都不是"], a: 2 },
-            { q: "\"Bear\"作动词时是什么意思？", o: ["熊", "承受", "生育", "两者都是"], a: 3 },
-            { q: "\"Match\"可以表示什么？", o: ["比赛/火柴/匹配", "机器", "材料", "数学"], a: 0 },
-            { q: "\"Chinese\"有几个意思？", o: ["1个", "2个", "3个", "4个"], a: 2 },
-            { q: "\"Light\"的反义词是？", o: ["Dark", "Heavy", "Thin", "Short"], a: 0 },
-            { q: "\"Sharp\"可以描述什么？", o: ["尖的/锋利的", "钝的", "软的", "硬的"], a: 0 },
-            { q: "\"Table\"除了桌子还有什么意思？", o: ["表格", "桌球", "两者都是", "两者都不是"], a: 2 },
-            { q: "英语中12个月共有多少天？", o: ["364天", "365天", "366天", "360天"], a: 1 },
-            { q: "\"Miss\"作为动词时与时间搭配表示？", o: ["错过/未赶上", "想念", "未击中", "全部都对"], a: 0 },
-            { q: "\"Paper\"可以表示什么？", o: ["纸/报纸/试卷", "塑料", "布料", "木头"], a: 0 },
-            { q: "英语中\"foot\"在什么情况下要用复数？", o: ["两只脚", "一只脚", "英尺单位", "全部都对"], a: 3 },
-            { q: "\"Head\"除了头部还有什么意思？", o: ["首领/智力/前面", "尾部", "中间", "底部"], a: 0 },
-            { q: "时间\"a quarter past three\"表示几点？", o: ["3点15分", "3点45分", "3点30分", "2点45分"], a: 0 },
-            { q: "英语中\"as cold as ice\"是什么意思？", o: ["冰冷", "冷若冰霜", "两者都是", "非常冷"], a: 2 },
-            { q: "\"Watch\"作名词和动词时意思分别是？", o: ["手表/观看", "手表/等待", "时钟/观察", "手表/检查"], a: 0 },
-            { q: "\"Duck\"可以表示什么？", o: ["鸭子/躲避", "黑暗", "倒霉", "二者都不是"], a: 0 },
-            { q: "英语中\"break a leg\"是什么意思？", o: ["摔断腿", "祝好运", "破坏", "休息"], a: 1 },
-            { q: "\"spring\"在春天时表示什么？", o: ["春天/泉水/弹簧", "夏天", "秋天", "冬天"], a: 0 }
-        ]
-    },
-    science: {
-        easy: [
-            { q: "太阳从哪个方向升起？", o: ["西边", "东边", "南边", "北边"], a: 1 },
-            { q: "水在什么温度会变成冰？", o: ["0度以下", "0度", "100度", "50度"], a: 1 },
-            { q: "天上的彩虹有几种颜色？", o: ["5种", "6种", "7种", "8种"], a: 2 },
-            { q: "为什么会下雨？", o: ["云太重", "风太大", "太阳太热", "月亮出来"], a: 0 },
-            { q: "冬天为什么有时会下雪？", o: ["雨太冷了", "云太低", "温度够低", "风太大"], a: 2 },
-            { q: "植物需要什么才能生长？", o: ["手机", "电视", "阳光和水", "电脑"], a: 2 },
-            { q: "下列哪个是动物？", o: ["桌子", "树", "狗", "石头"], a: 2 },
-            { q: "蜜蜂会做什么？", o: ["酿蜜", "造纸", "织布", "盖房"], a: 0 },
-            { q: "鱼用什么呼吸？", o: ["肺", "腮", "鼻子", "皮肤"], a: 1 },
-            { q: "下列哪个是鸟类？", o: ["兔子", "鸭子", "小猫", "小鱼"], a: 1 },
-            { q: "树叶为什么是绿色的？", o: ["有叶绿素", "有阳光", "有水", "有土壤"], a: 0 },
-            { q: "什么动物会飞但不是鸟？", o: ["狗", "兔子", "蝙蝠", "鱼"], a: 2 },
-            { q: "猴子喜欢吃什么？", o: ["肉", "鱼", "香蕉", "白菜"], a: 2 },
-            { q: "哪种动物是森林之王？", o: ["老虎", "狮子", "大象", "熊"], a: 1 },
-            { q: "我们用什么呼吸？", o: ["心脏", "肺", "胃", "肝脏"], a: 1 },
-            { q: "心脏在哪里？", o: ["脑子里", "胸腔里", "肚子里", "腿里"], a: 1 },
-            { q: "我们用什么看东西？", o: ["耳朵", "鼻子", "眼睛", "嘴巴"], a: 2 },
-            { q: "我们用什么听声音？", o: ["眼睛", "嘴巴", "耳朵", "鼻子"], a: 2 },
-            { q: "一年有几个季节？", o: ["2个", "3个", "4个", "5个"], a: 2 },
-            { q: "月亮什么时候最圆？", o: ["初一", "十五", "三十", "每天一样"], a: 1 },
-            { q: "太阳是什么形状的？", o: ["方形", "三角形", "圆形", "月牙形"], a: 2 },
-            { q: "为什么会打雷？", o: ["云撞在一起", "太阳太亮", "风太大", "下雨太多"], a: 0 },
-            { q: "什么季节白天最长？", o: ["春天", "夏天", "秋天", "冬天"], a: 1 },
-            { q: "水是透明的吗？", o: ["是", "不是", "有时是", "不确定"], a: 0 },
-            { q: "磁铁能吸什么？", o: ["木头", "塑料", "铁", "布"], a: 2 }
-        ],
-        medium: [
-            { q: "水的沸点是多少度？", o: ["50度", "80度", "100度", "120度"], a: 2 },
-            { q: "太阳系中最大的行星是？", o: ["地球", "火星", "木星", "土星"], a: 2 },
-            { q: "人体最大的器官是？", o: ["心脏", "肝脏", "皮肤", "大脑"], a: 2 },
-            { q: "光合作用需要什么？", o: ["月光", "星光", "阳光", "灯光"], a: 2 },
-            { q: "下列哪个是哺乳动物？", o: ["鱼", "鸟", "狗", "蛇"], a: 2 },
-            { q: "地球的自转周期大约是？", o: ["1小时", "12小时", "24小时", "365小时"], a: 2 },
-            { q: "水的化学式是？", o: ["H2O", "CO2", "O2", "NaCl"], a: 0 },
-            { q: "下列哪个器官负责呼吸？", o: ["心脏", "肺", "胃", "肾"], a: 1 },
-            { q: "月亮绕着什么转？", o: ["太阳", "地球", "火星", "金星"], a: 1 },
-            { q: "冰融化成水，体积会？", o: ["变大", "变小", "不变", "不确定"], a: 1 },
-            { q: "影子是什么时候产生的？", o: ["有光的时候", "黑暗里", "水里", "地下"], a: 0 },
-            { q: "人体的骨骼大约有多少块？", o: ["106块", "206块", "306块", "406块"], a: 1 },
-            { q: "植物的根有什么作用？", o: ["美观", "吸收水分和营养", "支撑", "以上都是"], a: 3 },
-            { q: "下列哪个是昆虫？", o: ["蜘蛛", "蜈蚣", "蝴蝶", "蝎子"], a: 2 },
-            { q: "蚕丝是从哪种昆虫得到的？", o: ["蚊子", "蜜蜂", "蚕", "蜘蛛"], a: 2 },
-            { q: "声音可以在什么中传播？", o: ["空气", "水", "固体", "以上都可以"], a: 3 },
-            { q: "下列哪个是恒温动物？", o: ["鱼", "青蛙", "鸟", "蛇"], a: 2 },
-            { q: "光的速度大约是？", o: ["很快", "比声音快", "比声音慢", "和声音一样"], a: 1 },
-            { q: "月球表面有什么？", o: ["空气和水", "生命", "环形山", "森林"], a: 2 },
-            { q: "地球的公转周期是多久？", o: ["一天", "一个月", "一年", "一百年"], a: 2 }
-        ],
-        hard: [
-            { q: "光年是什么单位？", o: ["时间", "长度", "速度", "质量"], a: 1 },
-            { q: "地球内部结构不包括？", o: ["地壳", "地幔", "地核", "地心"], a: 3 },
-            { q: "太阳的主要成分是什么？", o: ["氧气", "氢气", "氮气", "二氧化碳"], a: 1 },
-            { q: "水的三种形态不包括？", o: ["固态", "液态", "气态", "等离子态"], a: 3 },
-            { q: "声音在空气中传播速度大约是？", o: ["34米/秒", "340米/秒", "3400米/秒", "34000米/秒"], a: 1 },
-            { q: "植物呼吸作用释放什么气体？", o: ["氧气", "氮气", "二氧化碳", "氢气"], a: 2 },
-            { q: "人体最大的细胞是？", o: ["红细胞", "白细胞", "神经细胞", "卵细胞"], a: 3 },
-            { q: "DNA的中文名称是？", o: ["核糖核酸", "脱氧核糖核酸", "蛋白质", "氨基酸"], a: 1 },
-            { q: "地球的自转方向是？", o: ["从西向东", "从东向西", "从南向北", "从北向南"], a: 0 },
-            { q: "月球的公转周期是多久？", o: ["24小时", "27天多", "30天", "365天"], a: 1 },
-            { q: "太阳黑子出现在太阳的哪一层？", o: ["光球层", "色球层", "日冕层", "对流层"], a: 0 },
-            { q: "大气层中最主要的气体成分是？", o: ["氧气", "二氧化碳", "氮气", "氩气"], a: 2 },
-            { q: "声音的音调高低与什么有关？", o: ["振幅", "频率", "波长", "速度"], a: 1 },
-            { q: "光的折射现象发生在？", o: ["光从空气进入水", "光在空气中传播", "光遇到镜子反射", "光穿过透明玻璃"], a: 0 },
-            { q: "地球上的水循环不包括哪个环节？", o: ["蒸发", "凝结", "凝固", "降水"], a: 2 },
-            { q: "火星表面是什么颜色？", o: ["蓝色", "绿色", "红色", "黄色"], a: 2 },
-            { q: "人体消化系统不包括？", o: ["口腔", "咽", "心脏", "胃"], a: 2 },
-            { q: "植物光合作用产生什么气体？", o: ["二氧化碳", "氮气", "氧气", "氢气"], a: 2 },
-            { q: "地球磁场的作用不包括？", o: ["导航", "阻挡太阳风", "产生极光", "提供光源"], a: 3 },
-            { q: "太阳系中有多少颗行星？", o: ["7颗", "8颗", "9颗", "10颗"], a: 1 }
-        ]
-    },
-    sports: {
-        easy: [
-            { q: "足球比赛每队有多少人？", o: ["8人", "9人", "11人", "12人"], a: 2 },
-            { q: "篮球比赛中三分线外投中得几分？", o: ["1分", "2分", "3分", "4分"], a: 2 },
-            { q: "跑步比赛中，短跑通常是多少米？", o: ["100米", "200米", "400米", "800米"], a: 0 },
-            { q: "跳远运动中，测量成绩是从哪里量起？", o: ["起跳线", "落地最近点", "落地最远点", "地面"], a: 2 },
-            { q: "乒乓球拍两面可以是什么颜色？", o: ["红黑", "红红或黑黑", "蓝绿", "黄紫"], a: 1 },
-            { q: "踢毽子时，毽子下落的速度会怎样？", o: ["越来越快", "越来越慢", "保持不变", "不确定"], a: 0 },
-            { q: "做仰卧起坐时主要锻炼哪里？", o: ["腿部", "腹部", "背部", "手臂"], a: 1 },
-            { q: "跑步时，应该用什么部位着地？", o: ["脚尖", "脚跟", "脚掌", "都可以"], a: 2 },
-            { q: "打羽毛球时，球拍应该握在哪里？", o: ["中间", "靠近拍头", "靠近拍柄", "都可以"], a: 2 },
-            { q: "游泳时，在水下应该怎么呼吸？", o: ["用嘴", "用鼻子", "屏住呼吸", "都可以"], a: 2 },
-            { q: "立正时，两脚跟之间的距离大约是多少？", o: ["与肩同宽", "一脚宽", "两脚宽", "无所谓"], a: 1 },
-            { q: "跳绳时，绳子转一圈大约需要多长时间？", o: ["0.3秒", "0.5秒", "1秒", "2秒"], a: 1 },
-            { q: "打篮球时，走步是什么犯规？", o: ["带球跑", "打手", "阻挡", "撞人"], a: 0 },
-            { q: "跑步比赛中最重要的是什么？", o: ["起跑", "中途", "冲刺", "全程都重要"], a: 3 },
-            { q: "压腿主要锻炼哪个部位？", o: ["手臂", "背部", "腿部", "颈部"], a: 2 },
-            { q: "体育课准备活动的目的是？", o: ["让老师高兴", "预防受伤", "浪费时间", "以上都不是"], a: 1 },
-            { q: "剧烈运动后应该怎么做？", o: ["立即坐下", "慢慢走动放松", "喝大量冷水", "马上洗澡"], a: 1 },
-            { q: "做俯卧撑时，手臂应该怎么放？", o: ["比肩宽", "与肩同宽", "比肩窄", "无所谓"], a: 1 },
-            { q: "踢足球时，用脚哪个部位踢球最准？", o: ["脚尖", "脚背", "脚跟", "脚侧"], a: 1 },
-            { q: "拔河比赛中，胜负取决于什么？", o: ["力量", "技巧", "团队协作", "以上都是"], a: 3 },
-            { q: "体育课穿什么鞋最合适？", o: ["皮鞋", "运动鞋", "拖鞋", "凉鞋"], a: 1 },
-            { q: "投篮时，手应该放在球的哪里？", o: ["上方", "侧面", "下方", "都可以"], a: 0 },
-            { q: "乒乓球比赛中，发球时球要先在哪里接触？", o: ["自己桌面", "对方桌面", "球网", "都可以"], a: 0 },
-            { q: "800米跑属于什么项目？", o: ["短跑", "中跑", "长跑", "马拉松"], a: 1 },
-            { q: "接力赛交接棒时，接棒人应该怎么跑？", o: ["站着等", "提前跑", "向后看", "都可以"], a: 1 }
-        ],
-        medium: [
-            { q: "奥运会每几年举办一次？", o: ["2年", "4年", "6年", "8年"], a: 1 },
-            { q: "第一届现代奥运会在哪里举行？", o: ["罗马", "雅典", "巴黎", "伦敦"], a: 1 },
-            { q: "足球比赛全场是多少分钟？", o: ["80分钟", "90分钟", "100分钟", "110分钟"], a: 1 },
-            { q: "篮球比赛每节多少分钟？", o: ["8分钟", "10分钟", "12分钟", "15分钟"], a: 2 },
-            { q: "世界足球先生奖项叫什么？", o: ["金球奖", "金靴奖", " FIFA最佳", "以上都是"], a: 3 },
-            { q: "排球比赛中，每队最多可以击球几次？", o: ["2次", "3次", "4次", "5次"], a: 1 },
-            { q: "羽毛球比赛采用什么赛制？", o: ["9分制", "11分制", "15分制", "21分制"], a: 3 },
-            { q: "乒乓球比赛标准球桌高度是多少？", o: ["70厘米", "76厘米", "80厘米", "86厘米"], a: 1 },
-            { q: "标准田径跑道一圈是多少米？", o: ["200米", "400米", "800米", "1000米"], a: 1 },
-            { q: "跳高运动员采用哪种姿势成功率更高？", o: ["跨越式", "俯卧式", "背越式", "都一样"], a: 2 },
-            { q: "举重比赛分为哪两种？", o: ["抓举和挺举", "推举和抓举", "挺举和推举", "抓举和推举"], a: 0 },
-            { q: "游泳比赛中，哪种泳姿速度最快？", o: ["仰泳", "蛙泳", "蝶泳", "自由泳"], a: 3 },
-            { q: "网球比赛中，'爱'是什么意思？", o: ["零分", "一分", "两分", "三分"], a: 0 },
-            { q: "羽毛球拍最重的部分在哪里？", o: ["拍框", "拍柄", "拍面", "拍杆"], a: 1 },
-            { q: "做引体向上时，主要用力的是哪里？", o: ["腹部", "腿部", "背部手臂", "胸部"], a: 2 },
-            { q: "长跑比赛中，正确的呼吸方式是什么？", o: ["用嘴吸气用嘴呼气", "用鼻子吸气用嘴呼气", "用嘴吸气用鼻子呼气", "无所谓"], a: 1 },
-            { q: "足球守门员可以用手触球，其他人呢？", o: ["可以用脚", "可以用头", "不可以用手", "都可以"], a: 2 },
-            { q: "篮球比赛中，进攻方持球不能超过多少秒？", o: ["20秒", "24秒", "30秒", "35秒"], a: 1 },
-            { q: "排球比赛中，拦网算不算一次击球？", o: ["算", "不算", "有时算", "看情况"], a: 1 },
-            { q: "田径比赛中，计时员从什么时刻开始计时？", o: ["看到发令枪烟", "听到枪声", "运动员起跑", "无所谓"], a: 0 }
-        ],
-        hard: [
-            { q: "世界一级方程式锦标赛的英文缩写是？", o: ["F1", "WRC", "MotoGP", "NASCAR"], a: 0 },
-            { q: "马拉松比赛的距离是42.195公里，源于哪里？", o: ["战争", "商业", "医学", "娱乐"], a: 0 },
-            { q: "篮球比赛中，三秒区的作用是什么？", o: ["计时", "限制进攻球员停留时间", "测量距离", "装饰"], a: 1 },
-            { q: "足球比赛中，越位规则是为了什么？", o: ["增加难度", "防止偷袭进球", "保护球员", "节省时间"], a: 1 },
-            { q: "网球运动中，'占先'是什么意思？", o: ["领先", "平分", "落后", "换边"], a: 0 },
-            { q: "乒乓球旋转球分为哪三种主要旋转？", o: ["上旋、下旋、侧旋", "快旋、慢旋、停旋", "前旋、后旋、侧旋", "强旋、弱旋、不旋"], a: 0 },
-            { q: "举重比赛中，抓举和挺举的有什么区别？", o: ["动作幅度", "是否停顿", "两者都是", "两者都不是"], a: 2 },
-            { q: "田径比赛中，风速对短跑成绩有影响，超过多少米/秒的成绩无效？", o: ["1米/秒", "2米/秒", "3米/秒", "4米/秒"], a: 1 },
-            { q: "游泳比赛中，出发台的高度是多少？", o: ["低于50厘米", "50厘米", "高于50厘米", "没有规定"], a: 1 },
-            { q: "篮球比赛中，如果投篮被犯规但球进筐，该怎么算？", o: ["算进球再加罚", "只算进球不加罚", "进球无效重新打", "看情况"], a: 0 },
-            { q: "足球点球大战中，守门员必须怎样？", o: ["站在球门线中间", "一只脚踩在球门线上", "双脚站在球门线后", "没有要求"], a: 1 },
-            { q: "排球比赛中，自由人有什么限制？", o: ["不能扣球", "不能发球", "不能拦网", "以上都是"], a: 3 },
-            { q: "网球比赛中，平分后需要领先几分才能获胜？", o: ["1分", "2分", "3分", "没有限制"], a: 1 },
-            { q: "射击比赛中，10米气步枪的靶纸10环直径大约是多少？", o: ["1厘米", "2厘米", "5厘米", "10厘米"], a: 0 },
-            { q: "击剑比赛中，有效击中需要满足什么？", o: ["力量足够", "部位正确", "剑尖接触", "以上都要"], a: 3 },
-            { q: "乒乓球胶皮分为正胶和反胶，它们的区别主要是什么？", o: ["颜色", "颗粒方向", "厚度", "材质"], a: 1 },
-            { q: "足球比赛换人名额是多少人？", o: ["2人", "3人", "4人", "5人"], a: 1 },
-            { q: "马拉松比赛为什么要在起点和终点附近设置坡道？", o: ["增加难度", "排水需要", "实际距离测量需要", "美观"], a: 2 },
-            { q: "篮球比赛中，恶意犯规一般会判罚什么？", o: ["普通犯规", "技术犯规", "违反体育道德犯规", "取消比赛资格"], a: 2 },
-            { q: "举重比赛中，杠铃举过头顶需要稳定几秒才算成功？", o: ["不需要稳定", "1秒", "2秒", "看裁判判断"], a: 0 }
-        ]
-    },
-    general: {
-        easy: [
-            { q: "中国的首都在哪里？", o: ["上海", "北京", "广州", "深圳"], a: 1 },
-            { q: "一周有几天？", o: ["5天", "6天", "7天", "8天"], a: 2 },
-            { q: "哪个手指最短？", o: ["拇指", "食指", "中指", "小指"], a: 3 },
-            { q: "《茉莉花》是哪里的民歌？", o: ["日本", "韩国", "中国", "越南"], a: 2 },
-            { q: "下列哪个是亚洲国家？", o: ["法国", "德国", "日本", "巴西"], a: 2 },
-            { q: "一年有多少个月？", o: ["10个月", "11个月", "12个月", "13个月"], a: 2 },
-            { q: "中国共有多少个民族？", o: ["54个", "56个", "58个", "60个"], a: 1 },
-            { q: "京剧有哪几种主要角色？", o: ["2种", "3种", "4种", "5种"], a: 2 },
-            { q: "人体有多少颗牙齿？", o: ["20颗", "28颗", "32颗", "36颗"], a: 1 },
-            { q: "《西游记》中的唐僧原型是谁？", o: ["李白", "鉴真", "玄奘", "郑和"], a: 2 },
-            { q: "长城大约有多长？", o: ["一千公里", "两千公里", "五千公里", "一万公里"], a: 1 },
-            { q: "中国有几种货币？", o: ["1种", "2种", "3种", "4种"], a: 0 },
-            { q: "第一个登上月球的人是？", o: ["杨利伟", "阿姆斯特朗", "加加林", "阿波罗"], a: 1 },
-            { q: "筷子是哪国人发明的？", o: ["日本人", "韩国人", "中国人", "越南人"], a: 2 },
-            { q: "哆、来、咪、发、嗦、啦、西，一共有几个音？", o: ["5个", "6个", "7个", "8个"], a: 2 },
-            { q: "下列哪个是打击乐器？", o: ["钢琴", "小提琴", "鼓", "笛子"], a: 2 },
-            { q: "红色和黄色混合会变成什么颜色？", o: ["紫色", "绿色", "橙色", "蓝色"], a: 2 },
-            { q: "《两只老虎》是一首什么类型的歌？", o: ["情歌", "儿童歌曲", "摇滚", "民歌"], a: 1 },
-            { q: "《西游记》共有多少回？", o: ["100回", "108回", "120回", "88回"], a: 0 },
-            { q: "中国最大的城市是？", o: ["北京", "上海", "广州", "深圳"], a: 1 },
-            { q: "世界上最高的山是？", o: ["华山", "黄山", "珠穆朗玛峰", "泰山"], a: 2 },
-            { q: "中国的国宝动物是？", o: ["老虎", "熊猫", "狮子", "孔雀"], a: 1 },
-            { q: "地球是什么形状的？", o: ["正方形", "三角形", "圆形", "球形"], a: 3 },
-            { q: "一天有多少小时？", o: ["20小时", "22小时", "24小时", "26小时"], a: 2 },
-            { q: "一年有多少天？", o: ["300天", "365天", "400天", "366天"], a: 1 }
-        ],
-        medium: [
-            { q: "发现火情，应该第一时间做什么？", o: ["自己灭火", "跑开喊大人", "躲起来", "继续玩"], a: 1 },
-            { q: "陌生人给你糖果，你应该？", o: ["接受", "拒绝并走开", "跟着走", "分给同学"], a: 1 },
-            { q: "游泳应该去哪里？", o: ["河里", "水库", "正规游泳池", "池塘"], a: 2 },
-            { q: "小学生守则中，见老师应该怎么做？", o: ["装作没看见", "主动问好", "跑开", "低头走过"], a: 1 },
-            { q: "红灯亮了，应该怎么办？", o: ["直接过", "左右看后过", "停下来等绿灯", "跑着过"], a: 2 },
-            { q: "下列哪种行为是文明的？", o: ["随地吐痰", "插队", "排队等候", "乱扔垃圾"], a: 2 },
-            { q: "拾到别人丢失的东西应该？", o: ["自己留着", "交还失主", "扔掉", "假装没看见"], a: 1 },
-            { q: "过马路时应该走哪里？", o: ["机动车道", "人行横道", "马路中间", "随便哪里"], a: 1 },
-            { q: "上课发言前应该怎样？", o: ["直接说", "先举手", "大声喊", "不说话"], a: 1 },
-            { q: "三原色不包括哪个？", o: ["红色", "黄色", "蓝色", "白色"], a: 3 },
-            { q: "蜜蜂为什么会跳舞？", o: ["高兴", "召唤同伴采蜜", "锻炼身体", "没有原因"], a: 1 },
-            { q: "指南针指向哪个方向？", o: ["西", "南", "北", "南或北"], a: 2 },
-            { q: "《论语》是记录谁的言行的？", o: ["老子", "孔子", "孟子", "庄子"], a: 1 },
-            { q: "中国四大发明不包括？", o: ["造纸术", "印刷术", "指南针", "自行车"], a: 3 },
-            { q: "奥运会五环的颜色，从上到下是什么？", o: ["蓝黄黑绿红", "黑蓝黄绿红", "红绿黄蓝黑", "黄蓝黑绿红"], a: 0 },
-            { q: "中国最高的点是哪里？", o: ["华山", "泰山", "珠穆朗玛峰", "黄山"], a: 2 },
-            { q: "《三国演义》的作者是谁？", o: ["罗贯中", "施耐庵", "吴承恩", "曹雪芹"], a: 0 },
-            { q: "京剧四大名旦不包括？", o: ["梅兰芳", "程砚秋", "荀慧生", "尚小云", "白玉兰"], a: 3 },
-            { q: "中国有多少个省级行政区？", o: ["23个", "25个", "33个", "35个"], a: 2 },
-            { q: "世界上最长的河流是？", o: ["长江", "黄河", "尼罗河", "亚马逊河"], a: 2 }
-        ],
-        hard: [
-            { q: "《道德经》的作者是谁？", o: ["孔子", "老子", "庄子", "墨子"], a: 1 },
-            { q: "中国历史上第一个皇帝是谁？", o: ["刘邦", "项羽", "秦始皇", "汉武帝"], a: 2 },
-            { q: "造纸术最早出现在哪个朝代？", o: ["秦朝", "汉朝", "唐朝", "宋朝"], a: 1 },
-            { q: "指南针最早叫什么？", o: ["司南", "罗盘", "指南针", "方位仪"], a: 0 },
-            { q: "活字印刷术是谁发明的？", o: ["蔡伦", "毕昇", "沈括", "张衡"], a: 1 },
-            { q: "《史记》的作者是谁？", o: ["司马迁", "司马光", "班固", "陈寿"], a: 0 },
-            { q: "中国第一部诗歌总集是？", o: ["楚辞", "诗经", "唐诗", "宋词"], a: 1 },
-            { q: "《资治通鉴》的作者是谁？", o: ["司马迁", "司马光", "班固", "陈寿"], a: 1 },
-            { q: "中国最早的乐器是什么？", o: ["笛子", "骨笛", "箫", "笙"], a: 1 },
-            { q: "汉字的演变顺序正确的是？", o: ["甲骨文-金文-小篆-隶书-楷书", "甲骨文-小篆-金文-隶书-楷书", "金文-甲骨文-小篆-隶书-楷书", "甲骨文-隶书-金文-小篆-楷书"], a: 0 },
-            { q: "中国四大古典名著不包括？", o: ["西游记", "红楼梦", "水浒传", "聊斋志异", "三国演义"], a: 3 },
-            { q: "《清明上河图》描绘的是哪个城市？", o: ["长安", "洛阳", "开封", "杭州"], a: 2 },
-            { q: "丝绸之路的起点是？", o: ["长安", "洛阳", "敦煌", "喀什"], a: 0 },
-            { q: "郑和下西洋最远到达哪里？", o: ["非洲东海岸", "欧洲", "美洲", "澳大利亚"], a: 0 },
-            { q: "中国第一部药学著作是？", o: ["伤寒杂病论", "本草纲目", "神农本草经", "千金方"], a: 2 },
-            { q: "古代科举制度中，会试第一名叫什么？", o: ["解元", "会元", "状元", "榜眼"], a: 1 },
-            { q: "《梦溪笔谈》的作者是谁？", o: ["张衡", "沈括", "蔡伦", "毕昇"], a: 1 },
-            { q: "中国古代建筑木结构体系主要采用什么方式？", o: ["榫卯", "钉子", "胶水", "铁钉"], a: 0 },
-            { q: "二十四节气中，立春之后的节气是？", o: ["雨水", "惊蛰", "春分", "清明"], a: 0 },
-            { q: "中国第一部断代史史书是？", o: ["史记", "汉书", "后汉书", "三国志"], a: 1 }
-        ]
-    }
+    chinese: [
+        { q: "'baba'的声母是什么？", o: ["b", "p", "m", "f"], a: 0 },
+        { q: "下列哪个是整体认读音节？", o: ["ba", "bo", "zhi", "zh"], a: 2 },
+        { q: "'花'的拼音第三声是？", o: ["huā", "huá", "huà", "huǎ"], a: 1 },
+        { q: "“天”字有几笔？", o: ["3笔", "4笔", "5笔", "6笔"], a: 1 },
+        { q: "《咏鹅》的作者是？", o: ["李白", "骆宾王", "王维", "贺知章"], a: 1 },
+        { q: "“春眠不觉晓”的下一句是？", o: ["处处闻啼鸟", "夜来风雨声", "花落知多少", "明月照窗前"], a: 0 },
+        { q: "《静夜思》中“举头望明月”的下一句是？", o: ["千里共婵娟", "低头思故乡", "月是故乡明", "海上生明月"], a: 1 },
+        { q: "成语“守株待兔”讲的是谁在等？", o: ["兔子", "农夫", "猎人", "国王"], a: 1 },
+        { q: "“亡羊补牢”中羊圈破了，主人后来？", o: ["不管了", "修好了", "搬家了", "买新羊"], a: 1 },
+        { q: "“对牛弹琴”比喻对什么人说话没用？", o: ["聪明人", "外国人", "不懂的人", "聋人"], a: 2 },
+        { q: "“欲穷千里目”的下一句是？", o: ["更上一层楼", "抬头望明月", "低头思故乡", "举头望明月"], a: 0 },
+        { q: "成语“画蛇添足”的意思是？", o: ["画得很好", "多此一举", "画得很差", "锦上添花"], a: 1 },
+        { q: "“桃李满天下”比喻什么？", o: ["桃花和李花", "学生众多", "水果丰收", "春天景色"], a: 1 },
+        { q: "《西游记》中的“唐僧”法号是？", o: ["孙悟空", "唐三藏", "猪八戒", "沙和尚"], a: 1 },
+        { q: "“吾将上下而求索”出自？", o: ["《论语》", "《离骚》", "《史记》", "《庄子》"], a: 1 },
+        { q: "《论语》是记录谁言行的书？", o: ["老子", "孔子", "孟子", "荀子"], a: 1 },
+        { q: "“望梅止渴”讲的是谁的故事？", o: ["刘备", "曹操", "孙权", "诸葛亮"], a: 1 },
+        { q: "“三顾茅庐”说的是谁请谁出山？", o: ["刘备请诸葛亮", "曹操请刘备", "孙权请周瑜", "诸葛亮请刘备"], a: 0 },
+        { q: "“纸上谈兵”说的是谁的故事？", o: ["廉颇", "赵括", "项羽", "韩信"], a: 1 },
+        { q: "“草木皆兵”出自哪个战役？", o: ["赤壁之战", "淝水之战", "官渡之战", "长平之战"], a: 1 }
+    ],
+    math: [
+        { q: "7 + 5 = ?", o: ["11", "12", "13", "14"], a: 1 },
+        { q: "15 - 8 = ?", o: ["6", "7", "8", "9"], a: 1 },
+        { q: "6 + 9 = ?", o: ["14", "15", "16", "17"], a: 1 },
+        { q: "2 × 3 = ?", o: ["5", "6", "7", "8"], a: 1 },
+        { q: "4 × 5 = ?", o: ["18", "19", "20", "21"], a: 2 },
+        { q: "正方形有几条边？", o: ["3", "4", "5", "6"], a: 1 },
+        { q: "三角形有几个角？", o: ["2", "3", "4", "5"], a: 1 },
+        { q: "找规律：2、4、6、8、？", o: ["9", "10", "11", "12"], a: 1 },
+        { q: "找规律：1、3、5、7、？", o: ["8", "9", "10", "11"], a: 1 },
+        { q: "找规律：10、20、30、40、？", o: ["45", "50", "55", "60"], a: 1 },
+        { q: "小明有3个苹果，小红给了他2个，现在有几个？", o: ["4", "5", "6", "7"], a: 1 },
+        { q: "一盒铅笔10支，用了6支，还剩几支？", o: ["2", "3", "4", "5"], a: 2 },
+        { q: "3个小朋友排队，小明排第二，他前面有几个人？", o: ["0", "1", "2", "3"], a: 1 },
+        { q: "12 + 8 × 3 = ?", o: ["36", "60", "48", "24"], a: 0 },
+        { q: "100的一半是多少？", o: ["25", "50", "75", "20"], a: 1 },
+        { q: "15 - 7 + 3 = ?", o: ["5", "11", "19", "8"], a: 1 },
+        { q: "下列哪个是质数？", o: ["4", "6", "7", "9"], a: 2 },
+        { q: "圆形有几条对称轴？", o: ["1条", "2条", "无数条", "0条"], a: 2 },
+        { q: "24 ÷ 6 + 5 = ?", o: ["4", "9", "29", "19"], a: 1 },
+        { q: "3 × 7 = ?", o: ["18", "20", "21", "24"], a: 2 }
+    ],
+    english: [
+        { q: "字母表第一个字母是？", o: ["A", "B", "C", "Z"], a: 0 },
+        { q: "下列哪个是元音字母？", o: ["B", "C", "D", "E"], a: 3 },
+        { q: "'apple'这个词的第一个字母是？", o: ["a", "A", "p", "P"], a: 0 },
+        { q: "字母一共有多少个？", o: ["24", "25", "26", "27"], a: 2 },
+        { q: "'Red'是什么意思？", o: ["红色", "蓝色", "绿色", "黄色"], a: 0 },
+        { q: "'Blue'是什么颜色？", o: ["红", "蓝", "绿", "黄"], a: 1 },
+        { q: "'Five'是数字几？", o: ["3", "4", "5", "6"], a: 2 },
+        { q: "'Three'是数字几？", o: ["2", "3", "4", "5"], a: 1 },
+        { q: "'Yellow'翻译成中文是？", o: ["红色", "蓝色", "黄色", "绿色"], a: 2 },
+        { q: "'Cat'是什么意思？", o: ["狗", "猫", "鸟", "鱼"], a: 1 },
+        { q: "'Dog'翻译成中文是？", o: ["猫", "狗", "兔子", "鸭子"], a: 1 },
+        { q: "'Apple'是哪种水果？", o: ["香蕉", "苹果", "橙子", "葡萄"], a: 1 },
+        { q: "'Banana'的中文是？", o: ["苹果", "香蕉", "橘子", "西瓜"], a: 1 },
+        { q: "'Bird'是指什么动物？", o: ["猫", "狗", "鸟", "鱼"], a: 2 },
+        { q: "'Hello'的中文意思是？", o: ["你好", "再见", "谢谢", "对不起"], a: 0 },
+        { q: "'Good morning'是什么意思？", o: ["晚上好", "早上好", "下午好", "晚安"], a: 1 },
+        { q: "'Thank you'的意思是？", o: ["你好", "对不起", "谢谢", "再见"], a: 2 },
+        { q: "'Goodbye'的中文是？", o: ["你好", "谢谢", "再见", "对不起"], a: 2 },
+        { q: "'Yes'的反义词是？", o: ["No", "Not", "Good", "Bad"], a: 0 },
+        { q: "'Eye'是指哪个部位？", o: ["鼻子", "嘴巴", "眼睛", "耳朵"], a: 2 }
+    ],
+    science: [
+        { q: "太阳从哪个方向升起？", o: ["西边", "东边", "南边", "北边"], a: 1 },
+        { q: "水在什么温度会变成冰？", o: ["0度以下", "0度", "100度", "50度"], a: 1 },
+        { q: "天上的彩虹有几种颜色？", o: ["5种", "6种", "7种", "8种"], a: 2 },
+        { q: "为什么会下雨？", o: ["云太重", "风太大", "太阳太热", "月亮出来"], a: 0 },
+        { q: "冬天为什么有时会下雪？", o: ["雨太冷了", "云太低", "温度够低", "风太大"], a: 2 },
+        { q: "植物需要什么才能生长？", o: ["手机", "电视", "阳光和水", "电脑"], a: 2 },
+        { q: "下列哪个是动物？", o: ["桌子", "树", "狗", "石头"], a: 2 },
+        { q: "蜜蜂会做什么？", o: ["酿蜜", "造纸", "织布", "盖房"], a: 0 },
+        { q: "鱼用什么呼吸？", o: ["肺", "腮", "鼻子", "皮肤"], a: 1 },
+        { q: "下列哪个是鸟类？", o: ["兔子", "鸭子", "小猫", "小鱼"], a: 1 },
+        { q: "树叶为什么是绿色的？", o: ["有叶绿素", "有阳光", "有水", "有土壤"], a: 0 },
+        { q: "什么动物会飞但不是鸟？", o: ["狗", "兔子", "蝙蝠", "鱼"], a: 2 },
+        { q: "猴子喜欢吃什么？", o: ["肉", "鱼", "香蕉", "白菜"], a: 2 },
+        { q: "哪种动物是森林之王？", o: ["老虎", "狮子", "大象", "熊"], a: 1 },
+        { q: "我们用什么呼吸？", o: ["心脏", "肺", "胃", "肝脏"], a: 1 },
+        { q: "心脏在哪里？", o: ["脑子里", "胸腔里", "肚子里", "腿里"], a: 1 },
+        { q: "我们用什么看东西？", o: ["耳朵", "鼻子", "眼睛", "嘴巴"], a: 2 },
+        { q: "我们用什么听声音？", o: ["眼睛", "嘴巴", "耳朵", "鼻子"], a: 2 },
+        { q: "一年有几个季节？", o: ["2个", "3个", "4个", "5个"], a: 2 },
+        { q: "月亮什么时候最圆？", o: ["初一", "十五", "三十", "每天一样"], a: 1 }
+    ],
+    sports: [
+        { q: "足球比赛每队有多少人？", o: ["8人", "9人", "11人", "12人"], a: 2 },
+        { q: "篮球比赛中三分线外投中得几分？", o: ["1分", "2分", "3分", "4分"], a: 2 },
+        { q: "跑步比赛中，短跑通常是多少米？", o: ["100米", "200米", "400米", "800米"], a: 0 },
+        { q: "跳远运动中，测量成绩是从哪里量起？", o: ["起跳线", "落地最近点", "落地最远点", "地面"], a: 2 },
+        { q: "乒乓球拍两面可以是什么颜色？", o: ["红黑", "红红或黑黑", "蓝绿", "黄紫"], a: 1 },
+        { q: "做仰卧起坐时主要锻炼哪里？", o: ["腿部", "腹部", "背部", "手臂"], a: 1 },
+        { q: "跑步时，应该用什么部位着地？", o: ["脚尖", "脚跟", "脚掌", "都可以"], a: 2 },
+        { q: "打羽毛球时，球拍应该握在哪里？", o: ["中间", "靠近拍头", "靠近拍柄", "都可以"], a: 2 },
+        { q: "游泳时，在水下应该怎么呼吸？", o: ["用嘴", "用鼻子", "屏住呼吸", "都可以"], a: 2 },
+        { q: "立正时，两脚跟之间的距离大约是多少？", o: ["与肩同宽", "一脚宽", "两脚宽", "无所谓"], a: 1 },
+        { q: "跳绳时，绳子转一圈大约需要多长时间？", o: ["0.3秒", "0.5秒", "1秒", "2秒"], a: 1 },
+        { q: "打篮球时，走步是什么犯规？", o: ["带球跑", "打手", "阻挡", "撞人"], a: 0 },
+        { q: "跑步比赛中最重要的是什么？", o: ["起跑", "中途", "冲刺", "全程都重要"], a: 3 },
+        { q: "压腿主要锻炼哪个部位？", o: ["手臂", "背部", "腿部", "颈部"], a: 2 },
+        { q: "体育课准备活动的目的是？", o: ["让老师高兴", "预防受伤", "浪费时间", "以上都不是"], a: 1 },
+        { q: "剧烈运动后应该怎么做？", o: ["立即坐下", "慢慢走动放松", "喝大量冷水", "马上洗澡"], a: 1 },
+        { q: "做俯卧撑时，手臂应该怎么放？", o: ["比肩宽", "与肩同宽", "比肩窄", "无所谓"], a: 1 },
+        { q: "踢足球时，用脚哪个部位踢球最准？", o: ["脚尖", "脚背", "脚跟", "脚侧"], a: 1 },
+        { q: "拔河比赛中，胜负取决于什么？", o: ["力量", "技巧", "团队协作", "以上都是"], a: 3 },
+        { q: "体育课穿什么鞋最合适？", o: ["皮鞋", "运动鞋", "拖鞋", "凉鞋"], a: 1 }
+    ],
+    general: [
+        { q: "中国的首都在哪里？", o: ["上海", "北京", "广州", "深圳"], a: 1 },
+        { q: "一周有几天？", o: ["5天", "6天", "7天", "8天"], a: 2 },
+        { q: "哪个手指最短？", o: ["拇指", "食指", "中指", "小指"], a: 3 },
+        { q: "《茉莉花》是哪里的民歌？", o: ["日本", "韩国", "中国", "越南"], a: 2 },
+        { q: "下列哪个是亚洲国家？", o: ["法国", "德国", "日本", "巴西"], a: 2 },
+        { q: "一年有多少个月？", o: ["10个月", "11个月", "12个月", "13个月"], a: 2 },
+        { q: "中国共有多少个民族？", o: ["54个", "56个", "58个", "60个"], a: 1 },
+        { q: "京剧有哪几种主要角色？", o: ["2种", "3种", "4种", "5种"], a: 2 },
+        { q: "人体有多少颗牙齿？", o: ["20颗", "28颗", "32颗", "36颗"], a: 1 },
+        { q: "《西游记》中的唐僧原型是谁？", o: ["李白", "鉴真", "玄奘", "郑和"], a: 2 },
+        { q: "长城大约有多长？", o: ["一千公里", "两千公里", "五千公里", "一万公里"], a: 1 },
+        { q: "第一个登上月球的人是？", o: ["杨利伟", "阿姆斯特朗", "加加林", "阿波罗"], a: 1 },
+        { q: "筷子是哪国人发明的？", o: ["日本人", "韩国人", "中国人", "越南人"], a: 2 },
+        { q: "哆、来、咪、发、嗦、啦、西，一共有几个音？", o: ["5个", "6个", "7个", "8个"], a: 2 },
+        { q: "下列哪个是打击乐器？", o: ["钢琴", "小提琴", "鼓", "笛子"], a: 2 },
+        { q: "红色和黄色混合会变成什么颜色？", o: ["紫色", "绿色", "橙色", "蓝色"], a: 2 },
+        { q: "《两只老虎》是一首什么类型的歌？", o: ["情歌", "儿童歌曲", "摇滚", "民歌"], a: 1 },
+        { q: "世界上最高的山是？", o: ["华山", "黄山", "珠穆朗玛峰", "泰山"], a: 2 },
+        { q: "中国的国宝动物是？", o: ["老虎", "熊猫", "狮子", "孔雀"], a: 1 },
+        { q: "地球是什么形状的？", o: ["正方形", "三角形", "圆形", "球形"], a: 3 }
+    ]
 };
 
 // ==================== GAME STATE ====================
 let gameState = {
-    player: {
-        level: 1,
-        exp: 0,
-        gold: 100,
-        characters: [],
-        fragments: {},
-        items: [],
-        equipment: {}
-    },
-    dailyTasks: {},
-    weeklyTasks: {},
-    settings: {}
+    player: { level: 1, exp: 0, gold: 100, hp: 10, characters: [], fragments: {}, items: [], equipment: {} },
+    subjectChars: [
+        { id: 'chinese', level: 1, exp: 0, hp: 100, maxHp: 100, atk: 10 },
+        { id: 'math', level: 1, exp: 0, hp: 80, maxHp: 80, atk: 15 },
+        { id: 'english', level: 1, exp: 0, hp: 90, maxHp: 90, atk: 12 },
+        { id: 'science', level: 1, exp: 0, hp: 85, maxHp: 85, atk: 14 },
+        { id: 'sports', level: 1, exp: 0, hp: 95, maxHp: 95, atk: 11 },
+        { id: 'art', level: 1, exp: 0, hp: 75, maxHp: 75, atk: 18 }
+    ],
+    team: [], chapterProgress: [0, 0, 0, 0, 0], unlockedChapters: 1,
+    dailyTasks: {}, weeklyTasks: {}, eventTasks: {}
 };
 
-let currentQuiz = {
-    subject: null,
-    difficulty: 'easy',
-    mode: null,
-    questions: [],
-    currentQ: 0,
-    lives: 3,
-    score: 0,
-    timeLeft: 20,
-    timerInterval: null,
-    streak: 0,
-    totalAnswered: 0
-};
+let currentBattle = { chapter: 1, level: 1, baseHP: 10, maxBaseHP: 10, wave: 1, totalWaves: 5, questions: [], currentQ: 0, score: 0, streak: 0, timerInterval: null, timeLeft: 20 };
 
-// ==================== INITIALIZATION ====================
-function init() {
-    loadGame();
-    createParticles();
-    updateHomeUI();
+// ==================== INIT ====================
+function init() { loadGame(); createParticles(); updateHomeUI(); }
+function loadGame() { const saved = localStorage.getItem('learningGameV3'); if (saved) { const data = JSON.parse(saved); gameState = { ...gameState, ...data }; } }
+function saveGame() { localStorage.setItem('learningGameV3', JSON.stringify(gameState)); }
+function updateHomeUI() { document.getElementById('playerLevel').textContent = gameState.player.level; document.getElementById('playerGold').textContent = gameState.player.gold; document.getElementById('playerHP').textContent = gameState.player.hp; renderCharGrid(); }
+
+function renderCharGrid() {
+    const container = document.getElementById('charGrid');
+    container.innerHTML = SUBJECT_CHARS.map(sc => {
+        const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 };
+        const isOnTeam = gameState.team.includes(sc.id);
+        return `<div class="char-card ${isOnTeam ? 'on-team' : ''}" onclick="toggleTeamMember('${sc.id}')"><div class="team-indicator">${isOnTeam ? '✅' : ''}</div><div class="char-emoji">${sc.emoji}</div><div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
+    }).join('');
 }
 
-// ==================== DATA PERSISTENCE ====================
-function loadGame() {
-    const saved = localStorage.getItem('learningGameV2');
-    if (saved) {
-        gameState = JSON.parse(saved);
-    }
+function toggleTeamMember(charId) {
+    const idx = gameState.team.indexOf(charId);
+    const maxTeam = Math.min(gameState.unlockedChapters + 1, 4);
+    if (idx > -1) { gameState.team.splice(idx, 1); }
+    else if (gameState.team.length < maxTeam) { gameState.team.push(charId); }
+    renderCharGrid();
 }
 
-function saveGame() {
-    localStorage.setItem('learningGameV2', JSON.stringify(gameState));
-}
-
-function updateHomeUI() {
-    document.getElementById('playerLevel').textContent = gameState.player.level;
-    document.getElementById('playerExp').textContent = gameState.player.exp;
-    document.getElementById('playerGold').textContent = gameState.player.gold;
-    renderCharShowcase();
-}
-
-function renderCharShowcase() {
-    const container = document.getElementById('charShowcase');
-    const chars = gameState.player.characters || [];
-    const ultraCount = chars.filter(c => ULTRA_HEROES.find(u => u.id === c)).length;
-    const tkCount = chars.filter(c => THREE_KINGDOMS.find(t => t.id === c)).length;
-
-    container.innerHTML = `
-        <div class="char-card">
-            <div class="char-icon">🧙</div>
-            <div class="char-name">奥特曼</div>
-            <div class="char-count">${ultraCount}/16</div>
-        </div>
-        <div class="char-card">
-            <div class="char-icon">⚔️</div>
-            <div class="char-name">三国人物</div>
-            <div class="char-count">${tkCount}/24</div>
-        </div>
-    `;
-}
-
-// ==================== NAVIGATION ====================
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    document.getElementById('backBtn').style.display = pageId === 'homePage' ? 'none' : 'block';
-}
-
+// ==================== NAV ====================
+function showPage(pageId) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); document.getElementById('backBtn').style.display = pageId === 'homePage' ? 'none' : 'block'; }
+function goBack() { const current = document.querySelector('.page.active').id; if (['mainlinePage', 'galleryPage', 'shopPage', 'tasksPage', 'dungeonPage', 'eventsPage'].includes(current)) { showHome(); } else if (current === 'teamPage') { showMainline(); } else if (current === 'quizPage') { stopTimer(); showMainline(); } else { showHome(); } }
 function showHome() { showPage('homePage'); }
+function showMainline() { renderChapterTabs(); showPage('mainlinePage'); }
+function showGallery() { renderGallery('chars'); showPage('galleryPage'); }
+function showShop() { renderShop('chars'); showPage('shopPage'); }
+function showTasks() { renderTasks('daily'); showPage('tasksPage'); }
+function showEvents() { renderEvents(); showPage('eventsPage'); }
 
-function goBack() {
-    const currentPage = document.querySelector('.page.active').id;
-    if (currentPage === 'levelPage' || currentPage === 'galleryPage' || currentPage === 'shopPage' || currentPage === 'tasksPage') {
-        showHome();
-    } else if (currentPage === 'quizPage') {
-        stopTimer();
-        showLevelSelect();
-    } else {
-        showHome();
+// ==================== MAINLINE ====================
+function renderChapterTabs() {
+    const container = document.getElementById('chapterTabs');
+    container.innerHTML = CHAPTERS.map((ch, i) => `<button class="mode-tab ${i === currentBattle.chapter - 1 ? 'active' : ''}" onclick="selectChapter(${ch.id})">${ch.name}</button>`).join('');
+    renderLevelGrid();
+}
+
+function selectChapter(chapterId) { currentBattle.chapter = chapterId; document.querySelectorAll('.mode-tab').forEach((t, i) => t.classList.toggle('active', i === chapterId - 1)); renderLevelGrid(); }
+
+function renderLevelGrid() {
+    const container = document.getElementById('levelContent');
+    const chapter = CHAPTERS[currentBattle.chapter - 1];
+    const progress = gameState.chapterProgress[currentBattle.chapter - 1] || 0;
+    let html = `<div class="chapter-title">${chapter.name}</div><div class="level-grid">`;
+    for (let i = 1; i <= chapter.levels; i++) {
+        const isCompleted = i <= progress, isCurrent = i === progress + 1, isBoss = i % 10 === 0, isLocked = i > progress + 1;
+        let className = 'level-node';
+        if (isCompleted) className += ' completed'; else if (isCurrent) className += ' current'; else if (isLocked) className += ' locked';
+        if (isBoss) className += ' boss';
+        html += `<div class="${className}" onclick="${!isLocked ? `selectLevel(${i})` : ''}">${i}</div>`;
     }
+    html += '</div>';
+    container.innerHTML = html;
 }
 
-function showLevelSelect() {
-    renderModeSelector();
-    renderSubjectGrid();
-    showPage('levelPage');
+function selectLevel(level) { currentBattle.level = level; currentBattle.baseHP = gameState.player.hp; currentBattle.maxBaseHP = gameState.player.hp; gameState.team = []; showPage('teamPage'); renderTeamSelect(); }
+
+function renderTeamSelect() {
+    const maxTeam = Math.min(gameState.unlockedChapters + 1, 4);
+    document.getElementById('maxTeam').textContent = maxTeam;
+    document.getElementById('teamCount').textContent = gameState.team.length;
+    const teamDisplay = document.getElementById('teamDisplay');
+    teamDisplay.innerHTML = gameState.team.map(id => { const sc = SUBJECT_CHARS.find(s => s.id === id); return `<div class="team-slot filled">${sc.emoji}</div>`; }).join('') + Array(maxTeam - gameState.team.length).fill('<div class="team-slot"></div>').join('');
+    const charGrid = document.getElementById('teamCharGrid');
+    charGrid.innerHTML = SUBJECT_CHARS.map(sc => {
+        const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 };
+        const isOnTeam = gameState.team.includes(sc.id);
+        return `<div class="char-card ${isOnTeam ? 'selected' : ''}" onclick="toggleTeamMember('${sc.id}')"><div class="char-emoji">${sc.emoji}</div><div class="char-name">${sc.name}</div><div class="char-level">Lv.${charData.level}</div><div class="char-hp">❤️ ${charData.hp}/${sc.hp}</div></div>`;
+    }).join('');
 }
 
-// ==================== LEVEL SELECTION ====================
-let selectedDifficulty = 'easy';
-let selectedMode = null;
-
-function selectDifficulty(diff) {
-    selectedDifficulty = diff;
-    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.diff-btn.${diff}`).classList.add('active');
-}
-
-function renderModeSelector() {
-    const container = document.getElementById('modeSelector');
-    container.innerHTML = MODES.map(m => `
-        <div class="mode-btn" onclick="selectMode('${m.id}')">
-            <div class="mode-icon">${m.emoji}</div>
-            <div class="mode-name">${m.name}</div>
-            <div class="mode-desc">${m.desc}</div>
-        </div>
-    `).join('');
-}
-
-function selectMode(modeId) {
-    selectedMode = modeId;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
-}
-
-function renderSubjectGrid() {
-    const container = document.getElementById('subjectGrid');
-    container.innerHTML = SUBJECTS.map((s, i) => `
-        <div class="subject-card ${i >= 3 ? 'locked' : ''}" onclick="startQuiz('${s.id}')">
-            <div class="subject-emoji">${s.emoji}</div>
-            <div class="subject-name">${s.name}</div>
-            <div class="subject-count">简单/中等/困难</div>
-        </div>
-    `).join('');
-}
-
-// ==================== QUIZ LOGIC ====================
-function startQuiz(subjectId) {
-    if (!selectedMode) {
-        alert('请先选择闯关模式！');
-        return;
-    }
-
-    const modeConfig = MODES.find(m => m.id === selectedMode);
-    const bank = QUESTION_BANK[subjectId];
-    const diffQuestions = bank[selectedDifficulty] || [];
-
-    // Random select questions
-    const shuffled = [...diffQuestions].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, Math.min(modeConfig.questions, shuffled.length));
-
-    currentQuiz = {
-        subject: subjectId,
-        difficulty: selectedDifficulty,
-        mode: selectedMode,
-        questions: selected,
-        currentQ: 0,
-        lives: modeConfig.lives,
-        score: 0,
-        timeLeft: modeConfig.time === 999 ? 999 : modeConfig.time,
-        timerInterval: null,
-        streak: 0,
-        totalAnswered: 0
-    };
-
+// ==================== BATTLE ====================
+function startBattle() {
+    if (gameState.team.length === 0) { alert('请至少选择1个角色上阵！'); return; }
+    const subjects = gameState.team.map(id => SUBJECT_CHARS.find(s => s.id === id).subject);
+    currentBattle.totalWaves = 5 + Math.floor(currentBattle.level / 5);
+    currentBattle.wave = 1;
+    currentBattle.questions = generateBattleQuestions(subjects, currentBattle.totalWaves);
+    currentBattle.currentQ = 0; currentBattle.score = 0; currentBattle.streak = 0;
     showPage('quizPage');
-    renderQuiz();
+    renderBattleQuiz();
 }
 
-function renderQuiz() {
-    const q = currentQuiz.questions[currentQuiz.currentQ];
-    const modeConfig = MODES.find(m => m.id === currentQuiz.mode);
+function generateBattleQuestions(subjects, count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const subject = subjects[i % subjects.length];
+        const bank = QUESTION_BANK[subject] || QUESTION_BANK.general;
+        const q = bank[Math.floor(Math.random() * bank.length)];
+        questions.push({ ...q, subject });
+    }
+    return questions;
+}
 
-    // Update header
-    renderLives();
-    document.getElementById('currentScore').textContent = currentQuiz.score;
-    document.getElementById('timer').textContent = currentQuiz.timeLeft === 999 ? '∞' : currentQuiz.timeLeft;
-    document.getElementById('timer').classList.remove('warning');
-
-    // Update progress
-    const progress = (currentQuiz.currentQ / currentQuiz.questions.length) * 100;
-    document.getElementById('progressFill').style.width = `${progress}%`;
-    document.getElementById('questionNumber').textContent = `第 ${currentQuiz.currentQ + 1} 题 / 共 ${currentQuiz.questions.length} 题`;
-    document.getElementById('modeBadge').textContent = modeConfig.name;
-
-    // Update question
+function renderBattleQuiz() {
+    const q = currentBattle.questions[currentBattle.currentQ];
+    const subjectInfo = SUBJECT_CHARS.find(sc => sc.subject === q.subject) || SUBJECT_CHARS[0];
+    document.getElementById('waveInfo').textContent = `波次 ${currentBattle.wave}/${currentBattle.totalWaves}`;
+    document.getElementById('baseHP').textContent = currentBattle.baseHP;
+    document.getElementById('baseHPFill').style.width = `${(currentBattle.baseHP / currentBattle.maxBaseHP) * 100}%`;
+    document.getElementById('progressFill').style.width = `${(currentBattle.currentQ / currentBattle.totalWaves) * 100}%`;
+    document.getElementById('questionNum').textContent = `题目 ${currentBattle.currentQ + 1}/${currentBattle.totalWaves}`;
+    document.getElementById('subjectBadge').textContent = subjectInfo.name;
     document.getElementById('questionText').textContent = q.q;
-
-    // Update options
+    const quizTeam = document.getElementById('quizTeamDisplay');
+    quizTeam.innerHTML = gameState.team.map(id => { const sc = SUBJECT_CHARS.find(s => s.id === id); return `<div class="team-slot filled" style="font-size:1.2rem;">${sc.emoji}</div>`; }).join('');
     const optionsGrid = document.getElementById('optionsGrid');
     const labels = ['A', 'B', 'C', 'D'];
-    optionsGrid.innerHTML = q.o.map((opt, i) => `
-        <button class="option-btn" onclick="selectAnswer(${i})">
-            <span class="option-label">${labels[i]}</span>
-            <span>${opt}</span>
-        </button>
-    `).join('');
-
-    // Start timer
-    if (currentQuiz.timeLeft !== 999) {
-        startTimer();
-    }
-}
-
-function renderLives() {
-    const container = document.getElementById('lives');
-    const maxLives = currentQuiz.lives;
-    container.innerHTML = Array(maxLives).fill(0).map((_, i) =>
-        `<span class="life ${i >= currentQuiz.lives ? 'lost' : ''}">❤️</span>`
-    ).join('');
-}
-
-function startTimer() {
-    clearInterval(currentQuiz.timerInterval);
-    currentQuiz.timerInterval = setInterval(() => {
-        if (currentQuiz.timeLeft > 0) {
-            currentQuiz.timeLeft--;
-            document.getElementById('timer').textContent = currentQuiz.timeLeft;
-            if (currentQuiz.timeLeft <= 10) {
-                document.getElementById('timer').classList.add('warning');
-            }
-            if (currentQuiz.timeLeft <= 0) {
-                handleTimeout();
-            }
-        }
+    optionsGrid.innerHTML = q.o.map((opt, i) => `<button class="option-btn" onclick="selectAnswer(${i})"><span class="option-label">${labels[i]}</span><span>${opt}</span></button>`).join('');
+    currentBattle.timeLeft = 20;
+    currentBattle.timerInterval = setInterval(() => {
+        currentBattle.timeLeft--;
+        document.getElementById('timer').textContent = currentBattle.timeLeft;
+        document.getElementById('timer').classList.toggle('warning', currentBattle.timeLeft <= 5);
+        if (currentBattle.timeLeft <= 0) { clearInterval(currentBattle.timerInterval); handleTimeout(); }
     }, 1000);
 }
 
-function stopTimer() {
-    clearInterval(currentQuiz.timerInterval);
+function selectAnswer(index) {
+    clearInterval(currentBattle.timerInterval);
+    const q = currentBattle.questions[currentBattle.currentQ];
+    const isCorrect = index === q.a;
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(b => b.classList.add('disabled'));
+    buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) buttons[q.a].classList.add('correct');
+    const battleLog = document.getElementById('battleLog');
+    if (isCorrect) {
+        currentBattle.streak++;
+        currentBattle.score += 100 + (currentBattle.streak * 10);
+        addBattleLog(`✅ 答对！+${100 + (currentBattle.streak * 10)}分`, 'heal');
+        createCelebration();
+    } else {
+        currentBattle.streak = 0;
+        currentBattle.baseHP -= 1;
+        addBattleLog(`❌ 答错！基地受到1点伤害`, 'damage');
+    }
+    setTimeout(() => {
+        if (currentBattle.baseHP <= 0) endBattle(false);
+        else if (currentBattle.currentQ >= currentBattle.totalWaves - 1) endBattle(true);
+        else { currentBattle.currentQ++; currentBattle.wave++; renderBattleQuiz(); }
+    }, 1000);
 }
 
 function handleTimeout() {
-    stopTimer();
-    showFeedback(false);
-    currentQuiz.lives--;
-    currentQuiz.streak = 0;
-    renderLives();
-
+    currentBattle.baseHP -= 1;
+    currentBattle.streak = 0;
+    addBattleLog(`⏰ 超时！基地受到1点伤害`, 'damage');
     setTimeout(() => {
-        if (currentQuiz.lives <= 0) {
-            endQuiz(false);
-        } else {
-            nextQuestion();
-        }
-    }, 1500);
+        if (currentBattle.baseHP <= 0) endBattle(false);
+        else if (currentBattle.currentQ >= currentBattle.totalWaves - 1) endBattle(true);
+        else { currentBattle.currentQ++; currentBattle.wave++; renderBattleQuiz(); }
+    }, 1000);
 }
 
-function selectAnswer(index) {
-    stopTimer();
-    currentQuiz.totalAnswered++;
+function addBattleLog(text, type) { const log = document.getElementById('battleLog'); const entry = document.createElement('div'); entry.className = `log-entry log-${type}`; entry.textContent = text; log.appendChild(entry); log.scrollTop = log.scrollHeight; }
+function stopTimer() { clearInterval(currentBattle.timerInterval); }
 
-    const q = currentQuiz.questions[currentQuiz.currentQ];
-    const isCorrect = index === q.a;
-    const buttons = document.querySelectorAll('.option-btn');
-
-    buttons.forEach(b => b.classList.add('disabled'));
-    buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
-    if (!isCorrect) {
-        buttons[q.a].classList.add('correct');
-    }
-
-    if (isCorrect) {
-        showFeedback(true);
-        createCelebration();
-        currentQuiz.streak++;
-        currentQuiz.score += 100;
-
-        // Mode specific bonuses
-        if (currentQuiz.mode === 'timed') {
-            currentQuiz.timeLeft += 3;
-        } else if (currentQuiz.mode === 'elite') {
-            currentQuiz.score += 100;
-        } else if (currentQuiz.mode === 'endurance' && currentQuiz.streak >= 3) {
-            currentQuiz.lives = Math.min(currentQuiz.lives + 1, 5);
-        }
-    } else {
-        showFeedback(false);
-        currentQuiz.lives--;
-        currentQuiz.streak = 0;
-        renderLives();
-    }
-
-    setTimeout(() => {
-        if (currentQuiz.lives <= 0) {
-            endQuiz(false);
-        } else if (currentQuiz.currentQ >= currentQuiz.questions.length - 1) {
-            endQuiz(true);
-        } else {
-            nextQuestion();
-        }
-    }, 1500);
-}
-
-function nextQuestion() {
-    currentQuiz.currentQ++;
-    renderQuiz();
-}
-
-function endQuiz(success) {
+function endBattle(victory) {
     stopTimer();
     clearCelebration();
-
-    // Calculate rewards
-    const goldEarned = Math.floor(currentQuiz.score / 10);
-    const fragmentEarned = success ? Math.floor(Math.random() * 3) + 1 : 0;
-
+    const goldEarned = victory ? Math.floor(currentBattle.score / 10) : Math.floor(currentBattle.score / 20);
+    const expEarned = victory ? 50 + currentBattle.level * 10 : 20;
     gameState.player.gold += goldEarned;
-    gameState.player.totalAnswered = (gameState.player.totalAnswered || 0) + currentQuiz.totalAnswered;
-
-    // Random fragment
-    if (fragmentEarned > 0 && Math.random() > 0.5) {
-        const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
-        const randomChar = allChars[Math.floor(Math.random() * allChars.length)];
-        gameState.player.fragments[randomChar.id] = (gameState.player.fragments[randomChar.id] || 0) + fragmentEarned;
+    gameState.player.exp += expEarned;
+    if (victory) {
+        gameState.team.forEach(charId => {
+            const charData = gameState.subjectChars.find(c => c.id === charId);
+            if (charData) {
+                charData.exp += expEarned;
+                if (charData.exp >= charData.level * 100) {
+                    charData.exp = 0; charData.level++; charData.maxHp += 10; charData.hp = charData.maxHp; charData.atk += 2;
+                }
+            }
+        });
+        if (currentBattle.level > (gameState.chapterProgress[currentBattle.chapter - 1] || 0)) { gameState.chapterProgress[currentBattle.chapter - 1] = currentBattle.level; }
+        if (currentBattle.level % 10 === 0 && currentBattle.chapter < 5) { gameState.unlockedChapters = Math.max(gameState.unlockedChapters, currentBattle.chapter + 1); }
     }
-
+    let fragmentDrop = null;
+    if (victory && Math.random() > 0.5) {
+        const allChars = [...SUBJECT_CHARS, ...ULTRA_HEROES, ...TK_HEROES];
+        fragmentDrop = allChars[Math.floor(Math.random() * allChars.length)];
+        gameState.player.fragments[fragmentDrop.id] = (gameState.player.fragments[fragmentDrop.id] || 0) + 1;
+    }
     saveGame();
-
-    // Show result
-    document.getElementById('resultEmoji').textContent = success ? '🏆' : '💔';
-    document.getElementById('resultTitle').textContent = success ? '恭喜通关！' : '挑战失败';
-    document.getElementById('resultTitle').className = 'result-title ' + (success ? 'success' : 'fail');
-
-    const accuracy = currentQuiz.totalAnswered > 0
-        ? Math.round((currentQuiz.questions.filter((_, i) => i < currentQuiz.currentQ && true).length / currentQuiz.totalAnswered) * 100)
-        : 0;
-
-    document.getElementById('finalScore').textContent = currentQuiz.score;
-    document.getElementById('finalAccuracy').textContent = `${Math.round((currentQuiz.currentQ + 1) / currentQuiz.questions.length * 100)}%`;
-    document.getElementById('finalGold').textContent = `+${goldEarned}`;
-
-    document.getElementById('resultRewards').innerHTML = `
-        <div class="reward-item">
-            <div class="reward-icon">🪙</div>
-            <div class="reward-value">+${goldEarned}</div>
-            <div class="reward-label">金币</div>
-        </div>
-        ${fragmentEarned > 0 ? `
-        <div class="reward-item">
-            <div class="reward-icon">✨</div>
-            <div class="reward-value">+${fragmentEarned}</div>
-            <div class="reward-label">碎片</div>
-        </div>
-        ` : ''}
-    `;
-
+    document.getElementById('resultEmoji').textContent = victory ? '🏆' : '💔';
+    document.getElementById('resultTitle').textContent = victory ? '胜利！' : '失败';
+    document.getElementById('resultTitle').className = 'result-title ' + (victory ? 'victory' : 'defeat');
+    document.getElementById('resultRewards').innerHTML = `<div class="reward-badge"><div class="reward-icon">🪙</div><div class="reward-val">+${goldEarned}</div></div><div class="reward-badge"><div class="reward-icon">✨</div><div class="reward-val">+${expEarned}经验</div></div>${fragmentDrop ? `<div class="reward-badge"><div class="reward-icon">${fragmentDrop.emoji}</div><div class="reward-val">+1碎片</div></div>` : ''}`;
     showPage('resultPage');
-
-    if (success) {
-        createMassiveCelebration();
-    }
+    if (victory) createMassiveCelebration();
 }
 
 // ==================== GALLERY ====================
-function showGallery() {
-    renderGallery('ultra');
-    showPage('galleryPage');
-}
-
-function switchGalleryTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    renderGallery(tab);
-}
-
 function renderGallery(tab) {
     const container = document.getElementById('galleryGrid');
-    const chars = tab === 'ultra' ? ULTRA_HEROES : THREE_KINGDOMS;
-    const owned = gameState.player.characters || [];
-
-    container.innerHTML = chars.map(c => {
-        const isOwned = owned.includes(c.id);
-        const fragments = gameState.player.fragments[c.id] || 0;
-        return `
-            <div class="char-card-full ${isOwned ? 'owned' : 'locked'}">
-                <div class="char-icon">${c.emoji}</div>
-                <div class="char-name">${c.name}</div>
-                <div class="char-rarity">${c.rarity}</div>
-                ${isOwned ? '<div style="color:var(--success)">已拥有</div>' : `<div class="fragments-count">碎片: ${fragments}/${c.fragments}</div>`}
-            </div>
-        `;
-    }).join('');
+    let items = [];
+    if (tab === 'chars') { items = SUBJECT_CHARS.map(sc => { const charData = gameState.subjectChars.find(c => c.id === sc.id) || { level: 1, exp: 0 }; return { ...sc, owned: true, level: charData.level }; }); }
+    else if (tab === 'ultra') { items = ULTRA_HEROES.map(h => ({ ...h, owned: gameState.player.characters?.includes(h.id), fragments: gameState.player.fragments[h.id] || 0 })); }
+    else { items = TK_HEROES.map(h => ({ ...h, owned: gameState.player.characters?.includes(h.id), fragments: gameState.player.fragments[h.id] || 0 })); }
+    container.innerHTML = items.map(item => `<div class="gallery-card ${item.owned ? 'owned' : 'locked'}"><div class="gallery-icon">${item.emoji}</div><div class="gallery-name">${item.name}</div><div class="gallery-rarity">${item.rarity || ''}</div>${item.owned ? '<div style="color:var(--success);font-size:0.7rem">已拥有</div>' : `<div class="gallery-frags">碎片: ${item.fragments}/${item.fragments}</div>`}</div>`).join('');
 }
+
+function switchGalleryTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(tab === 'chars' ? '科目' : tab === 'ultra' ? '奥特曼' : '三国'))); renderGallery(tab); }
 
 // ==================== SHOP ====================
-function showShop() {
-    renderShop('chars');
-    showPage('shopPage');
-}
-
-function switchShopTab(tab) {
-    document.querySelectorAll('.shop-tab').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    renderShop(tab);
-}
-
 function renderShop(tab) {
     const container = document.getElementById('shopContent');
-
     if (tab === 'chars') {
-        const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
-        container.innerHTML = allChars.map(c => {
-            const owned = gameState.player.characters.includes(c.id);
-            return `
-                <div class="shop-item">
-                    <div class="shop-item-icon">${c.emoji}</div>
-                    <div class="shop-item-info">
-                        <div class="shop-item-name">${c.name} ${c.rarity}</div>
-                        <div class="shop-item-desc">技能：${c.skill}</div>
-                    </div>
-                    <div class="shop-item-price">🪙 ${c.price}</div>
-                    <button class="shop-item-btn" ${owned || gameState.player.gold < c.price ? 'disabled' : ''} onclick="buyChar('${c.id}')">
-                        ${owned ? '已拥有' : '购买'}
-                    </button>
-                </div>
-            `;
-        }).join('');
+        const allChars = [...ULTRA_HEROES, ...TK_HEROES];
+        container.innerHTML = allChars.map(c => { const owned = gameState.player.characters?.includes(c.id); return `<div class="task-card"><div class="task-icon">${c.emoji}</div><div class="task-info"><div class="task-name">${c.name} ${c.rarity}</div><div class="task-desc">技能：${c.skill}</div></div><div class="task-reward">🪙 ${c.price}</div><button class="task-btn" ${owned || gameState.player.gold < c.price ? 'disabled' : ''} onclick="buyChar('${c.id}')">${owned ? '已拥有' : '购买'}</button></div>`; }).join('');
     } else if (tab === 'items') {
-        container.innerHTML = SHOP_ITEMS.map(item => `
-            <div class="shop-item">
-                <div class="shop-item-icon">${item.emoji}</div>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">${item.name}</div>
-                    <div class="shop-item-desc">${item.desc}</div>
-                </div>
-                <div class="shop-item-price">🪙 ${item.price}</div>
-                <button class="shop-item-btn" ${gameState.player.gold < item.price ? 'disabled' : ''} onclick="buyItem('${item.id}')">购买</button>
-            </div>
-        `).join('');
+        container.innerHTML = SHOP_ITEMS.map(item => `<div class="task-card"><div class="task-icon">${item.emoji}</div><div class="task-info"><div class="task-name">${item.name}</div><div class="task-desc">${item.desc}</div></div><div class="task-reward">🪙 ${item.price}</div><button class="task-btn" ${gameState.player.gold < item.price ? 'disabled' : ''} onclick="buyItem('${item.id}')">购买</button></div>`).join('');
     } else {
-        container.innerHTML = EQUIPMENT.map(eq => `
-            <div class="shop-item">
-                <div class="shop-item-icon">${eq.emoji}</div>
-                <div class="shop-item-info">
-                    <div class="shop-item-name">${eq.name}</div>
-                    <div class="shop-item-desc">装备槽位：${eq.slot}</div>
-                </div>
-                <div class="shop-item-price">🪙 ${eq.price}</div>
-                <button class="shop-item-btn" ${gameState.player.gold < eq.price ? 'disabled' : ''} onclick="buyEquip('${eq.id}')">购买</button>
-            </div>
-        `).join('');
+        container.innerHTML = EQUIPMENT.map(eq => `<div class="task-card"><div class="task-icon">${eq.emoji}</div><div class="task-info"><div class="task-name">${eq.name}</div><div class="task-desc">${eq.slot} - ${eq.quality}</div></div><div class="task-reward">🪙 ${eq.price}</div><button class="task-btn" ${gameState.player.gold < eq.price ? 'disabled' : ''} onclick="buyEquip('${eq.id}')">购买</button></div>`).join('');
     }
 }
+
+function switchShopTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent === (tab === 'chars' ? '角色' : tab === 'items' ? '道具' : '装备'))); renderShop(tab); }
 
 function buyChar(id) {
-    const allChars = [...ULTRA_HEROES, ...THREE_KINGDOMS];
+    const allChars = [...ULTRA_HEROES, ...TK_HEROES];
     const char = allChars.find(c => c.id === id);
-    if (!char || gameState.player.characters.includes(id)) return;
-
-    if (gameState.player.gold >= char.price) {
-        gameState.player.gold -= char.price;
-        gameState.player.characters.push(id);
-        saveGame();
-        updateHomeUI();
-        renderShop('chars');
-        alert(`恭喜获得 ${char.name}！`);
-    }
+    if (!char || gameState.player.characters?.includes(id)) return;
+    if (gameState.player.gold >= char.price) { gameState.player.gold -= char.price; gameState.player.characters = gameState.player.characters || []; gameState.player.characters.push(id); saveGame(); updateHomeUI(); renderShop('chars'); alert(`恭喜获得 ${char.name}！`); }
 }
 
-function buyItem(id) {
-    const item = SHOP_ITEMS.find(i => i.id === id);
-    if (!item || gameState.player.gold < item.price) return;
+function buyItem(id) { const item = SHOP_ITEMS.find(i => i.id === id); if (!item || gameState.player.gold < item.price) return; gameState.player.gold -= item.price; gameState.player.items = gameState.player.items || []; gameState.player.items.push({ id: item.id, count: 1 }); saveGame(); updateHomeUI(); renderShop('items'); }
 
-    gameState.player.gold -= item.price;
-    gameState.player.items.push({ id: item.id, count: 1 });
-    saveGame();
-    updateHomeUI();
-    renderShop('items');
-}
-
-function buyEquip(id) {
-    const eq = EQUIPMENT.find(e => e.id === id);
-    if (!eq || gameState.player.gold < eq.price) return;
-
-    gameState.player.gold -= eq.price;
-    gameState.player.equipment[eq.slot] = id;
-    saveGame();
-    updateHomeUI();
-    renderShop('equip');
-}
+function buyEquip(id) { const eq = EQUIPMENT.find(e => e.id === id); if (!eq || gameState.player.gold < eq.price) return; gameState.player.gold -= eq.price; gameState.player.equipment = gameState.player.equipment || {}; gameState.player.equipment[eq.slot] = id; saveGame(); updateHomeUI(); renderShop('equip'); }
 
 // ==================== TASKS ====================
-function showTasks() {
-    renderTasks('daily');
-    showPage('tasksPage');
-}
-
-function switchTaskTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    renderTasks(tab);
-}
-
 function renderTasks(tab) {
     const container = document.getElementById('tasksContent');
-    const tasks = tab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
-    const progress = tab === 'daily' ? (gameState.dailyTasks || {}) : (gameState.weeklyTasks || {});
+    let tasks = tab === 'daily' ? DAILY_TASKS : tab === 'weekly' ? WEEKLY_TASKS : EVENT_TASKS;
+    const progress = tab === 'daily' ? gameState.dailyTasks : tab === 'weekly' ? gameState.weeklyTasks : gameState.eventTasks;
+    container.innerHTML = tasks.map(t => { const p = progress[t.id] || 0; const completed = p >= t.target; return `<div class="task-card"><div class="task-icon">${completed ? '✅' : '📋'}</div><div class="task-info"><div class="task-name">${t.name}</div><div class="task-desc">${t.desc}</div><div class="task-progress">${p}/${t.target}</div></div><div class="task-reward">🪙 ${t.reward.value}</div><button class="task-btn" ${completed ? 'disabled' : ''}>领取</button></div>`; }).join('');
+}
 
-    container.innerHTML = tasks.map(t => {
-        const p = progress[t.id] || 0;
-        const completed = p >= t.target;
-        return `
-            <div class="task-card">
-                <div class="task-icon">${completed ? '✅' : '📋'}</div>
-                <div class="task-info">
-                    <div class="task-name">${t.name}</div>
-                    <div class="task-desc">${t.desc}</div>
-                    <div class="task-progress">${p}/${t.target}</div>
-                </div>
-                <div class="task-reward">
-                    <span>🪙 ${t.reward.value}</span>
-                    <button class="task-btn" ${completed ? 'disabled' : ''}>领取</button>
-                </div>
-            </div>
-        `;
-    }).join('');
+function switchTaskTab(tab) { document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent === (tab === 'daily' ? '日常' : tab === 'weekly' ? '每周' : '活动'))); renderTasks(tab); }
+
+// ==================== DUNGEON ====================
+function showDungeon(type) {
+    currentBattle.dungeonType = type;
+    const container = document.getElementById('dungeonContent');
+    const title = document.getElementById('dungeonTitle');
+    if (type === 'ultra') {
+        title.textContent = '🌀 奥特曼副本 - 光之国挑战';
+        container.innerHTML = `<div class="dungeon-card ultra" onclick="startDungeon('ultra')"><div class="dungeon-icon">🌌</div><div class="dungeon-name">光之国挑战</div><div class="dungeon-desc">击败BOSS，收集奥特曼碎片</div><div class="dungeon-countdown">今日剩余次数: 3</div></div>`;
+    } else {
+        title.textContent = '⚔️ 三国副本 - 群雄逐鹿';
+        container.innerHTML = `<div class="dungeon-card tk" onclick="startDungeon('tk')"><div class="dungeon-icon">🏯</div><div class="dungeon-name">群雄逐鹿</div><div class="dungeon-desc">攻占城池，收集三国人物碎片</div><div class="dungeon-countdown">今日剩余次数: 3</div></div>`;
+    }
+    showPage('dungeonPage');
+}
+
+function startDungeon(type) { currentBattle.chapter = type === 'ultra' ? 99 : 98; currentBattle.level = 1; currentBattle.baseHP = 15; currentBattle.maxBaseHP = 15; gameState.team = [SUBJECT_CHARS[0].id]; showPage('teamPage'); renderTeamSelect(); }
+
+// ==================== EVENTS ====================
+function renderEvents() {
+    const container = document.getElementById('eventsContent');
+    container.innerHTML = `<div class="task-card" style="background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(255,217,61,0.2));border:2px solid var(--accent);"><div class="task-icon">🧧</div><div class="task-info"><div class="task-name">🌸 春节特辑</div><div class="task-desc">登录即得限定角色"年兽"！</div><div class="task-progress">活动时间: 2月1日-2月15日</div></div><button class="task-btn" onclick="showTasks()">进行中</button></div><div class="task-card"><div class="task-icon">🎃</div><div class="task-info"><div class="task-name">🎃 万圣节</div><div class="task-desc">不给糖就捣蛋！</div><div class="task-progress">敬请期待</div></div><button class="task-btn" disabled>未开放</button></div><div class="task-card"><div class="task-icon">❄️</div><div class="task-info"><div class="task-name">❄️ 冬至挑战</div><div class="task-desc">吃饺子挑战！</div><div class="task-progress">敬请期待</div></div><button class="task-btn" disabled>未开放</button></div>`;
 }
 
 // ==================== EFFECTS ====================
-function showFeedback(correct) {
-    const feedback = document.getElementById('feedback');
-    feedback.textContent = correct ? '正确！🎉' : '错误！😢';
-    feedback.className = 'feedback ' + (correct ? 'correct' : 'wrong') + ' show';
-    setTimeout(() => feedback.className = 'feedback hide', 1200);
-}
+function createCelebration() { const container = document.getElementById('celebration'); const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9']; for (let i = 0; i < 10; i++) { const confetti = document.createElement('div'); confetti.className = 'confetti'; confetti.style.left = Math.random() * 100 + '%'; confetti.style.background = colors[Math.floor(Math.random() * colors.length)]; confetti.style.animationDelay = Math.random() * 0.5 + 's'; container.appendChild(confetti); setTimeout(() => confetti.remove(), 2500); } }
 
-function createCelebration() {
-    const container = document.getElementById('celebration');
-    const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9'];
-    for (let i = 0; i < 15; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 0.5 + 's';
-        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-        container.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 2500);
-    }
-}
+function createMassiveCelebration() { const container = document.getElementById('celebration'); const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9']; for (let i = 0; i < 30; i++) { const confetti = document.createElement('div'); confetti.className = 'confetti'; confetti.style.left = Math.random() * 100 + '%'; confetti.style.background = colors[Math.floor(Math.random() * colors.length)]; confetti.style.animationDelay = Math.random() * 2 + 's'; container.appendChild(confetti); setTimeout(() => confetti.remove(), 5000); } }
 
-function createMassiveCelebration() {
-    const container = document.getElementById('celebration');
-    const colors = ['#FF6B6B', '#26DE81', '#FDCB6E', '#6C5CE7', '#00CEC9'];
-    for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 2 + 's';
-        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-        container.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 5000);
-    }
-}
+function clearCelebration() { document.getElementById('celebration').innerHTML = ''; }
 
-function clearCelebration() {
-    document.getElementById('celebration').innerHTML = '';
-}
+function createParticles() { const container = document.getElementById('particles'); for (let i = 0; i < 10; i++) { const particle = document.createElement('div'); particle.className = 'particle'; particle.style.left = Math.random() * 100 + '%'; particle.style.animationDelay = Math.random() * 15 + 's'; container.appendChild(particle); } }
 
-function createParticles() {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 15 + 's';
-        particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-        container.appendChild(particle);
-    }
-}
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
 
-// ==================== PWA ====================
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-    });
-}
-
-// Initialize
 init();
 </script>
 </body>
