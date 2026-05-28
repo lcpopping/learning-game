@@ -775,7 +775,7 @@ function renderHeroGrid() {
     const grid = document.getElementById('heroGrid');
     grid.innerHTML = '';
     HEROES.forEach(hero => {
-        const isOnTeam = gameState.team.includes(hero.id);
+        const isOnTeam = gameState.team.indexOf(hero.id) !== -1;
         const div = document.createElement('div');
         div.className = 'hero-card' + (isOnTeam ? ' on-team' : '');
         div.setAttribute('data-rarity', hero.rarity);
