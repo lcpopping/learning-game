@@ -1223,9 +1223,14 @@ function loadGame() {
 }
 
 // ==================== INIT ====================
+console.log('Initializing game...');
+console.log('HEROES count:', HEROES.length);
+console.log('QUESTIONS keys:', Object.keys(QUESTIONS));
 loadGame();
+console.log('Game state loaded:', gameState);
 updateMenuUI();
 loadQuestion();
+console.log('Init complete');
 </script>
 </body>
 </html>
