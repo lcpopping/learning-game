@@ -67,40 +67,278 @@
         .feedback.correct { color: var(--success); }
         .feedback.wrong { color: var(--error); }
 
-        /* Battle Area */
-        .battle-area { position: relative; height: 350px; background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)); border-radius: 15px; margin: 15px 0; overflow: hidden; }
-        .tower { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 3.5rem; z-index: 10; }
-        .tower-body { background: linear-gradient(180deg, #4a4a6a, #2a2a4a); width: 60px; height: 80px; border-radius: 5px 5px 10px 10px; position: relative; }
-        .tower-top { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 35px solid transparent; border-right: 35px solid transparent; border-bottom: 25px solid #5a5a7a; }
-        .tower-hp-bar { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); width: 50px; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; }
-        .tower-hp-fill { height: 100%; background: var(--success); transition: width 0.3s; }
-        .tower-hp-text { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; white-space: nowrap; }
-
-        /* Enemy Cards */
-        .enemy-card {
+        /* ============== TOWER / CITY GATE ============== */
+        .tower-wrapper {
             position: absolute;
-            background: rgba(30,30,50,0.95);
-            border-radius: 12px;
-            padding: 8px;
-            min-width: 90px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            border: 2px solid rgba(255,255,255,0.1);
-            transition: left 0.5s ease-out, top 0.3s;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
         }
-        .enemy-card.confusion { border-color: var(--energy-lit); }
-        .enemy-card.chaos { border-color: var(--energy-wis); }
-        .enemy-card.foolish { border-color: var(--energy-com); }
-        .enemy-card.greed { border-color: var(--error); }
-        .enemy-card.stone { border-color: #8B7355; }
-        .enemy-emoji { font-size: 2rem; text-align: center; }
-        .enemy-name { font-size: 0.75rem; text-align: center; margin: 4px 0; color: rgba(255,255,255,0.8); }
-        .enemy-hp-bar { width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
+        /* City Gate Structure */
+        .city-gate {
+            position: relative;
+            width: 80px;
+            height: 120px;
+        }
+        .gate-main {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 90px;
+            background: linear-gradient(180deg, #5a5a7a, #3a3a5a);
+            border-radius: 5px 5px 0 0;
+            border: 2px solid #6a6a8a;
+        }
+        .gate-main::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 50px;
+            background: linear-gradient(180deg, #2a2a3a, #1a1a2a);
+            border-radius: 3px 3px 0 0;
+            border: 2px solid #4a4a6a;
+        }
+        .gate-main::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 45px;
+            background: #6a6a8a;
+            border-radius: 2px;
+        }
+        /* Battlements on top */
+        .battlement {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .battlement::before,
+        .battlement::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 12px;
+            height: 20px;
+            background: #5a5a7a;
+            border: 1px solid #6a6a8a;
+        }
+        .battlement::before { left: 0; border-radius: 2px 2px 0 0; }
+        .battlement::after { right: 0; border-radius: 2px 2px 0 0; }
+        .battlement-center {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+        .battlement-center span {
+            width: 10px;
+            height: 20px;
+            background: #5a5a7a;
+            border: 1px solid #6a6a8a;
+            border-radius: 2px 2px 0 0;
+        }
+        /* Side towers */
+        .side-tower {
+            position: absolute;
+            bottom: 0;
+            width: 25px;
+            height: 60px;
+            background: linear-gradient(180deg, #4a4a6a, #2a2a4a);
+            border-radius: 3px 3px 0 0;
+        }
+        .side-tower.left { left: -5px; }
+        .side-tower.right { right: -5px; }
+        .side-tower::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid #5a5a7a;
+        }
+        /* Tower HP bar */
+        .tower-hp-container {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .tower-hp-bar {
+            width: 60px;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        .tower-hp-fill { height: 100%; background: var(--success); transition: width 0.3s; }
+        .tower-hp-text { font-size: 0.65rem; margin-top: 2px; }
+
+        /* ============== ENEMY SPRITES ============== */
+        .enemy-sprite {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: left 0.5s linear;
+        }
+        .enemy-body {
+            position: relative;
+            width: 40px;
+            height: 55px;
+        }
+        /* Enemy head */
+        .enemy-head {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+        }
+        /* Enemy torso */
+        .enemy-torso {
+            width: 30px;
+            height: 25px;
+            border-radius: 8px 8px 5px 5px;
+            margin: 2px auto 0;
+            position: relative;
+        }
+        /* Enemy legs */
+        .enemy-legs {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 2px;
+        }
+        .enemy-leg {
+            width: 8px;
+            height: 10px;
+            border-radius: 3px;
+        }
+        /* Weakness glow */
+        .enemy-body.lit .enemy-head { box-shadow: 0 0 10px var(--energy-lit); }
+        .enemy-body.wis .enemy-head { box-shadow: 0 0 10px var(--energy-wis); }
+        .enemy-body.com .enemy-head { box-shadow: 0 0 10px var(--energy-com); }
+        .enemy-body.none .enemy-head { box-shadow: 0 0 10px var(--error); }
+
+        .enemy-name { font-size: 0.7rem; margin-top: 4px; color: rgba(255,255,255,0.8); text-align: center; }
+        .enemy-hp-bar {
+            width: 40px;
+            height: 5px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
         .enemy-hp-fill { height: 100%; background: var(--success); transition: width 0.3s; }
-        .enemy-hp-text { font-size: 0.65rem; text-align: center; margin-top: 2px; color: rgba(255,255,255,0.6); }
-        .enemy-weakness { font-size: 0.6rem; text-align: center; margin-top: 3px; padding: 2px 4px; border-radius: 4px; }
-        .enemy-weakness.lit { background: var(--energy-lit); }
-        .enemy-weakness.wis { background: var(--energy-wis); }
-        .enemy-weakness.com { background: var(--energy-com); }
+        .enemy-hp-text { font-size: 0.6rem; text-align: center; color: rgba(255,255,255,0.6); margin-top: 1px; }
+        .enemy-weakness-badge {
+            font-size: 0.55rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+        .enemy-weakness-badge.lit { background: var(--energy-lit); }
+        .enemy-weakness-badge.wis { background: var(--energy-wis); }
+        .enemy-weakness-badge.com { background: var(--energy-com); color: #333; }
+
+        /* Enemy type specific colors */
+        .enemy-body.confusion .enemy-head { background: linear-gradient(135deg, #9370DB, #7B68EE); }
+        .enemy-body.confusion .enemy-torso { background: linear-gradient(180deg, #9370DB, #6A5ACD); }
+        .enemy-body.confusion .enemy-leg { background: #6A5ACD; }
+
+        .enemy-body.chaos .enemy-head { background: linear-gradient(135deg, #4169E1, #1E90FF); }
+        .enemy-body.chaos .enemy-torso { background: linear-gradient(180deg, #4169E1, #2E5BB0); }
+        .enemy-body.chaos .enemy-leg { background: #2E5BB0; }
+
+        .enemy-body.foolish .enemy-head { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .enemy-body.foolish .enemy-torso { background: linear-gradient(180deg, #FFD700, #E69500); }
+        .enemy-body.foolish .enemy-leg { background: #E69500; }
+
+        .enemy-body.greed .enemy-head { background: linear-gradient(135deg, #FF6B6B, #EE5A5A); }
+        .enemy-body.greed .enemy-torso { background: linear-gradient(180deg, #FF6B6B, #CC4444); }
+        .enemy-body.greed .enemy-leg { background: #CC4444; }
+
+        .enemy-body.stone .enemy-head { background: linear-gradient(135deg, #8B7355, #6B5344); }
+        .enemy-body.stone .enemy-torso { background: linear-gradient(180deg, #8B7355, #5B4334); }
+        .enemy-body.stone .enemy-leg { background: #5B4334; }
+
+        /* ============== HERO SPRITES ============== */
+        .hero-sprite {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hero-body {
+            position: relative;
+            width: 50px;
+            height: 70px;
+        }
+        .hero-head {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .hero-torso {
+            width: 36px;
+            height: 30px;
+            border-radius: 10px 10px 8px 8px;
+            margin: 3px auto 0;
+        }
+        .hero-legs {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .hero-leg {
+            width: 10px;
+            height: 14px;
+            border-radius: 4px;
+        }
+        /* Hero rarity colors */
+        .hero-body.rarity-3 .hero-head { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .hero-body.rarity-3 .hero-torso { background: linear-gradient(180deg, #FFD700, #CC8800); }
+        .hero-body.rarity-3 .hero-leg { background: #CC8800; }
+
+        .hero-body.rarity-2 .hero-head { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); }
+        .hero-body.rarity-2 .hero-torso { background: linear-gradient(180deg, #C0C0C0, #808080); }
+        .hero-body.rarity-2 .hero-leg { background: #808080; }
+
+        .hero-body.rarity-1 .hero-head { background: linear-gradient(135deg, #CD7F32, #8B4513); }
+        .hero-body.rarity-1 .hero-torso { background: linear-gradient(180deg, #CD7F32, #6B3300); }
+        .hero-body.rarity-1 .hero-leg { background: #6B3300; }
+
+        /* Element glow for heroes */
+        .hero-body.lit .hero-head { box-shadow: 0 0 8px var(--energy-lit); }
+        .hero-body.wis .hero-head { box-shadow: 0 0 8px var(--energy-wis); }
+        .hero-body.com .hero-head { box-shadow: 0 0 8px var(--energy-com); }
+
+        .hero-name { font-size: 0.8rem; margin-top: 6px; font-weight: bold; }
 
         .skill-bar { background: rgba(255,255,255,0.1); height: 30px; border-radius: 15px; margin: 15px 0; overflow: hidden; position: relative; }
         .skill-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.3s; }
@@ -168,9 +406,7 @@
         }
 
         /* Hero avatar color schemes by rarity */
-        .hero-card[data-rarity="3"] .hero-avatar { background: linear-gradient(135deg, #FFD700, #FFA500); }
-        .hero-card[data-rarity="2"] .hero-avatar { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); }
-        .hero-card[data-rarity="1"] .hero-avatar { background: linear-gradient(135deg, #CD7F32, #8B4513); }
+        .hero-card.on-team { border-color: var(--success); background: rgba(38,222,129,0.15); }
 
         .hero-name { font-size: 0.8rem; margin: 6px 0 4px; font-weight: bold; }
         .hero-bonus { font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; display: inline-block; }
@@ -193,14 +429,38 @@
             gap: 8px;
             border: 1px solid rgba(255,255,255,0.15);
         }
+        .hero-name { font-size: 0.8rem; margin-top: 6px; font-weight: bold; }
+
+        /* ============== EQUIPPED HERO AVATARS ============== */
+        .equipped-hero {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
         .equipped-hero .hero-avatar-small {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            position: relative;
+        }
+        .equipped-hero .hero-avatar-small::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .equipped-hero .hero-avatar-small .hero-icon {
+            font-size: 0.8rem;
         }
         .equipped-hero .remove { cursor: pointer; color: var(--error); font-size: 1.1rem; margin-left: 4px; }
 
@@ -299,12 +559,21 @@
             </div>
 
             <div class="battle-area" id="battleArea">
-                <div class="tower">
-                    <div class="tower-top"></div>
-                    <div class="tower-body">
-                        <div class="tower-hp-bar"><div class="tower-hp-fill" id="towerHpFill" style="width:100%"></div></div>
+                <div class="tower-wrapper">
+                    <div class="city-gate">
+                        <div class="battlement">
+                            <div class="battlement-center">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="side-tower left"></div>
+                        <div class="side-tower right"></div>
+                        <div class="gate-main"></div>
                     </div>
-                    <div class="tower-hp-text">🏯 <span id="towerHpSmall">10</span>/10</div>
+                    <div class="tower-hp-container">
+                        <div class="tower-hp-bar"><div class="tower-hp-fill" id="towerHpFill" style="width:100%"></div></div>
+                        <div class="tower-hp-text">❤️ <span id="towerHpSmall">10</span>/10</div>
+                    </div>
                 </div>
             </div>
 
@@ -337,18 +606,18 @@
 <script>
 // ==================== HEROES DATA ====================
 const HEROES = [
-    {id:'guanyu',name:'关羽',icon:'⚔️',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量'},
-    {id:'zhaoyun',name:'赵云',icon:'🐉',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量'},
-    {id:'zhugeliang',name:'诸葛亮',icon:'🧠',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1'},
-    {id:'lvbu',name:'吕布',icon:'🦾',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量'},
-    {id:'caocao',name:'曹操',icon:'👑',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1'},
-    {id:'zhouyu',name:'周瑜',icon:'🎵',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2'},
-    {id:'zhangfei',name:'张飞',icon:'😤',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2'},
-    {id:'simayi',name:'司马懿',icon:'🦊',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1'},
-    {id:'dianwei',name:'典韦',icon:'🪓',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1'},
-    {id:'luxun',name:'陆逊',icon:'🌾',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2'},
-    {id:'xiahoudun',name:'夏侯惇',icon:'👁️',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1'},
-    {id:'sunquan',name:'孙权',icon:'👸',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1'}
+    {id:'guanyu',name:'关羽',icon:'⚔️',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量', element:'lit'},
+    {id:'zhaoyun',name:'赵云',icon:'🐉',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量', element:'wis'},
+    {id:'zhugeliang',name:'诸葛亮',icon:'🧠',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1', element:'wis'},
+    {id:'lvbu',name:'吕布',icon:'🦾',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量', element:'com'},
+    {id:'caocao',name:'曹操',icon:'👑',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1', element:'wis'},
+    {id:'zhouyu',name:'周瑜',icon:'🎵',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2', element:'com'},
+    {id:'zhangfei',name:'张飞',icon:'😤',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2', element:'lit'},
+    {id:'simayi',name:'司马懿',icon:'🦊',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1', element:'wis'},
+    {id:'dianwei',name:'典韦',icon:'🪓',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1', element:'lit'},
+    {id:'luxun',name:'陆逊',icon:'🌾',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2', element:'com'},
+    {id:'xiahoudun',name:'夏侯惇',icon:'👁️',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1', element:'lit'},
+    {id:'sunquan',name:'孙权',icon:'👸',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1', element:'wis'}
 ];
 
 // ==================== ENEMIES DATA ====================
@@ -624,7 +893,7 @@ function startBattle() {
 
     // Clear battle area
     const battleArea = document.getElementById('battleArea');
-    battleArea.querySelectorAll('.enemy-card').forEach(e => e.remove());
+    battleArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
 
     spawnWave();
     battleState.attackInterval = setInterval(attackStep, 500);
@@ -640,27 +909,34 @@ function spawnWave() {
     const battleArea = document.getElementById('battleArea');
 
     // Clear old enemies
-    battleArea.querySelectorAll('.enemy-card').forEach(e => e.remove());
+    battleArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
 
     for (let i = 0; i < Math.min(count, 6); i++) {
         const typeId = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
         const template = ENEMIES[typeId];
-        const enemy = {...template, currentHp: template.hp, id: Date.now() + i, x: 700 + i * 80, y: 60 + (i % 3) * 90};
+        const enemy = {...template, currentHp: template.hp, id: Date.now() + i, x: 700 + i * 80, y: 50 + (i % 3) * 100};
         battleState.enemies.push(enemy);
 
-        const card = document.createElement('div');
-        card.className = `enemy-card ${typeId}`;
-        card.id = 'enemy-' + enemy.id;
-        card.innerHTML = `
-            <div class="enemy-emoji">${enemy.emoji}</div>
+        const sprite = document.createElement('div');
+        sprite.className = `enemy-sprite`;
+        sprite.id = 'enemy-' + enemy.id;
+        sprite.style.left = enemy.x + 'px';
+        sprite.style.top = enemy.y + 'px';
+        sprite.innerHTML = `
+            <div class="enemy-body ${typeId} ${enemy.weakness}">
+                <div class="enemy-head"></div>
+                <div class="enemy-torso"></div>
+                <div class="enemy-legs">
+                    <div class="enemy-leg"></div>
+                    <div class="enemy-leg"></div>
+                </div>
+            </div>
             <div class="enemy-name">${enemy.name}</div>
             <div class="enemy-hp-bar"><div class="enemy-hp-fill" style="width:${(enemy.currentHp/enemy.hp)*100}%"></div></div>
             <div class="enemy-hp-text">${enemy.currentHp}/${enemy.hp}</div>
-            ${enemy.weakness !== 'none' ? `<div class="enemy-weakness ${enemy.weakness}">${enemy.weakness === 'literature' ? '💜弱点' : enemy.weakness === 'wisdom' ? '💙弱点' : '💛弱点'}</div>` : ''}
+            ${enemy.weakness !== 'none' ? `<div class="enemy-weakness-badge ${enemy.weakness}">${enemy.weakness === 'literature' ? '💜弱点' : enemy.weakness === 'wisdom' ? '💙弱点' : '💛弱点'}</div>` : ''}
         `;
-        card.style.left = enemy.x + 'px';
-        card.style.top = enemy.y + 'px';
-        battleArea.appendChild(card);
+        battleArea.appendChild(sprite);
     }
 
     updateWaveInfo();
