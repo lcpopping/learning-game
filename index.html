@@ -493,89 +493,17 @@
         .hero-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
         .hero-card.on-team { border-color: var(--success); background: rgba(38,222,129,0.15); }
 
-        /* Hero Avatar - CSS based portrait */
-        /* ============== HERO SPRITES (HUMANOID) ============== */
-        .hero-sprite {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 5px;
+        /* Hero card image from CDN */
+        .hero-img {
+            width: 70px;
+            height: 90px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 5px;
         }
-        .hero-body {
-            position: relative;
-            width: 50px;
-            height: 70px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        /* Hat / Headwear */
-        .hero-hat {
-            width: 30px;
-            height: 10px;
-            border-radius: 3px 3px 0 0;
-            position: relative;
-            z-index: 2;
-        }
-        /* Head */
-        .hero-head {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .hero-face {
-            width: 20px;
-            height: 18px;
-            border-radius: 50% 50% 45% 45%;
-            position: absolute;
-            top: 3px;
-        }
-        /* Torso with arms */
-        .hero-torso {
-            width: 30px;
-            height: 28px;
-            border-radius: 6px 6px 4px 4px;
-            position: relative;
-            margin-top: 2px;
-        }
-        .hero-arm {
-            position: absolute;
-            width: 8px;
-            height: 20px;
-            border-radius: 4px;
-            top: 0;
-        }
-        .hero-arm.left { left: -6px; transform: rotate(15deg); }
-        .hero-arm.right { right: -6px; transform: rotate(-15deg); }
-        /* Legs */
-        .hero-legs {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            margin-top: 2px;
-        }
-        .hero-leg {
-            width: 10px;
-            height: 14px;
-            border-radius: 3px 3px 4px 4px;
-        }
-        /* Weapon displayed beside */
-        .hero-weapon {
-            position: absolute;
-            right: -5px;
-            top: 15px;
-            font-size: 1rem;
-        }
-        /* Rarity border glow */
-        .hero-card[data-rarity="3"] .hero-body { filter: drop-shadow(0 0 5px #FFD700); }
-        .hero-card[data-rarity="2"] .hero-body { filter: drop-shadow(0 0 5px #C0C0C0); }
-        .hero-card[data-rarity="1"] .hero-body { filter: drop-shadow(0 0 5px #CD7F32); }
+        .hero-card[data-rarity="3"] .hero-img { box-shadow: 0 0 10px #FFD700; }
+        .hero-card[data-rarity="2"] .hero-img { box-shadow: 0 0 8px #C0C0C0; }
+        .hero-card[data-rarity="1"] .hero-img { box-shadow: 0 0 6px #CD7F32; }
 
         .hero-name { font-size: 0.8rem; margin-top: 6px; font-weight: bold; }
         .hero-bonus { font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; display: inline-block; }
@@ -602,21 +530,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .equipped-hero .hero-avatar-small::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .equipped-hero .hero-avatar-small .hero-icon {
-            font-size: 0.8rem;
+            object-fit: contain;
         }
         .equipped-hero .remove { cursor: pointer; color: var(--error); font-size: 1.1rem; margin-left: 4px; }
 
@@ -769,29 +683,29 @@
 // ==================== HEROES DATA ====================
 const HEROES = [
     {id:'guanyu',name:'关羽',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量', element:'lit',
-     hair:'#1a1a1a',face:'#CD5C5C',outfit:'#228B22',hat:'#228B22',weapon:'⚔️',feature:'green-hat'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%85%B3%E7%BE%A4.webp',weapon:'⚔️'},
     {id:'zhaoyun',name:'赵云',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量', element:'wis',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#C0C0C0',hat:'#E8E8E8',weapon:'🐉',feature:'white-helmet'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E8%B5%B5%E4%BA%91.webp',weapon:'🐉'},
     {id:'zhugeliang',name:'诸葛亮',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1', element:'wis',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#D3D3D3',hat:'#FFFFFF',weapon:'🧠',feature:'guanmao'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E8%AF%B8%E8%91%9B%E4%BA%AE.webp',weapon:'🧠'},
     {id:'lvbu',name:'吕布',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量', element:'com',
-     hair:'#1a1a1a',face:'#DEB887',outfit:'#FFD700',hat:'#B8860B',weapon:'🦾',feature:'golden-armor'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%90%95%E5%B8%83.webp',weapon:'🦾'},
     {id:'caocao',name:'曹操',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1', element:'wis',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#8B0000',hat:'#4A0000',weapon:'👑',feature:'xiangmao'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E6%9B%B9%E6%93%8D.webp',weapon:'👑'},
     {id:'zhouyu',name:'周瑜',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2', element:'com',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#9932CC',hat:'#800080',weapon:'🎵',feature:'purple-robe'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%91%A8%E7%91%9C.webp',weapon:'🎵'},
     {id:'zhangfei',name:'张飞',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2', element:'lit',
-     hair:'#1a1a1a',face:'#2F4F4F',outfit:'#1a1a1a',hat:'#1a1a1a',weapon:'😤',feature:'black-beard'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%BC%A0%E9%A3%9E.webp',weapon:'😤'},
     {id:'simayi',name:'司马懿',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1', element:'wis',
-     hair:'#1a1a1a',face:'#D2B48C',outfit:'#4B0082',hat:'#2E0854',weapon:'🦊',feature:'dark-robe'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%8F%B8%E9%A9%AC%E9%82%93.webp',weapon:'🦊'},
     {id:'dianwei',name:'典韦',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1', element:'lit',
-     hair:'#1a1a1a',face:'#DEB887',outfit:'#8B4513',hat:'#654321',weapon:'🪓',feature:'brave-helmet'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%85%B8%E9%9F%A6.webp',weapon:'🪓'},
     {id:'luxun',name:'陆逊',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2', element:'com',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#4169E1',hat:'#191970',weapon:'🌾',feature:'young-official'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E9%99%86%E9%81%AA.webp',weapon:'🌾'},
     {id:'xiahoudun',name:'夏侯惇',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1', element:'lit',
-     hair:'#1a1a1a',face:'#DEB887',outfit:'#696969',hat:'#2F2F2F',weapon:'👁️',feature:'eye-patch'},
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%A4%8F%E4%BE%AF%E6%83%9A.webp',weapon:'👁️'},
     {id:'sunquan',name:'孙权',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1', element:'wis',
-     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#800080',hat:'#4B0082',weapon:'👸',feature:'king-crown'}
+     img:'https://lyc-sgs.oss-accelerate.aliyuncs.com/dj/%E6%AD%A6%E5%B0%86%E7%89%8C/%E5%AD%99%E6%9D%83.webp',weapon:'👸'}
 ];
 
 // ==================== ENEMIES DATA ====================
@@ -878,23 +792,7 @@ function renderHeroGrid() {
         div.className = 'hero-card' + (isOnTeam ? ' on-team' : '');
         div.setAttribute('data-rarity', hero.rarity);
         div.innerHTML = `
-            <div class="hero-sprite">
-                <div class="hero-body">
-                    <div class="hero-hat" style="background:${hero.hat}"></div>
-                    <div class="hero-head">
-                        <div class="hero-face" style="background:${hero.face}"></div>
-                    </div>
-                    <div class="hero-torso" style="background:linear-gradient(180deg,${hero.outfit},${darkenColor(hero.outfit)})">
-                        <div class="hero-arm left" style="background:${hero.outfit}"></div>
-                        <div class="hero-arm right" style="background:${hero.outfit}"></div>
-                    </div>
-                    <div class="hero-legs">
-                        <div class="hero-leg" style="background:${hero.outfit}"></div>
-                        <div class="hero-leg" style="background:${hero.outfit}"></div>
-                    </div>
-                </div>
-                <div class="hero-weapon">${hero.weapon}</div>
-            </div>
+            <img class="hero-img" src="${hero.img}" alt="${hero.name}" onerror="this.style.display='none'">
             <div class="hero-name">${hero.name}</div>
             <span class="hero-bonus ${hero.bonus}">+${hero.bonusValue}${hero.bonus==='literature'?'文':hero.bonus==='wisdom'?'智':'交'}</span>
             <div class="hero-skill">${hero.skill}</div>
@@ -908,7 +806,7 @@ function renderHeroGrid() {
     list.innerHTML = gameState.team.map(id => {
         const h = HEROES.find(hero => hero.id === id);
         return `<div class="equipped-hero">
-            <div class="hero-avatar-small" style="background: linear-gradient(135deg, ${getRarityColor(h.rarity)})">${h.weapon}</div>
+            <img class="hero-avatar-small" src="${h.img}" alt="${h.name}" style="width:32px;height:32px;border-radius:50%;object-fit:contain;" onerror="this.style.display='none'">
             <span>${h.name}</span>
             <span class="remove" onclick="toggleHero('${id}')">×</span>
         </div>`;
@@ -1112,8 +1010,8 @@ function renderTowerHeroes() {
             const hero = HEROES.find(h => h.id === gameState.team[i]);
             if (hero) {
                 slot.classList.add('filled');
-                slot.innerHTML = `<div class="hero-mini" style="background:linear-gradient(135deg,${getRarityColor(hero.rarity)})">${hero.weapon}</div>`;
-            }
+                slot.innerHTML = `<img class="hero-mini" src="${hero.img}" alt="${hero.name}" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
+            `;
         }
         container.appendChild(slot);
     }
