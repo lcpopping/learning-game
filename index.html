@@ -67,27 +67,82 @@
         .feedback.correct { color: var(--success); }
         .feedback.wrong { color: var(--error); }
 
-        /* ============== TOWER / CITY GATE ============== */
-        .tower-wrapper {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
+        /* ============== BATTLE AREA LAYOUT ============== */
+        .battle-area {
+            position: relative;
+            height: 320px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+            border-radius: 15px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: flex;
         }
-        /* City Gate Structure */
+        .base-area {
+            width: 140px;
+            min-height: 100%;
+            background: linear-gradient(90deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            border-right: 2px solid rgba(255,255,255,0.1);
+        }
+        .enemies-area {
+            flex: 1;
+            position: relative;
+            min-height: 100%;
+        }
+
+        /* Tower heroes slots on the wall */
+        .tower-heroes {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .tower-hero-slot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+        }
+        .tower-hero-slot.filled {
+            border-style: solid;
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(38,222,129,0.3), rgba(38,222,129,0.1));
+        }
+        .tower-hero-slot .hero-mini {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        /* Tower/City Gate - centered in base area */
+        .tower-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .city-gate {
             position: relative;
-            width: 80px;
-            height: 120px;
+            width: 100px;
+            height: 130px;
         }
         .gate-main {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 70px;
-            height: 90px;
+            width: 80px;
+            height: 100px;
             background: linear-gradient(180deg, #5a5a7a, #3a3a5a);
             border-radius: 5px 5px 0 0;
             border: 2px solid #6a6a8a;
@@ -95,11 +150,11 @@
         .gate-main::before {
             content: '';
             position: absolute;
-            top: 10px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 50px;
+            width: 35px;
+            height: 55px;
             background: linear-gradient(180deg, #2a2a3a, #1a1a2a);
             border-radius: 3px 3px 0 0;
             border: 2px solid #4a4a6a;
@@ -107,25 +162,84 @@
         .gate-main::after {
             content: '';
             position: absolute;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 8px;
-            height: 45px;
+            width: 6px;
+            height: 50px;
             background: #6a6a8a;
             border-radius: 2px;
         }
-        /* Battlements on top */
         .battlement {
             position: absolute;
             top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
+            width: 100px;
             height: 20px;
-            display: flex;
-            justify-content: space-between;
         }
+        .battlement::before,
+        .battlement::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 14px;
+            height: 20px;
+            background: #5a5a7a;
+            border: 1px solid #6a6a8a;
+            border-radius: 2px 2px 0 0;
+        }
+        .battlement::before { left: 0; }
+        .battlement::after { right: 0; }
+        .battlement-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .battlement-center span {
+            width: 10px;
+            height: 20px;
+            background: #5a5a7a;
+            border: 1px solid #6a6a8a;
+            border-radius: 2px 2px 0 0;
+        }
+        .side-tower {
+            position: absolute;
+            bottom: 0;
+            width: 28px;
+            height: 70px;
+            background: linear-gradient(180deg, #4a4a6a, #2a2a4a);
+            border-radius: 3px 3px 0 0;
+        }
+        .side-tower.left { left: -8px; }
+        .side-tower.right { right: -8px; }
+        .side-tower::before {
+            content: '';
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 16px solid #5a5a7a;
+        }
+        .tower-hp-container {
+            margin-top: 8px;
+            text-align: center;
+        }
+        .tower-hp-bar {
+            width: 70px;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .tower-hp-fill { height: 100%; background: var(--success); transition: width 0.3s; }
+        .tower-hp-text { font-size: 0.65rem; margin-top: 2px; }
         .battlement::before,
         .battlement::after {
             content: '';
@@ -601,22 +715,28 @@
             </div>
 
             <div class="battle-area" id="battleArea">
-                <div class="tower-wrapper">
-                    <div class="city-gate">
-                        <div class="battlement">
-                            <div class="battlement-center">
-                                <span></span><span></span><span></span>
+                <!-- Left base area with heroes on tower -->
+                <div class="base-area">
+                    <div class="tower-heroes" id="towerHeroes"></div>
+                    <div class="tower-wrapper">
+                        <div class="city-gate">
+                            <div class="battlement">
+                                <div class="battlement-center">
+                                    <span></span><span></span><span></span>
+                                </div>
                             </div>
+                            <div class="side-tower left"></div>
+                            <div class="side-tower right"></div>
+                            <div class="gate-main"></div>
                         </div>
-                        <div class="side-tower left"></div>
-                        <div class="side-tower right"></div>
-                        <div class="gate-main"></div>
-                    </div>
-                    <div class="tower-hp-container">
-                        <div class="tower-hp-bar"><div class="tower-hp-fill" id="towerHpFill" style="width:100%"></div></div>
-                        <div class="tower-hp-text">❤️ <span id="towerHpSmall">10</span>/10</div>
+                        <div class="tower-hp-container">
+                            <div class="tower-hp-bar"><div class="tower-hp-fill" id="towerHpFill" style="width:100%"></div></div>
+                            <div class="tower-hp-text">❤️ <span id="towerHpSmall">10</span>/10</div>
+                        </div>
                     </div>
                 </div>
+                <!-- Right battle area for enemies -->
+                <div class="enemies-area" id="enemiesArea"></div>
             </div>
 
             <div class="skill-bar">
@@ -968,12 +1088,35 @@ function startBattle() {
     document.getElementById('skillBtn').disabled = true;
     document.getElementById('resultOverlay').style.display = 'none';
 
-    // Clear battle area
-    const battleArea = document.getElementById('battleArea');
-    battleArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
+    // Render heroes on tower
+    renderTowerHeroes();
+
+    // Clear enemies area
+    const enemiesArea = document.getElementById('enemiesArea');
+    if (enemiesArea) enemiesArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
 
     spawnWave();
     battleState.attackInterval = setInterval(attackStep, 500);
+}
+
+function renderTowerHeroes() {
+    const container = document.getElementById('towerHeroes');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Show up to 3 hero slots
+    for (let i = 0; i < 3; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'tower-hero-slot';
+        if (gameState.team[i]) {
+            const hero = HEROES.find(h => h.id === gameState.team[i]);
+            if (hero) {
+                slot.classList.add('filled');
+                slot.innerHTML = `<div class="hero-mini" style="background:linear-gradient(135deg,${getRarityColor(hero.rarity)})">${hero.weapon}</div>`;
+            }
+        }
+        container.appendChild(slot);
+    }
 }
 
 function spawnWave() {
@@ -983,15 +1126,15 @@ function spawnWave() {
 
     const enemyTypes = CHAPTER_ENEMIES[gameState.chapter] || ['confusion'];
     const count = 3 + battleState.currentWave;
-    const battleArea = document.getElementById('battleArea');
+    const enemiesArea = document.getElementById('enemiesArea');
 
     // Clear old enemies
-    battleArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
+    if (enemiesArea) enemiesArea.querySelectorAll('.enemy-sprite').forEach(e => e.remove());
 
     for (let i = 0; i < Math.min(count, 6); i++) {
         const typeId = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
         const template = ENEMIES[typeId];
-        const enemy = {...template, currentHp: template.hp, id: Date.now() + i, x: 700 + i * 80, y: 50 + (i % 3) * 100};
+        const enemy = {...template, currentHp: template.hp, id: Date.now() + i, x: 480 + i * 75, y: 40 + (i % 3) * 90};
         battleState.enemies.push(enemy);
 
         const sprite = document.createElement('div');
@@ -1013,7 +1156,7 @@ function spawnWave() {
             <div class="enemy-hp-text">${enemy.currentHp}/${enemy.hp}</div>
             ${enemy.weakness !== 'none' ? `<div class="enemy-weakness-badge ${enemy.weakness}">${enemy.weakness === 'literature' ? '💜弱点' : enemy.weakness === 'wisdom' ? '💙弱点' : '💛弱点'}</div>` : ''}
         `;
-        battleArea.appendChild(sprite);
+        enemiesArea.appendChild(sprite);
     }
 
     updateWaveInfo();
@@ -1028,7 +1171,7 @@ function attackStep() {
         const el = document.getElementById('enemy-' + e.id);
         if (el) el.style.left = e.x + 'px';
 
-        if (e.x <= 80) {
+        if (e.x <= 30) {
             battleState.towerHp--;
             document.getElementById('towerHp').textContent = battleState.towerHp;
             document.getElementById('towerHpSmall').textContent = battleState.towerHp;
