@@ -395,7 +395,7 @@
         .enemy-body.stone .enemy-torso { background: linear-gradient(180deg, #8B7355, #5B4334); }
         .enemy-body.stone .enemy-leg { background: #5B4334; }
 
-        /* ============== HERO SPRITES - DETAILED HUMANOID ============== */
+        /* ============== HERO SPRITES ============== */
         .hero-sprite {
             position: relative;
             display: flex;
@@ -404,123 +404,53 @@
         }
         .hero-body {
             position: relative;
-            width: 56px;
-            height: 85px;
+            width: 50px;
+            height: 70px;
         }
-        /* Hat/Headwear */
-        .hero-hat {
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 32px;
-            height: 14px;
-            border-radius: 4px 4px 0 0;
-            z-index: 3;
-        }
-        .hat-top {
-            position: absolute;
-            top: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 8px solid currentColor;
-        }
-        /* Head with hair and face */
         .hero-head {
-            position: absolute;
-            top: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            z-index: 2;
-            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
         }
-        .hero-hair {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 12px;
-            border-radius: 12px 12px 0 0;
-        }
-        .hero-face {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 22px;
-            height: 16px;
-            border-radius: 50% 50% 40% 40%;
-        }
-        .hero-beard {
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 18px;
-            height: 8px;
-            border-radius: 0 0 50% 50%;
-        }
-        /* Torso with belt */
         .hero-torso {
-            position: absolute;
-            top: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 34px;
-            height: 32px;
-            border-radius: 6px 6px 4px 4px;
+            width: 36px;
+            height: 30px;
+            border-radius: 10px 10px 8px 8px;
+            margin: 3px auto 0;
         }
-        .hero-arm {
-            position: absolute;
-            width: 10px;
-            height: 24px;
-            border-radius: 5px;
-            top: 2px;
-        }
-        .hero-arm.left { left: -6px; transform: rotate(10deg); }
-        .hero-arm.right { right: -6px; transform: rotate(-10deg); }
-        .hero-belt {
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            height: 4px;
-            border-radius: 2px;
-        }
-        /* Legs */
         .hero-legs {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             gap: 6px;
+            justify-content: center;
         }
         .hero-leg {
-            width: 11px;
-            height: 16px;
-            border-radius: 3px 3px 4px 4px;
+            width: 10px;
+            height: 14px;
+            border-radius: 4px;
         }
-        /* Weapon floating beside */
-        .hero-weapon {
-            position: absolute;
-            right: -8px;
-            top: 20px;
-            font-size: 1.2rem;
-            z-index: 4;
-        }
-        /* Rarity glow effect */
-        .hero-card[data-rarity="3"] .hero-body { filter: drop-shadow(0 0 6px #FFD700); }
-        .hero-card[data-rarity="2"] .hero-body { filter: drop-shadow(0 0 6px #C0C0C0); }
-        .hero-card[data-rarity="1"] .hero-body { filter: drop-shadow(0 0 6px #CD7F32); }
+        /* Hero rarity colors */
+        .hero-body.rarity-3 .hero-head { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .hero-body.rarity-3 .hero-torso { background: linear-gradient(180deg, #FFD700, #CC8800); }
+        .hero-body.rarity-3 .hero-leg { background: #CC8800; }
+
+        .hero-body.rarity-2 .hero-head { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); }
+        .hero-body.rarity-2 .hero-torso { background: linear-gradient(180deg, #C0C0C0, #808080); }
+        .hero-body.rarity-2 .hero-leg { background: #808080; }
+
+        .hero-body.rarity-1 .hero-head { background: linear-gradient(135deg, #CD7F32, #8B4513); }
+        .hero-body.rarity-1 .hero-torso { background: linear-gradient(180deg, #CD7F32, #6B3300); }
+        .hero-body.rarity-1 .hero-leg { background: #6B3300; }
+
+        /* Element glow for heroes */
+        .hero-body.lit .hero-head { box-shadow: 0 0 8px var(--energy-lit); }
+        .hero-body.wis .hero-head { box-shadow: 0 0 8px var(--energy-wis); }
+        .hero-body.com .hero-head { box-shadow: 0 0 8px var(--energy-com); }
 
         .hero-name { font-size: 0.8rem; margin-top: 6px; font-weight: bold; }
 
@@ -839,29 +769,29 @@
 // ==================== HEROES DATA ====================
 const HEROES = [
     {id:'guanyu',name:'关羽',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量', element:'lit',
-     face:'#CD5C5C',hair:'#3D2314',outfit:'#1E7B1E',hat:'#2E8B2E',weapon:'⚔️',beard:'#3D2314',feature:'green-armor'},
+     hair:'#1a1a1a',face:'#CD5C5C',outfit:'#228B22',hat:'#228B22',weapon:'⚔️',feature:'green-hat'},
     {id:'zhaoyun',name:'赵云',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量', element:'wis',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#C8C8C8',hat:'#E8E8E8',weapon:'🐲',beard:'none',feature:'white-armor'},
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#C0C0C0',hat:'#E8E8E8',weapon:'🐉',feature:'white-helmet'},
     {id:'zhugeliang',name:'诸葛亮',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1', element:'wis',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#E8E8E8',hat:'#FFFFFF',weapon:'🪭',beard:'#D3D3D3',feature:'guanmao-robe'},
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#D3D3D3',hat:'#FFFFFF',weapon:'🧠',feature:'guanmao'},
     {id:'lvbu',name:'吕布',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量', element:'com',
-     face:'#DEB887',hair:'#1a1a1a',outfit:'#DAA520',hat:'#B8860B',weapon:'🦾',beard:'none',feature:'golden-armor'},
+     hair:'#1a1a1a',face:'#DEB887',outfit:'#FFD700',hat:'#B8860B',weapon:'🦾',feature:'golden-armor'},
     {id:'caocao',name:'曹操',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1', element:'wis',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#8B0000',hat:'#5C1A1A',weapon:'👑',beard:'#4A3728',feature:'red-robe'},
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#8B0000',hat:'#4A0000',weapon:'👑',feature:'xiangmao'},
     {id:'zhouyu',name:'周瑜',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2', element:'com',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#9932CC',hat:'#4B0080',weapon:'🎵',beard:'none',feature:'purple-elegant'},
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#9932CC',hat:'#800080',weapon:'🎵',feature:'purple-robe'},
     {id:'zhangfei',name:'张飞',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2', element:'lit',
-     face:'#2F2F2F',hair:'#1a1a1a',outfit:'#1a1a1a',hat:'#1a1a1a',weapon:'😤',beard:'#2F2F2F',feature:'black-warrior'},
+     hair:'#1a1a1a',face:'#2F4F4F',outfit:'#1a1a1a',hat:'#1a1a1a',weapon:'😤',feature:'black-beard'},
     {id:'simayi',name:'司马懿',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1', element:'wis',
-     face:'#D2B48C',hair:'#1a1a1a',outfit:'#2E0854',hat:'#1E0844',weapon:'🦊',beard:'#3D3D3D',feature:'dark-robe'},
+     hair:'#1a1a1a',face:'#D2B48C',outfit:'#4B0082',hat:'#2E0854',weapon:'🦊',feature:'dark-robe'},
     {id:'dianwei',name:'典韦',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1', element:'lit',
-     face:'#DEB887',hair:'#1a1a1a',outfit:'#654321',hat:'#5C3A1E',weapon:'🪓',beard:'#4A3C2A',feature:'brave-helmet'},
+     hair:'#1a1a1a',face:'#DEB887',outfit:'#8B4513',hat:'#654321',weapon:'🪓',feature:'brave-helmet'},
     {id:'luxun',name:'陆逊',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2', element:'com',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#4169E1',hat:'#191970',weapon:'📜',beard:'none',feature:'young-official'},
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#4169E1',hat:'#191970',weapon:'🌾',feature:'young-official'},
     {id:'xiahoudun',name:'夏侯惇',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1', element:'lit',
-     face:'#DEB887',hair:'#1a1a1a',outfit:'#696969',hat:'#4A4A4A',weapon:'🏹',beard:'#3D3D3D',feature:'armor-warrior'},
+     hair:'#1a1a1a',face:'#DEB887',outfit:'#696969',hat:'#2F2F2F',weapon:'👁️',feature:'eye-patch'},
     {id:'sunquan',name:'孙权',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1', element:'wis',
-     face:'#F5DEB3',hair:'#1a1a1a',outfit:'#800080',hat:'#4B0082',weapon:'👸',beard:'none',feature:'king-purple'}
+     hair:'#1a1a1a',face:'#F5DEB3',outfit:'#800080',hat:'#4B0082',weapon:'👸',feature:'king-crown'}
 ];
 
 // ==================== ENEMIES DATA ====================
@@ -950,18 +880,13 @@ function renderHeroGrid() {
         div.innerHTML = `
             <div class="hero-sprite">
                 <div class="hero-body">
-                    <div class="hero-hat" style="background:${hero.hat}">
-                        <div class="hat-top"></div>
-                    </div>
+                    <div class="hero-hat" style="background:${hero.hat}"></div>
                     <div class="hero-head">
-                        <div class="hero-hair" style="background:${hero.hair}"></div>
                         <div class="hero-face" style="background:${hero.face}"></div>
-                        ${hero.beard && hero.beard !== 'none' ? `<div class="hero-beard" style="background:${hero.beard}"></div>` : ''}
                     </div>
                     <div class="hero-torso" style="background:linear-gradient(180deg,${hero.outfit},${darkenColor(hero.outfit)})">
                         <div class="hero-arm left" style="background:${hero.outfit}"></div>
                         <div class="hero-arm right" style="background:${hero.outfit}"></div>
-                        <div class="hero-belt" style="background:${darkenColor(hero.outfit)}"></div>
                     </div>
                     <div class="hero-legs">
                         <div class="hero-leg" style="background:${hero.outfit}"></div>
