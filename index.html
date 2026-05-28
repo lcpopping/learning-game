@@ -127,33 +127,82 @@
         /* Hero Team Selection */
         .hero-section { margin: 15px 0; }
         .hero-section-title { font-size: 1rem; color: var(--accent); margin-bottom: 10px; text-align: center; }
-        .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
         .hero-card {
             background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 10px 5px;
+            border-radius: 16px;
+            padding: 12px 8px;
             text-align: center;
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
+            min-height: 140px;
         }
-        .hero-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .hero-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
         .hero-card.selected { border-color: var(--accent); background: rgba(253,203,110,0.15); }
-        .hero-card.on-team { border-color: var(--success); background: rgba(38,222,129,0.1); }
-        .hero-emoji { font-size: 2rem; }
-        .hero-name { font-size: 0.75rem; margin: 5px 0; }
-        .hero-bonus { font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; display: inline-block; }
+        .hero-card.on-team { border-color: var(--success); background: rgba(38,222,129,0.15); }
+
+        /* Hero Avatar - CSS based portrait */
+        .hero-avatar {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        .hero-avatar::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .hero-avatar .hero-icon {
+            font-size: 1.6rem;
+            filter: grayscale(0.2);
+        }
+
+        /* Hero avatar color schemes by rarity */
+        .hero-card[data-rarity="3"] .hero-avatar { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .hero-card[data-rarity="2"] .hero-avatar { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); }
+        .hero-card[data-rarity="1"] .hero-avatar { background: linear-gradient(135deg, #CD7F32, #8B4513); }
+
+        .hero-name { font-size: 0.8rem; margin: 6px 0 4px; font-weight: bold; }
+        .hero-bonus { font-size: 0.65rem; padding: 2px 8px; border-radius: 10px; display: inline-block; }
         .hero-bonus.lit { background: var(--energy-lit); }
         .hero-bonus.wis { background: var(--energy-wis); }
         .hero-bonus.com { background: var(--energy-com); color: #333; }
-        .hero-skill { font-size: 0.6rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+        .hero-skill { font-size: 0.6rem; color: rgba(255,255,255,0.6); margin-top: 3px; }
 
         .team-info { text-align: center; font-size: 0.9rem; color: var(--secondary); margin: 10px 0; }
         .team-bonus { font-size: 0.8rem; color: var(--accent); margin-top: 5px; }
 
-        .equipped-heroes { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
-        .equipped-hero { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
-        .equipped-hero .remove { cursor: pointer; color: var(--error); font-size: 1rem; }
+        .equipped-heroes { display: flex; gap: 10px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+        .equipped-hero {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .equipped-hero .hero-avatar-small {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .equipped-hero .remove { cursor: pointer; color: var(--error); font-size: 1.1rem; margin-left: 4px; }
 
         @media (max-width: 500px) {
             .title { font-size: 1.5rem; }
@@ -288,18 +337,18 @@
 <script>
 // ==================== HEROES DATA ====================
 const HEROES = [
-    {id:'guanyu',name:'关羽',emoji:'⚔️',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量'},
-    {id:'zhaoyun',name:'赵云',emoji:'🐉',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量'},
-    {id:'zhugeliang',name:'诸葛亮',emoji:'🧠',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1'},
-    {id:'lvbu',name:'吕布',emoji:'🦾',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量'},
-    {id:'caocao',name:'曹操',emoji:'👑',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1'},
-    {id:'zhouyu',name:'周瑜',emoji:'🎵',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2'},
-    {id:'zhangfei',name:'张飞',emoji:'😤',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2'},
-    {id:'simayi',name:'司马懿',emoji:'🦊',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1'},
-    {id:'dianwei',name:'典韦',emoji:'🪓',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1'},
-    {id:'luxun',name:'陆逊',emoji:'🌾',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2'},
-    {id:'xiahoudun',name:'夏侯惇',emoji:'👁️',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1'},
-    {id:'sunquan',name:'孙权',emoji:'👸',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1'}
+    {id:'guanyu',name:'关羽',icon:'⚔️',rarity:3,bonus:'literature',bonusValue:2,skill:'武圣降临',desc:'语文答题+2能量'},
+    {id:'zhaoyun',name:'赵云',icon:'🐉',rarity:3,bonus:'wisdom',bonusValue:2,skill:'七进七出',desc:'数学答题+2能量'},
+    {id:'zhugeliang',name:'诸葛亮',icon:'🧠',rarity:3,bonus:'wisdom',bonusValue:1,skill:'神机妙算',desc:'智慧+1'},
+    {id:'lvbu',name:'吕布',icon:'🦾',rarity:3,bonus:'communication',bonusValue:2,skill:'无双乱舞',desc:'英语答题+2能量'},
+    {id:'caocao',name:'曹操',icon:'👑',rarity:2,bonus:'wisdom',bonusValue:1,skill:'奸雄护盾',desc:'智慧+1'},
+    {id:'zhouyu',name:'周瑜',icon:'🎵',rarity:2,bonus:'communication',bonusValue:2,skill:'火烧赤壁',desc:'交流+2'},
+    {id:'zhangfei',name:'张飞',icon:'😤',rarity:2,bonus:'literature',bonusValue:2,skill:'万人敌',desc:'语文+2'},
+    {id:'simayi',name:'司马懿',icon:'🦊',rarity:2,bonus:'wisdom',bonusValue:1,skill:'隐忍待机',desc:'智慧+1'},
+    {id:'dianwei',name:'典韦',icon:'🪓',rarity:1,bonus:'literature',bonusValue:1,skill:'古之恶来',desc:'语文+1'},
+    {id:'luxun',name:'陆逊',icon:'🌾',rarity:1,bonus:'communication',bonusValue:2,skill:'火烧连营',desc:'交流+2'},
+    {id:'xiahoudun',name:'夏侯惇',icon:'👁️',rarity:1,bonus:'literature',bonusValue:1,skill:'拔矢啖睛',desc:'语文+1'},
+    {id:'sunquan',name:'孙权',icon:'👸',rarity:1,bonus:'wisdom',bonusValue:1,skill:'江东之虎',desc:'智慧+1'}
 ];
 
 // ==================== ENEMIES DATA ====================
@@ -384,8 +433,11 @@ function renderHeroGrid() {
         const isOnTeam = gameState.team.includes(hero.id);
         const div = document.createElement('div');
         div.className = 'hero-card' + (isOnTeam ? ' on-team' : '');
+        div.setAttribute('data-rarity', hero.rarity);
         div.innerHTML = `
-            <div class="hero-emoji">${hero.emoji}</div>
+            <div class="hero-avatar" style="background: linear-gradient(135deg, ${getRarityColor(hero.rarity)})">
+                <span class="hero-icon">${hero.icon}</span>
+            </div>
             <div class="hero-name">${hero.name}</div>
             <span class="hero-bonus ${hero.bonus}">+${hero.bonusValue}${hero.bonus==='literature'?'文':hero.bonus==='wisdom'?'智':'交'}</span>
             <div class="hero-skill">${hero.skill}</div>
@@ -398,7 +450,11 @@ function renderHeroGrid() {
     const list = document.getElementById('equippedList');
     list.innerHTML = gameState.team.map(id => {
         const h = HEROES.find(hero => hero.id === id);
-        return `<div class="equipped-hero"><span>${h.emoji}</span>${h.name}<span class="remove" onclick="toggleHero('${id}')">×</span></div>`;
+        return `<div class="equipped-hero">
+            <div class="hero-avatar-small" style="background: linear-gradient(135deg, ${getRarityColor(h.rarity)})">${h.icon}</div>
+            <span>${h.name}</span>
+            <span class="remove" onclick="toggleHero('${id}')">×</span>
+        </div>`;
     }).join('');
 
     document.getElementById('teamCount').textContent = gameState.team.length;
@@ -410,6 +466,15 @@ function renderHeroGrid() {
         if (h) bonuses[h.bonus] += h.bonusValue;
     });
     document.getElementById('teamBonus').textContent = `加成: 💜+${bonuses.literature} 💙+${bonuses.wisdom} 💛+${bonuses.communication}`;
+}
+
+function getRarityColor(rarity) {
+    const colors = {
+        3: '#FFD700, #FFA500',
+        2: '#C0C0C0, #A0A0A0',
+        1: '#CD7F32, #8B4513'
+    };
+    return colors[rarity] || colors[1];
 }
 
 function toggleHero(heroId) {
